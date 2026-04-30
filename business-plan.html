@@ -1218,6 +1218,74 @@
         <li>顧客ごとに独立したサブドメイン（例: koike.dashboard.example.com）でブランディング</li>
         <li>iframe埋め込み or サブドメインで顧客のNotionワークスペースに見せかける統合も検討</li>
       </ul>
+
+      <h3>プロダクトデモ — 4世界観のダッシュボードサンプル</h3>
+      <p>
+        契約者は契約前に、自分専用ダッシュボードの<strong>世界観（カラー・密度・フォント・アニメーション）</strong>を以下の4案から選択できる。
+        全案とも共通機能（VITALS／5本柱／タスク／KPT／Wish／経営サマリー）を備え、世界観だけが異なる。
+        ヒアリング2回目で世界観を確定 → 構築フェーズへ。
+      </p>
+
+      <div class="demo-gallery" style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin:18px 0 14px;">
+        <a href="dashboard-samples/d0-command-center.html" target="_blank" style="display:block;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper);text-decoration:none;color:inherit;transition:all 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+          <div style="height:200px;position:relative;overflow:hidden;border-bottom:1px solid var(--line);background:#0c0e14;">
+            <iframe src="dashboard-samples/d0-command-center.html" loading="lazy" scrolling="no" style="border:none;width:1400px;height:830px;transform:scale(0.32);transform-origin:0 0;pointer-events:none;"></iframe>
+            <div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.7);color:#fff;padding:3px 9px;border-radius:6px;font-size:10px;letter-spacing:0.2em;font-weight:700;backdrop-filter:blur(8px);">D0 · DEFAULT</div>
+          </div>
+          <div style="padding:18px 20px;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.2em;color:var(--gold);margin-bottom:6px;">00 / COMMAND CENTER</div>
+            <h4 style="font-size:16px;color:var(--navy);margin-bottom:6px;">Command Center（推奨デフォルト）</h4>
+            <p class="body" style="margin-bottom:10px;">ゴールド×ネイビーの上品な情報密度。Apple Fitness × Stripe 系の高級感。</p>
+            <span style="font-size:11px;color:var(--accent-blue);font-weight:700;">▶ デモを開く</span>
+          </div>
+        </a>
+
+        <a href="dashboard-samples/d1-gold-cockpit.html" target="_blank" style="display:block;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper);text-decoration:none;color:inherit;transition:all 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+          <div style="height:200px;position:relative;overflow:hidden;border-bottom:1px solid var(--line);background:#0a0805;">
+            <iframe src="dashboard-samples/d1-gold-cockpit.html" loading="lazy" scrolling="no" style="border:none;width:1400px;height:830px;transform:scale(0.32);transform-origin:0 0;pointer-events:none;"></iframe>
+            <div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.7);color:#fff;padding:3px 9px;border-radius:6px;font-size:10px;letter-spacing:0.2em;font-weight:700;backdrop-filter:blur(8px);">D1 · COCKPIT</div>
+          </div>
+          <div style="padding:18px 20px;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.2em;color:var(--gold);margin-bottom:6px;">01 / GOLD COCKPIT</div>
+            <h4 style="font-size:16px;color:var(--navy);margin-bottom:6px;">Gold Cockpit（HUD男前）</h4>
+            <p class="body" style="margin-bottom:10px;">戦闘機HUDモチーフ。コーナーブラケット＋スキャンラインで密度高めの司令室感。</p>
+            <span style="font-size:11px;color:var(--accent-blue);font-weight:700;">▶ デモを開く</span>
+          </div>
+        </a>
+
+        <a href="dashboard-samples/d2-cyan-observatory.html" target="_blank" style="display:block;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper);text-decoration:none;color:inherit;transition:all 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+          <div style="height:200px;position:relative;overflow:hidden;border-bottom:1px solid var(--line);background:#050714;">
+            <iframe src="dashboard-samples/d2-cyan-observatory.html" loading="lazy" scrolling="no" style="border:none;width:1400px;height:830px;transform:scale(0.32);transform-origin:0 0;pointer-events:none;"></iframe>
+            <div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.7);color:#fff;padding:3px 9px;border-radius:6px;font-size:10px;letter-spacing:0.2em;font-weight:700;backdrop-filter:blur(8px);">D2 · OBSERVATORY</div>
+          </div>
+          <div style="padding:18px 20px;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.2em;color:var(--gold);margin-bottom:6px;">02 / CYAN OBSERVATORY</div>
+            <h4 style="font-size:16px;color:var(--navy);margin-bottom:6px;">Cyan Observatory（未来・わくわく）</h4>
+            <p class="body" style="margin-bottom:10px;">星空＋オーロラ＋ホログラム。ガジェット好きに刺さる未来感MAX。</p>
+            <span style="font-size:11px;color:var(--accent-blue);font-weight:700;">▶ デモを開く</span>
+          </div>
+        </a>
+
+        <a href="dashboard-samples/d3-studio-elegant.html" target="_blank" style="display:block;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper);text-decoration:none;color:inherit;transition:all 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+          <div style="height:200px;position:relative;overflow:hidden;border-bottom:1px solid var(--line);background:#0a0a0c;">
+            <iframe src="dashboard-samples/d3-studio-elegant.html" loading="lazy" scrolling="no" style="border:none;width:1400px;height:830px;transform:scale(0.32);transform-origin:0 0;pointer-events:none;"></iframe>
+            <div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.7);color:#fff;padding:3px 9px;border-radius:6px;font-size:10px;letter-spacing:0.2em;font-weight:700;backdrop-filter:blur(8px);">D3 · STUDIO</div>
+          </div>
+          <div style="padding:18px 20px;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.2em;color:var(--gold);margin-bottom:6px;">03 / STUDIO ELEGANT</div>
+            <h4 style="font-size:16px;color:var(--navy);margin-bottom:6px;">Studio Elegant（経営者・士業向け）</h4>
+            <p class="body" style="margin-bottom:10px;">Linear / Stripe / Attio 系。長く飽きないプロフェッショナル仕様。</p>
+            <span style="font-size:11px;color:var(--accent-blue);font-weight:700;">▶ デモを開く</span>
+          </div>
+        </a>
+      </div>
+
+      <div style="background:var(--soft);border-radius:10px;padding:16px 20px;margin-top:14px;font-size:13px;line-height:1.85;">
+        <strong>📊 ギャラリーHubで4案を一覧で見る:</strong>
+        <a href="dashboard-samples/index.html" target="_blank" style="color:var(--accent-blue);font-weight:700;">▶ /dashboard-samples/</a>
+        <br>
+        共通機能仕様・納品プロセス4ステップを別ページにまとめた<strong>営業用ハブページ</strong>。商談時はこちらを画面共有すると話が早い。
+      </div>
     </section>
 
     <!-- 10. Roadmap -->
