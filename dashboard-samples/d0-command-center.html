@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal OS — 案D Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-0: #06080f;
+    --bg-1: #0b0f1a;
+    --bg-2: #131826;
+    --bg-3: #1a2236;
+    --line: rgba(255,255,255,0.08);
+    --line-2: rgba(255,255,255,0.14);
+    --text: #f8f5ed;
+    --text-mute: #8b94a8;
+    --text-dim: #5a6378;
+    --gold: #d4af6a;
+    --gold-glow: rgba(212,175,106,0.4);
+    --cyan: #22d3ee;
+    --cyan-glow: rgba(34,211,238,0.35);
+    --emerald: #34d399;
+    --emerald-glow: rgba(52,211,153,0.35);
+    --violet: #a78bfa;
+    --violet-glow: rgba(167,139,250,0.35);
+    --amber: #fbbf24;
+    --amber-glow: rgba(251,191,36,0.35);
+    --pink: #f472b6;
+    --red: #ef4444;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Inter", -apple-system, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    background: var(--bg-0);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Background ambient */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 800px 600px at 0% 0%, rgba(34,211,238,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 900px 700px at 100% 0%, rgba(212,175,106,0.10) 0%, transparent 50%),
+      radial-gradient(ellipse 1200px 800px at 50% 100%, rgba(167,139,250,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Layout */
+  .app {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: linear-gradient(180deg, rgba(11,15,26,0.95) 0%, rgba(6,8,15,0.98) 100%);
+    border-right: 1px solid var(--line);
+    backdrop-filter: blur(20px);
+    padding: 22px 16px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand .logo {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--gold), #8b6f3d);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 14px; color: #1a1208;
+    box-shadow: 0 4px 14px rgba(212,175,106,0.35), inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+  .brand .meta { line-height: 1.2; }
+  .brand .name { font-weight: 800; font-size: 13px; letter-spacing: 0.02em; }
+  .brand .ver { font-size: 9px; color: var(--text-dim); letter-spacing: 0.15em; font-family: "JetBrains Mono", monospace; }
+
+  .nav-section { margin-bottom: 18px; }
+  .nav-section .label {
+    font-size: 9px; letter-spacing: 0.25em; color: var(--text-dim);
+    padding: 0 10px 8px; font-weight: 700;
+  }
+  .nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    color: var(--text-mute);
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 2px;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .nav a:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+  .nav a.active {
+    background: linear-gradient(90deg, rgba(212,175,106,0.15), rgba(212,175,106,0.02));
+    color: var(--gold);
+  }
+  .nav a.active::before {
+    content: ""; position: absolute; left: 0; top: 8px; bottom: 8px;
+    width: 2px; background: var(--gold); border-radius: 0 2px 2px 0;
+    box-shadow: 0 0 8px var(--gold-glow);
+  }
+  .nav a .ic { font-size: 16px; width: 20px; text-align: center; }
+  .nav a .badge {
+    margin-left: auto;
+    font-size: 9px;
+    background: var(--cyan); color: #001;
+    padding: 1px 6px; border-radius: 8px;
+    font-weight: 700;
+  }
+
+  .sidebar-footer {
+    position: absolute; bottom: 16px; left: 16px; right: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 11px;
+  }
+  .sidebar-footer .row { display: flex; justify-content: space-between; color: var(--text-mute); }
+  .sidebar-footer .row b { color: var(--emerald); font-family: "JetBrains Mono", monospace; }
+
+  /* Main */
+  main { padding: 20px 28px 60px; min-width: 0; }
+
+  /* Top bar */
+  .topbar {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 22px;
+  }
+  .topbar .breadcrumb { font-size: 11px; color: var(--text-dim); letter-spacing: 0.2em; font-family: "JetBrains Mono", monospace; }
+  .topbar .live {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 10px; letter-spacing: 0.25em;
+    color: var(--emerald);
+    font-family: "JetBrains Mono", monospace;
+  }
+  .topbar .live::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--emerald);
+    box-shadow: 0 0 10px var(--emerald-glow);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  .topbar .clock {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; color: var(--text-mute);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--line);
+    padding: 5px 10px; border-radius: 8px;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.9); }
+  }
+
+  /* Hero */
+  .hero {
+    background:
+      linear-gradient(135deg, rgba(212,175,106,0.08) 0%, transparent 40%),
+      linear-gradient(225deg, rgba(34,211,238,0.06) 0%, transparent 40%),
+      var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 26px 30px;
+    margin-bottom: 22px;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.05) inset,
+      0 20px 40px rgba(0,0,0,0.4);
+  }
+  .hero::before {
+    content: ""; position: absolute;
+    top: -120px; right: -80px;
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, var(--gold-glow) 0%, transparent 65%);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 30px;
+    position: relative;
+  }
+  .hero .greet {
+    color: var(--gold);
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .hero h1 {
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  }
+  .hero .date { font-size: 12px; color: var(--text-mute); margin-bottom: 22px; font-family: "JetBrains Mono", monospace; }
+  .commit-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--line-2);
+    border-radius: 14px;
+    padding: 14px 18px;
+    backdrop-filter: blur(20px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .commit-card .lbl {
+    color: var(--gold); font-size: 9px; letter-spacing: 0.3em; font-weight: 700;
+    margin-bottom: 6px; font-family: "JetBrains Mono", monospace;
+  }
+  .commit-card .txt { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .commit-card .sub { font-size: 11px; color: var(--text-mute); }
+
+  /* Hero right: Today's Score */
+  .today-score {
+    background: linear-gradient(160deg, rgba(34,211,238,0.06), rgba(167,139,250,0.04));
+    border: 1px solid var(--line-2);
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex; align-items: center; gap: 18px;
+    backdrop-filter: blur(10px);
+  }
+  .today-score .gauge { width: 88px; height: 88px; flex-shrink: 0; position: relative; }
+  .today-score .gauge svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .today-score .gauge .val {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .today-score .gauge .num {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 26px; font-weight: 700; line-height: 1;
+    color: var(--cyan);
+    text-shadow: 0 0 16px var(--cyan-glow);
+  }
+  .today-score .gauge .lbl { font-size: 9px; color: var(--text-mute); letter-spacing: 0.15em; margin-top: 2px; }
+  .today-score .info .h { font-size: 10px; letter-spacing: 0.25em; color: var(--text-mute); margin-bottom: 4px; font-weight: 700; }
+  .today-score .info .t { font-size: 14px; font-weight: 700; line-height: 1.4; margin-bottom: 6px; }
+  .today-score .info .delta { font-size: 11px; color: var(--emerald); font-weight: 600; }
+  .today-score .info .delta.down { color: var(--red); }
+
+  /* Section */
+  .section { margin-bottom: 26px; }
+  .section-head {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px;
+  }
+  .section-head h2 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .section-head .accent {
+    width: 4px; height: 18px; border-radius: 2px;
+    background: linear-gradient(180deg, var(--gold), #8b6f3d);
+    box-shadow: 0 0 8px var(--gold-glow);
+  }
+  .section-head .en {
+    margin-left: auto;
+    font-size: 9px; letter-spacing: 0.3em;
+    color: var(--text-dim); font-family: "JetBrains Mono", monospace;
+  }
+  .section-head .more {
+    font-size: 11px; color: var(--text-mute); cursor: pointer;
+  }
+
+  /* North Star Cards (rings) */
+  .ns-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+  }
+  .ns-card {
+    background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 14px 16px;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.05) inset,
+      0 10px 30px rgba(0,0,0,0.3);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  }
+  .ns-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--line-2);
+  }
+  .ns-card[data-color="gold"]:hover { box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 14px 38px rgba(0,0,0,0.4), 0 0 28px var(--gold-glow); }
+  .ns-card[data-color="cyan"]:hover { box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 14px 38px rgba(0,0,0,0.4), 0 0 28px var(--cyan-glow); }
+  .ns-card[data-color="emerald"]:hover { box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 14px 38px rgba(0,0,0,0.4), 0 0 28px var(--emerald-glow); }
+  .ns-card[data-color="violet"]:hover { box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 14px 38px rgba(0,0,0,0.4), 0 0 28px var(--violet-glow); }
+  .ns-card[data-color="amber"]:hover { box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 14px 38px rgba(0,0,0,0.4), 0 0 28px var(--amber-glow); }
+
+  .ns-card .ring-wrap {
+    position: relative; width: 80px; height: 80px; margin: 0 auto 12px;
+  }
+  .ns-card .ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); filter: drop-shadow(0 0 6px currentColor); }
+  .ns-card .ring-bg { fill: none; stroke: rgba(255,255,255,0.07); stroke-width: 7; }
+  .ns-card .ring-fg { fill: none; stroke-width: 7; stroke-linecap: round; }
+  .ns-card .ring-icon {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    filter: drop-shadow(0 0 8px rgba(0,0,0,0.5));
+  }
+  .ns-card .name {
+    font-size: 10px; letter-spacing: 0.2em; color: var(--text-mute);
+    text-align: center; margin-bottom: 4px; font-weight: 700;
+  }
+  .ns-card .value {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 22px; font-weight: 700; line-height: 1;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .ns-card .value .u { font-size: 11px; color: var(--text-mute); margin-left: 2px; font-weight: 500; }
+  .ns-card .target {
+    font-size: 10px; color: var(--text-dim); text-align: center;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .ns-card .target b { color: currentColor; }
+
+  /* Color tokens */
+  [data-color="gold"] { color: var(--gold); }
+  [data-color="cyan"] { color: var(--cyan); }
+  [data-color="emerald"] { color: var(--emerald); }
+  [data-color="violet"] { color: var(--violet); }
+  [data-color="amber"] { color: var(--amber); }
+  [data-color="gold"] .ring-fg { stroke: var(--gold); }
+  [data-color="cyan"] .ring-fg { stroke: var(--cyan); }
+  [data-color="emerald"] .ring-fg { stroke: var(--emerald); }
+  [data-color="violet"] .ring-fg { stroke: var(--violet); }
+  [data-color="amber"] .ring-fg { stroke: var(--amber); }
+  [data-color="gold"] .value { color: var(--gold); }
+  [data-color="cyan"] .value { color: var(--cyan); }
+  [data-color="emerald"] .value { color: var(--emerald); }
+  [data-color="violet"] .value { color: var(--violet); }
+  [data-color="amber"] .value { color: var(--amber); }
+
+  /* Big metrics row */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1.5fr;
+    gap: 14px;
+  }
+  .metric-card {
+    background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.05) inset,
+      0 10px 30px rgba(0,0,0,0.3);
+  }
+  .metric-card .head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .metric-card .head .lbl { font-size: 11px; letter-spacing: 0.18em; color: var(--text-mute); font-weight: 700; }
+  .metric-card .head .badge {
+    font-size: 10px; padding: 3px 9px; border-radius: 12px;
+    background: rgba(52,211,153,0.12);
+    color: var(--emerald);
+    font-weight: 700;
+    border: 1px solid rgba(52,211,153,0.3);
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .metric-card .head .badge.down {
+    background: rgba(239,68,68,0.12);
+    color: var(--red);
+    border-color: rgba(239,68,68,0.3);
+  }
+  .metric-card .num {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 38px; font-weight: 700; line-height: 1;
+    margin-bottom: 8px;
+    background: linear-gradient(180deg, #fff 0%, #c5cad7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .metric-card .num .u { font-size: 14px; color: var(--text-mute); margin-left: 4px; -webkit-text-fill-color: var(--text-mute); }
+  .metric-card .sub { font-size: 11px; color: var(--text-mute); margin-bottom: 10px; }
+  .metric-card .spark { width: 100%; height: 56px; }
+  .metric-card.gauge-card { display: flex; flex-direction: column; align-items: stretch; }
+  .gauge-card .gauge-wrap { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+  .gauge-card svg.gauge { width: 110px; height: 64px; }
+  .gauge-card .gauge-info .pct { font-family: "Space Grotesk", sans-serif; font-size: 28px; font-weight: 700; color: var(--cyan); line-height: 1; }
+  .gauge-card .gauge-info .ann { font-size: 11px; color: var(--text-mute); margin-top: 4px; }
+
+  /* Pillars: horizontal progress */
+  .pillars-list {
+    display: grid; gap: 10px;
+  }
+  .pillar-row {
+    background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 36px 1.4fr 2fr 100px 80px;
+    align-items: center;
+    gap: 18px;
+    transition: all 0.2s;
+  }
+  .pillar-row:hover { border-color: var(--line-2); transform: translateX(2px); }
+  .pillar-row .ic { font-size: 22px; text-align: center; filter: drop-shadow(0 0 8px currentColor); }
+  .pillar-row .nm { font-size: 14px; font-weight: 700; }
+  .pillar-row .cm { font-size: 11px; color: var(--text-mute); }
+  .pillar-row .progress {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .pillar-row .progress .bar {
+    flex: 1; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden;
+    position: relative;
+  }
+  .pillar-row .progress .bar .fill {
+    height: 100%; border-radius: 4px;
+    background: linear-gradient(90deg, currentColor, currentColor);
+    box-shadow: 0 0 10px currentColor;
+    position: relative;
+  }
+  .pillar-row .progress .bar .fill::after {
+    content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 14px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
+  }
+  .pillar-row .progress .pct {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 14px; font-weight: 700; min-width: 36px; text-align: right;
+  }
+  .pillar-row .target {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; color: var(--text-mute);
+    text-align: right;
+  }
+  .pillar-row .target b { color: currentColor; }
+  .pillar-row .horizon {
+    font-size: 10px; color: var(--text-dim);
+    background: rgba(255,255,255,0.04);
+    padding: 4px 10px; border-radius: 10px;
+    border: 1px solid var(--line);
+    font-family: "JetBrains Mono", monospace;
+    text-align: center;
+  }
+
+  /* Tasks + KPT + Wishes */
+  .triple-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1.4fr 1fr;
+    gap: 14px;
+  }
+  .panel {
+    background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 18px 16px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 10px 30px rgba(0,0,0,0.3);
+  }
+  .panel .head {
+    display: flex; align-items: center; gap: 8px;
+    padding-bottom: 12px; margin-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .panel .head .ic { font-size: 16px; }
+  .panel .head .t { font-size: 13px; font-weight: 700; }
+  .panel .head .count {
+    margin-left: auto;
+    font-size: 10px; color: var(--text-mute);
+    background: rgba(255,255,255,0.05);
+    padding: 2px 8px; border-radius: 10px;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .task-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 8px 0;
+    font-size: 13px;
+    border-bottom: 1px dashed rgba(255,255,255,0.05);
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-item .check {
+    width: 16px; height: 16px;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+  }
+  .task-item.done .check { background: var(--emerald); border-color: var(--emerald); box-shadow: 0 0 10px var(--emerald-glow); }
+  .task-item.done .check::after {
+    content: "✓"; position: absolute; top: -3px; left: 1px;
+    color: #001; font-weight: 800; font-size: 13px;
+  }
+  .task-item.doing .check { background: var(--amber); border-color: var(--amber); box-shadow: 0 0 10px var(--amber-glow); }
+  .task-item .body { flex: 1; }
+  .task-item .body .text { color: var(--text); }
+  .task-item.done .body .text { color: var(--text-dim); text-decoration: line-through; }
+  .task-item .body .meta { font-size: 10px; color: var(--text-dim); font-family: "JetBrains Mono", monospace; margin-top: 2px; }
+  .task-item .tag {
+    font-size: 9px; padding: 2px 7px; border-radius: 8px;
+    background: rgba(34,211,238,0.12); color: var(--cyan);
+    border: 1px solid rgba(34,211,238,0.25);
+    font-weight: 700;
+    height: fit-content;
+    margin-top: 1px;
+  }
+
+  .kpt { display: grid; gap: 10px; }
+  .kpt .block {
+    background: rgba(255,255,255,0.02);
+    border-radius: 10px;
+    padding: 10px 12px;
+    border-left: 3px solid;
+  }
+  .kpt .block.k { border-color: var(--emerald); }
+  .kpt .block.p { border-color: var(--red); }
+  .kpt .block.t { border-color: var(--amber); }
+  .kpt .block .lbl {
+    font-size: 9px; letter-spacing: 0.2em; font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .kpt .block.k .lbl { color: var(--emerald); }
+  .kpt .block.p .lbl { color: var(--red); }
+  .kpt .block.t .lbl { color: var(--amber); }
+  .kpt .block ul { list-style: none; font-size: 12px; line-height: 1.7; color: var(--text-mute); }
+  .kpt .block li { padding-left: 12px; position: relative; }
+  .kpt .block li::before { content: "·"; position: absolute; left: 0; }
+
+  .wish-item {
+    display: flex; gap: 8px; align-items: flex-start;
+    padding: 7px 0;
+    font-size: 12px;
+    border-bottom: 1px dashed rgba(255,255,255,0.05);
+  }
+  .wish-item:last-child { border-bottom: none; }
+  .wish-item .badge {
+    font-size: 9px; padding: 2px 7px; border-radius: 8px;
+    background: rgba(167,139,250,0.12); color: var(--violet);
+    border: 1px solid rgba(167,139,250,0.25);
+    flex-shrink: 0; font-weight: 700;
+    margin-top: 1px;
+  }
+  .wish-item .badge.high { background: rgba(212,175,106,0.18); color: var(--gold); border-color: rgba(212,175,106,0.35); }
+  .wish-item .text { flex: 1; color: var(--text); line-height: 1.5; }
+  .wish-item .yr { font-size: 10px; color: var(--text-dim); font-family: "JetBrains Mono", monospace; }
+
+  /* Business cards */
+  .biz-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .biz-card {
+    background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 10px 30px rgba(0,0,0,0.3);
+  }
+  .biz-card .top { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .biz-card .top .ic { font-size: 22px; filter: drop-shadow(0 0 8px currentColor); }
+  .biz-card .top .nm { font-weight: 700; font-size: 14px; }
+  .biz-card .top .st {
+    margin-left: auto; font-size: 9px;
+    background: rgba(255,255,255,0.05); color: var(--text-mute);
+    padding: 3px 8px; border-radius: 8px; letter-spacing: 0.1em;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .biz-card .row {
+    display: flex; justify-content: space-between;
+    font-size: 12px; padding: 5px 0;
+    color: var(--text-mute);
+  }
+  .biz-card .row b {
+    color: var(--text); font-weight: 700;
+    font-family: "Space Grotesk", sans-serif;
+    font-feature-settings: "tnum";
+  }
+  .biz-card .profit b { color: var(--emerald); }
+  .biz-card .spark { width: 100%; height: 36px; margin-top: 10px; }
+  .biz-card .link {
+    display: inline-block; margin-top: 10px;
+    font-size: 11px; color: var(--cyan); text-decoration: none;
+    border-bottom: 1px dashed var(--cyan);
+  }
+
+  .biz-card.pharma { border-color: rgba(34,211,238,0.2); }
+  .biz-card.pharma .top .ic { color: var(--cyan); }
+  .biz-card.hana { border-color: rgba(52,211,153,0.2); }
+  .biz-card.hana .top .ic { color: var(--emerald); }
+  .biz-card.fp { border-color: rgba(212,175,106,0.2); }
+  .biz-card.fp .top .ic { color: var(--gold); }
+
+  /* Philosophy footer */
+  .philosophy {
+    margin-top: 22px;
+    background: linear-gradient(135deg, rgba(212,175,106,0.06), rgba(34,211,238,0.04));
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 26px 30px;
+    text-align: center;
+  }
+  .philosophy .quote {
+    font-size: 16px; font-weight: 700; line-height: 1.7;
+    background: linear-gradient(90deg, var(--gold), #fff, var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .philosophy .source {
+    font-size: 10px; color: var(--text-dim);
+    letter-spacing: 0.3em; font-family: "JetBrains Mono", monospace;
+  }
+
+  /* notice bar (top) */
+  .notice {
+    text-align: center;
+    padding: 8px 12px;
+    background: linear-gradient(90deg, var(--gold), #b3914c);
+    color: #1a1208;
+    font-size: 12px; font-weight: 700;
+  }
+
+  /* Mobile */
+  @media (max-width: 1100px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .ns-grid { grid-template-columns: repeat(2, 1fr); }
+    .metrics-row { grid-template-columns: 1fr; }
+    .triple-grid { grid-template-columns: 1fr; }
+    .biz-grid { grid-template-columns: 1fr; }
+    .pillar-row { grid-template-columns: 28px 1fr; gap: 8px; }
+    .pillar-row .progress, .pillar-row .target, .pillar-row .horizon { display: none; }
+    .hero-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="notice">
+    👁 PREVIEW — 案D「Command Center」  ／  A+C＋参考1〜4の融合バージョン
+  </div>
+
+  <div class="app">
+
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">K</div>
+        <div class="meta">
+          <div class="name">Personal OS</div>
+          <div class="ver">v2.0 · KOIKE</div>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="label">DAILY</div>
+        <nav class="nav">
+          <a href="#" class="active"><span class="ic">⌂</span>Dashboard</a>
+          <a href="#"><span class="ic">☀</span>朝のチェックイン</a>
+          <a href="#"><span class="ic">🌙</span>夜の振り返り</a>
+        </nav>
+      </div>
+
+      <div class="nav-section">
+        <div class="label">PLAN</div>
+        <nav class="nav">
+          <a href="#"><span class="ic">⭐</span>北極星指標</a>
+          <a href="#"><span class="ic">🏛</span>5本柱</a>
+          <a href="#"><span class="ic">✅</span>タスク<span class="badge">3</span></a>
+          <a href="#"><span class="ic">✨</span>Wishリスト</a>
+        </nav>
+      </div>
+
+      <div class="nav-section">
+        <div class="label">BUSINESS</div>
+        <nav class="nav">
+          <a href="#"><span class="ic">💊</span>PharmaEight∞</a>
+          <a href="#"><span class="ic">🌸</span>はなひらく</a>
+          <a href="#"><span class="ic">💰</span>FP実績</a>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="row"><span>SYNC</span><b>● Notion</b></div>
+        <div class="row" style="margin-top: 4px;"><span>LAST</span><span style="color:var(--text-mute);font-family:'JetBrains Mono',monospace;">2分前</span></div>
+      </div>
+    </aside>
+
+    <!-- ========== MAIN ========== -->
+    <main>
+
+      <!-- TopBar -->
+      <div class="topbar">
+        <div class="breadcrumb">PERSONAL_OS / DASHBOARD</div>
+        <div class="clock">2026.04.30 (WED) · 08:42</div>
+        <div class="live">LIVE</div>
+      </div>
+
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero-grid">
+          <div>
+            <div class="greet">◆ GOOD MORNING · KOIKE YUGO</div>
+            <h1>おはようございます、小池さん。</h1>
+            <div class="date">2026年4月30日（水）— 5月リリースまで残り <span style="color:var(--gold);font-weight:700;">5日</span></div>
+            <div class="commit-card">
+              <div class="lbl">▼ THIS MONTH COMMIT</div>
+              <div class="txt">Personal OS事業をリリース</div>
+              <div class="sub">3名（小池・岩崎・兵頭）の自分用ダッシュボード構築 ／ ドッグフーディングSS投稿の運用開始</div>
+            </div>
+          </div>
+          <div class="today-score">
+            <div class="gauge">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="9"/>
+                <circle cx="50" cy="50" r="42" fill="none" stroke="url(#cyanGrad)" stroke-width="9" stroke-linecap="round"
+                        stroke-dasharray="263" stroke-dashoffset="63"/>
+                <defs>
+                  <linearGradient id="cyanGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#22d3ee"/>
+                    <stop offset="100%" stop-color="#a78bfa"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="val">
+                <div class="num">76</div>
+                <div class="lbl">SCORE</div>
+              </div>
+            </div>
+            <div class="info">
+              <div class="h">TODAY'S READY</div>
+              <div class="t">朝の準備、整っています</div>
+              <div class="delta">↑ +12 from yesterday</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: North Star -->
+      <section class="section">
+        <div class="section-head">
+          <div class="accent"></div>
+          <h2>北極星指標</h2>
+          <span class="en">— NORTH STAR · 5 INDICATORS —</span>
+        </div>
+        <div class="ns-grid">
+          <!-- Weight -->
+          <div class="ns-card" data-color="amber">
+            <div class="ring-wrap">
+              <svg viewBox="0 0 80 80">
+                <circle class="ring-bg" cx="40" cy="40" r="32"/>
+                <circle class="ring-fg" cx="40" cy="40" r="32" stroke-dasharray="201" stroke-dashoffset="120"/>
+              </svg>
+              <div class="ring-icon">⚖️</div>
+            </div>
+            <div class="name">WEIGHT</div>
+            <div class="value">71<span class="u">kg</span></div>
+            <div class="target">→ <b>68kg</b> (1y)</div>
+          </div>
+          <!-- Gym -->
+          <div class="ns-card" data-color="emerald">
+            <div class="ring-wrap">
+              <svg viewBox="0 0 80 80">
+                <circle class="ring-bg" cx="40" cy="40" r="32"/>
+                <circle class="ring-fg" cx="40" cy="40" r="32" stroke-dasharray="201" stroke-dashoffset="50"/>
+              </svg>
+              <div class="ring-icon">🏋️</div>
+            </div>
+            <div class="name">GYM/WK</div>
+            <div class="value">3<span class="u">/4</span></div>
+            <div class="target">75% · 残 <b>1回</b></div>
+          </div>
+          <!-- Mybook -->
+          <div class="ns-card" data-color="violet">
+            <div class="ring-wrap">
+              <svg viewBox="0 0 80 80">
+                <circle class="ring-bg" cx="40" cy="40" r="32"/>
+                <circle class="ring-fg" cx="40" cy="40" r="32" stroke-dasharray="201" stroke-dashoffset="155"/>
+              </svg>
+              <div class="ring-icon">📖</div>
+            </div>
+            <div class="name">MYBOOK</div>
+            <div class="value">7<span class="u">日</span></div>
+            <div class="target">→ <b>30日</b> 連続</div>
+          </div>
+          <!-- Revenue -->
+          <div class="ns-card" data-color="gold">
+            <div class="ring-wrap">
+              <svg viewBox="0 0 80 80">
+                <circle class="ring-bg" cx="40" cy="40" r="32"/>
+                <circle class="ring-fg" cx="40" cy="40" r="32" stroke-dasharray="201" stroke-dashoffset="100"/>
+              </svg>
+              <div class="ring-icon">💰</div>
+            </div>
+            <div class="name">REVENUE</div>
+            <div class="value">¥510<span class="u">K</span></div>
+            <div class="target">→ <b>¥1M</b> · 51%</div>
+          </div>
+          <!-- Expense -->
+          <div class="ns-card" data-color="cyan">
+            <div class="ring-wrap">
+              <svg viewBox="0 0 80 80">
+                <circle class="ring-bg" cx="40" cy="40" r="32"/>
+                <circle class="ring-fg" cx="40" cy="40" r="32" stroke-dasharray="201" stroke-dashoffset="170"/>
+              </svg>
+              <div class="ring-icon">💸</div>
+            </div>
+            <div class="name">EXPENSE</div>
+            <div class="value">¥185<span class="u">K</span></div>
+            <div class="target">watch</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Big Metrics -->
+      <section class="section">
+        <div class="section-head">
+          <div class="accent" style="background:linear-gradient(180deg,var(--cyan),#0e7490);box-shadow:0 0 8px var(--cyan-glow);"></div>
+          <h2>今月のキャッシュ</h2>
+          <span class="en">— CASH FLOW · MAY 2026 —</span>
+        </div>
+        <div class="metrics-row">
+          <div class="metric-card">
+            <div class="head">
+              <span class="lbl">REVENUE TREND</span>
+              <span class="badge">↗ +33.4% MoM</span>
+            </div>
+            <div class="num">¥510<span class="u">,000</span></div>
+            <div class="sub">直近30日 · 月次目標 ¥1M に対して 51% 進捗</div>
+            <svg class="spark" viewBox="0 0 400 56" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="rgrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#d4af6a" stop-opacity="0.5"/>
+                  <stop offset="100%" stop-color="#d4af6a" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0,40 L30,38 L60,42 L90,30 L120,32 L150,25 L180,28 L210,18 L240,22 L270,15 L300,18 L330,10 L360,14 L400,8 L400,56 L0,56 Z" fill="url(#rgrad)"/>
+              <path d="M0,40 L30,38 L60,42 L90,30 L120,32 L150,25 L180,28 L210,18 L240,22 L270,15 L300,18 L330,10 L360,14 L400,8" stroke="#d4af6a" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="metric-card">
+            <div class="head">
+              <span class="lbl">EXPENSE TREND</span>
+              <span class="badge down">↘ -8.2% MoM</span>
+            </div>
+            <div class="num">¥185<span class="u">,000</span></div>
+            <div class="sub">出費は減少傾向 · 良い方向</div>
+            <svg class="spark" viewBox="0 0 400 56" preserveAspectRatio="none">
+              <g>
+                <rect x="10" y="20" width="20" height="36" fill="#22d3ee" opacity="0.7" rx="2"/>
+                <rect x="44" y="14" width="20" height="42" fill="#22d3ee" opacity="0.7" rx="2"/>
+                <rect x="78" y="22" width="20" height="34" fill="#22d3ee" opacity="0.7" rx="2"/>
+                <rect x="112" y="26" width="20" height="30" fill="#22d3ee" opacity="0.7" rx="2"/>
+                <rect x="146" y="18" width="20" height="38" fill="#22d3ee" opacity="0.7" rx="2"/>
+                <rect x="180" y="24" width="20" height="32" fill="#22d3ee" opacity="0.7" rx="2"/>
+                <rect x="214" y="28" width="20" height="28" fill="#22d3ee" opacity="0.7" rx="2"/>
+                <rect x="248" y="30" width="20" height="26" fill="#22d3ee" opacity="0.7" rx="2"/>
+                <rect x="282" y="32" width="20" height="24" fill="#22d3ee" opacity="0.7" rx="2"/>
+                <rect x="316" y="34" width="20" height="22" fill="#22d3ee" opacity="0.9" rx="2"/>
+                <rect x="350" y="36" width="20" height="20" fill="#22d3ee" opacity="0.9" rx="2"/>
+              </g>
+            </svg>
+          </div>
+          <div class="metric-card gauge-card">
+            <div class="head">
+              <span class="lbl">NET PROFIT</span>
+              <span class="badge">HEALTHY</span>
+            </div>
+            <div class="gauge-wrap">
+              <svg class="gauge" viewBox="0 0 110 64">
+                <path d="M 10 60 A 45 45 0 0 1 100 60" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="10" stroke-linecap="round"/>
+                <path d="M 10 60 A 45 45 0 0 1 80 25" fill="none" stroke="url(#gGrad)" stroke-width="10" stroke-linecap="round"/>
+                <defs>
+                  <linearGradient id="gGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#22d3ee"/>
+                    <stop offset="100%" stop-color="#34d399"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="gauge-info">
+                <div class="pct">+¥325K</div>
+                <div class="ann">利益率 64%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: 5 Pillars -->
+      <section class="section">
+        <div class="section-head">
+          <div class="accent" style="background:linear-gradient(180deg,var(--violet),#6b21a8);box-shadow:0 0 8px var(--violet-glow);"></div>
+          <h2>5本柱</h2>
+          <span class="en">— 5 PILLARS · 5 YEAR ROADMAP —</span>
+        </div>
+        <div class="pillars-list">
+          <div class="pillar-row" data-color="gold">
+            <div class="ic">💎</div>
+            <div>
+              <div class="nm">不労所得構築</div>
+              <div class="cm">FP契約の継続収入 / 投資収益</div>
+            </div>
+            <div class="progress">
+              <div class="bar"><div class="fill" style="width:18%;"></div></div>
+              <div class="pct">18%</div>
+            </div>
+            <div class="target">→ <b>月35万</b></div>
+            <div class="horizon">1y</div>
+          </div>
+          <div class="pillar-row" data-color="cyan">
+            <div class="ic">🚀</div>
+            <div>
+              <div class="nm">事業拡大</div>
+              <div class="cm">PharmaEight∞ / はなひらく / Personal OS</div>
+            </div>
+            <div class="progress">
+              <div class="bar"><div class="fill" style="width:51%;"></div></div>
+              <div class="pct">51%</div>
+            </div>
+            <div class="target">→ <b>月100万</b></div>
+            <div class="horizon">1y</div>
+          </div>
+          <div class="pillar-row" data-color="amber">
+            <div class="ic">💪</div>
+            <div>
+              <div class="nm">健康</div>
+              <div class="cm">食事 / ジム週4 / 睡眠</div>
+            </div>
+            <div class="progress">
+              <div class="bar"><div class="fill" style="width:42%;"></div></div>
+              <div class="pct">42%</div>
+            </div>
+            <div class="target">→ <b>68kg</b></div>
+            <div class="horizon">1y</div>
+          </div>
+          <div class="pillar-row" data-color="violet">
+            <div class="ic">👼</div>
+            <div>
+              <div class="nm">エンジェル投資家</div>
+              <div class="cm">応援できる相手のネットワーク</div>
+            </div>
+            <div class="progress">
+              <div class="bar"><div class="fill" style="width:8%;"></div></div>
+              <div class="pct">8%</div>
+            </div>
+            <div class="target">準備期間</div>
+            <div class="horizon">5y</div>
+          </div>
+          <div class="pillar-row" data-color="emerald">
+            <div class="ic">🌱</div>
+            <div>
+              <div class="nm">アナログ生活</div>
+              <div class="cm">場を持つ / 一緒に料理・畑</div>
+            </div>
+            <div class="progress">
+              <div class="bar"><div class="fill" style="width:14%;"></div></div>
+              <div class="pct">14%</div>
+            </div>
+            <div class="target">→ <b>飲食店</b></div>
+            <div class="horizon">1y</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Tasks + KPT + Wishes -->
+      <section class="section">
+        <div class="section-head">
+          <div class="accent" style="background:linear-gradient(180deg,var(--emerald),#047857);box-shadow:0 0 8px var(--emerald-glow);"></div>
+          <h2>今日のフロー</h2>
+          <span class="en">— TODAY'S FLOW —</span>
+        </div>
+        <div class="triple-grid">
+          <div class="panel">
+            <div class="head">
+              <span class="ic">✅</span>
+              <span class="t">今日のタスク</span>
+              <span class="count">5 ITEMS</span>
+            </div>
+            <div class="task-item done">
+              <div class="check"></div>
+              <div class="body">
+                <div class="text">ヒアリング骨格v1ドラフト</div>
+                <div class="meta">PERSONAL OS · 完了</div>
+              </div>
+            </div>
+            <div class="task-item done">
+              <div class="check"></div>
+              <div class="body">
+                <div class="text">小池さんへヒアリング実演</div>
+                <div class="meta">PERSONAL OS · 完了</div>
+              </div>
+            </div>
+            <div class="task-item doing">
+              <div class="check"></div>
+              <div class="body">
+                <div class="text">ダッシュボードMVP構築</div>
+                <div class="meta">DUE · 2026.05.05 · doing</div>
+              </div>
+              <span class="tag">PROD</span>
+            </div>
+            <div class="task-item">
+              <div class="check"></div>
+              <div class="body">
+                <div class="text">ドッグフーディング3名の構築計画</div>
+                <div class="meta">DUE · 2026.05.10</div>
+              </div>
+              <span class="tag">PROD</span>
+            </div>
+            <div class="task-item">
+              <div class="check"></div>
+              <div class="body">
+                <div class="text">PharmaEight 議事録レビュー</div>
+                <div class="meta">DUE · 2026.05.02</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="head">
+              <span class="ic">📔</span>
+              <span class="t">昨日の振り返り（KPT）</span>
+              <span class="count">2026.04.29</span>
+            </div>
+            <div class="kpt">
+              <div class="block k">
+                <div class="lbl">KEEP</div>
+                <ul>
+                  <li>ヒアリング骨格v1ドラフト完了</li>
+                  <li>5本柱と北極星指標を確定</li>
+                </ul>
+              </div>
+              <div class="block p">
+                <div class="lbl">PROBLEM</div>
+                <ul>
+                  <li>ダッシュボード構築まだ</li>
+                  <li>ドッグフーディング3名の運用設計まだ</li>
+                </ul>
+              </div>
+              <div class="block t">
+                <div class="lbl">TRY</div>
+                <ul>
+                  <li>明日からダッシュボードMVPを動かす</li>
+                  <li>1日1機能追加でリリースに迫る</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="head">
+              <span class="ic">✨</span>
+              <span class="t">Wish · Focus</span>
+              <span class="count">3 / 7</span>
+            </div>
+            <div class="wish-item">
+              <span class="badge high">事業</span>
+              <span class="text">Personal OS事業のリリース</span>
+            </div>
+            <div class="wish-item">
+              <span class="badge high">健康</span>
+              <span class="text">ジムを週4回習慣化</span>
+            </div>
+            <div class="wish-item">
+              <span class="badge">学び</span>
+              <span class="text">mybookを毎日書く</span>
+            </div>
+            <div style="height:1px; background:var(--line); margin:10px 0;"></div>
+            <div class="wish-item">
+              <span class="badge">場</span>
+              <span class="text">飲食店を持つ</span>
+              <span class="yr">2027</span>
+            </div>
+            <div class="wish-item">
+              <span class="badge">投資</span>
+              <span class="text">エンジェル投資を始める</span>
+              <span class="yr">2028</span>
+            </div>
+            <div class="wish-item">
+              <span class="badge">場</span>
+              <span class="text">畑を持つ</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Business Summary -->
+      <section class="section">
+        <div class="section-head">
+          <div class="accent" style="background:linear-gradient(180deg,var(--gold),#8b6f3d);box-shadow:0 0 8px var(--gold-glow);"></div>
+          <h2>3事業 経営サマリー</h2>
+          <span class="en">— BUSINESS PL · MAY 2026 —</span>
+        </div>
+        <div class="biz-grid">
+          <div class="biz-card pharma">
+            <div class="top">
+              <span class="ic">💊</span>
+              <span class="nm">PharmaEight∞</span>
+              <span class="st">未連携</span>
+            </div>
+            <div class="row"><span>売上</span><b>¥0</b></div>
+            <div class="row"><span>支出</span><b>¥0</b></div>
+            <div class="row profit"><span>利益</span><b>¥0</b></div>
+            <svg class="spark" viewBox="0 0 200 36" preserveAspectRatio="none">
+              <path d="M0,30 L40,28 L80,25 L120,20 L160,15 L200,10" stroke="#22d3ee" stroke-width="2" fill="none"/>
+            </svg>
+          </div>
+          <div class="biz-card hana">
+            <div class="top">
+              <span class="ic">🌸</span>
+              <span class="nm">はなひらく</span>
+              <span class="st">連携予定</span>
+            </div>
+            <div class="row"><span>売上</span><b>¥4.2M</b></div>
+            <div class="row"><span>支出</span><b>¥3.6M</b></div>
+            <div class="row profit"><span>利益</span><b>¥600K</b></div>
+            <svg class="spark" viewBox="0 0 200 36" preserveAspectRatio="none">
+              <g>
+                <rect x="0" y="20" width="14" height="16" fill="#34d399" opacity="0.6"/>
+                <rect x="20" y="18" width="14" height="18" fill="#34d399" opacity="0.7"/>
+                <rect x="40" y="14" width="14" height="22" fill="#34d399" opacity="0.7"/>
+                <rect x="60" y="22" width="14" height="14" fill="#34d399" opacity="0.6"/>
+                <rect x="80" y="16" width="14" height="20" fill="#34d399" opacity="0.7"/>
+                <rect x="100" y="10" width="14" height="26" fill="#34d399" opacity="0.8"/>
+                <rect x="120" y="12" width="14" height="24" fill="#34d399" opacity="0.8"/>
+                <rect x="140" y="8" width="14" height="28" fill="#34d399" opacity="0.9"/>
+                <rect x="160" y="6" width="14" height="30" fill="#34d399"/>
+                <rect x="180" y="4" width="14" height="32" fill="#34d399"/>
+              </g>
+            </svg>
+            <a href="#" class="link">▶ 詳細ダッシュボードへ</a>
+          </div>
+          <div class="biz-card fp">
+            <div class="top">
+              <span class="ic">💰</span>
+              <span class="nm">FP</span>
+              <span class="st">連携中</span>
+            </div>
+            <div class="row"><span>売上</span><b>¥510K</b></div>
+            <div class="row"><span>支出</span><b>¥120K</b></div>
+            <div class="row profit"><span>利益</span><b>¥390K</b></div>
+            <svg class="spark" viewBox="0 0 200 36" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="fpGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#d4af6a" stop-opacity="0.5"/>
+                  <stop offset="100%" stop-color="#d4af6a" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0,30 L30,28 L60,22 L90,18 L120,12 L150,16 L180,8 L200,5 L200,36 L0,36 Z" fill="url(#fpGrad)"/>
+              <path d="M0,30 L30,28 L60,22 L90,18 L120,12 L150,16 L180,8 L200,5" stroke="#d4af6a" stroke-width="2" fill="none"/>
+            </svg>
+            <a href="#" class="link">▶ 詳細ダッシュボードへ</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Philosophy -->
+      <div class="philosophy">
+        <div class="quote">数字を整えるのは、数字に縛られない時間を取り戻すため。</div>
+        <div class="source">PERSONAL OS · KOIKE YUGO</div>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+</html>

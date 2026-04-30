@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal OS — ダッシュボードデザイン サンプルギャラリー</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --bg: #f5f0e6;
+    --paper: #fffaf3;
+    --navy: #0f172a;
+    --navy-light: #1e293b;
+    --orange: #d97706;
+    --gold: #c9a961;
+    --gold-deep: #8b6f3d;
+    --green: #21a649;
+    --line: #e7e5e4;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04);
+    --shadow-lg: 0 14px 32px rgba(0,0,0,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Inter", -apple-system, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.7; min-height: 100vh;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 48px 32px 80px; }
+
+  /* Top breadcrumb */
+  .crumb { font-size: 12px; color: #78716c; margin-bottom: 18px; }
+  .crumb a { color: var(--orange); text-decoration: none; }
+  .crumb a:hover { text-decoration: underline; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: #fff; padding: 48px 52px; border-radius: 18px;
+    position: relative; overflow: hidden;
+    margin-bottom: 36px;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.18);
+  }
+  .hero::before {
+    content: ""; position: absolute; top: -100px; right: -100px;
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+    opacity: 0.22;
+  }
+  .hero .label { font-size: 11px; letter-spacing: 0.35em; color: var(--gold); margin-bottom: 14px; position: relative; z-index: 1; font-weight: 600; }
+  .hero h1 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 32px; font-weight: 700; line-height: 1.3; margin-bottom: 16px;
+    position: relative; z-index: 1; letter-spacing: -0.01em;
+  }
+  .hero h1 .accent { color: var(--gold); }
+  .hero p {
+    font-size: 15px; color: #cbd5e1; line-height: 1.85; max-width: 720px;
+    position: relative; z-index: 1;
+  }
+  .hero .meta-row {
+    display: flex; gap: 22px; margin-top: 22px;
+    font-size: 12px; color: #94a3b8; position: relative; z-index: 1;
+    flex-wrap: wrap;
+  }
+  .hero .meta-row b { color: var(--gold); margin-right: 6px; }
+
+  /* Intro note */
+  .intro {
+    background: var(--paper); border: 1px solid var(--line);
+    border-left: 4px solid var(--gold);
+    padding: 22px 28px; border-radius: 0 12px 12px 0;
+    margin-bottom: 32px;
+    font-size: 14px; line-height: 1.85; color: #44403c;
+  }
+  .intro b { color: var(--navy); }
+
+  /* Gallery */
+  .grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px;
+    margin-bottom: 40px;
+  }
+  .card {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 16px; overflow: hidden;
+    transition: all 0.2s ease;
+    text-decoration: none; color: inherit;
+    display: flex; flex-direction: column;
+    box-shadow: var(--shadow);
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+  .preview {
+    height: 200px;
+    position: relative; overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+  .preview iframe {
+    border: none;
+    width: 1400px; height: 800px;
+    transform: scale(0.32);
+    transform-origin: 0 0;
+    pointer-events: none;
+  }
+  .preview .badge {
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(0,0,0,0.7); color: #fff;
+    padding: 4px 10px; border-radius: 8px;
+    font-size: 10px; letter-spacing: 0.2em; font-weight: 700;
+    backdrop-filter: blur(8px);
+  }
+  .body { padding: 22px 24px; flex: 1; display: flex; flex-direction: column; }
+  .body .num {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.3em;
+    color: var(--gold-deep); margin-bottom: 8px;
+  }
+  .body h2 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  .body .en {
+    font-size: 11px; letter-spacing: 0.18em; color: #78716c;
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .body p {
+    font-size: 13px; color: #44403c; line-height: 1.75;
+    flex: 1; margin-bottom: 14px;
+  }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .tag {
+    font-size: 10px; padding: 3px 9px; border-radius: 10px;
+    background: #f5f1e8; color: var(--gold-deep);
+    border: 1px solid #e8dec3; letter-spacing: 0.05em; font-weight: 600;
+  }
+  .body .open {
+    align-self: flex-start;
+    background: var(--navy); color: #fff;
+    padding: 10px 20px; border-radius: 22px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+    text-decoration: none;
+  }
+  .card:hover .body .open { background: var(--orange); }
+
+  /* Use case */
+  .usecase {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 14px; padding: 32px 36px;
+    margin-bottom: 24px;
+  }
+  .usecase h2 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 18px; color: var(--navy); font-weight: 700;
+    margin-bottom: 16px;
+    padding-left: 12px; border-left: 4px solid var(--gold);
+    letter-spacing: -0.01em;
+  }
+  .usecase table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .usecase table td {
+    padding: 11px 12px; border-bottom: 1px solid var(--line);
+    line-height: 1.6; vertical-align: top;
+  }
+  .usecase table td:first-child {
+    font-weight: 700; color: var(--navy); width: 28%; white-space: nowrap;
+  }
+  .usecase table tr:last-child td { border-bottom: none; }
+
+  /* Process */
+  .process {
+    background: linear-gradient(135deg, #fffaf3 0%, #f5f0e6 100%);
+    border: 1px solid var(--line);
+    border-radius: 14px; padding: 32px 36px;
+    margin-bottom: 24px;
+  }
+  .process h2 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 18px; color: var(--navy); font-weight: 700;
+    margin-bottom: 20px;
+    padding-left: 12px; border-left: 4px solid var(--orange);
+    letter-spacing: -0.01em;
+  }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .step {
+    background: var(--paper); border: 1px solid var(--line);
+    padding: 18px 20px; border-radius: 12px;
+    position: relative;
+  }
+  .step .n {
+    font-family: "Space Grotesk", sans-serif;
+    position: absolute; top: -10px; right: 14px;
+    background: var(--gold); color: #1a1208;
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+  }
+  .step h3 {
+    font-size: 13px; color: var(--navy); font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .step p { font-size: 12px; color: #57534e; line-height: 1.65; }
+
+  footer {
+    text-align: center; color: #78716c; font-size: 11px;
+    margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line);
+    line-height: 1.8;
+  }
+
+  @media (max-width: 900px) {
+    .container { padding: 28px 18px; }
+    .hero { padding: 32px 26px; }
+    .hero h1 { font-size: 24px; }
+    .grid { grid-template-columns: 1fr; }
+    .preview { height: 160px; }
+    .preview iframe { transform: scale(0.26); }
+    .steps { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="crumb"><a href="../index.html">← Personal OS Strategy Deck</a> ／ Dashboard Samples</div>
+
+  <div class="hero">
+    <div class="label">PERSONAL OS · DASHBOARD GALLERY</div>
+    <h1>あなた専用の<span class="accent">「司令塔ダッシュボード」</span><br>4つのデザイン世界観サンプル</h1>
+    <p>
+      Personal OS は、契約者ひとりひとりの人生・事業・健康・お金を「1画面の司令塔」として可視化するサービスです。<br>
+      デザイン世界観は4つから選択可能。実物のデモを下記でクリックして体験してください。
+    </p>
+    <div class="meta-row">
+      <span><b>デザイン</b>4世界観</span>
+      <span><b>カスタム</b>VITALS / 5本柱 / プロジェクト 全項目を1on1で設計</span>
+      <span><b>デプロイ</b>GitHub Pages（パスワード保護）</span>
+      <span><b>更新</b>Notion / Supabase 連携で自動反映</span>
+    </div>
+  </div>
+
+  <div class="intro">
+    <b>サンプルの見方</b>: 各カードのプレビューをクリックすると、フル画面で実際のダッシュボードを操作できます。
+    表示中のデータ（VITALS・5本柱・タスク・経営サマリー）はすべて小池雄悟のサンプル値です。
+    実装時は、ヒアリングで <b>あなた専用の指標・目標・色味</b> をすべてカスタマイズします。
+  </div>
+
+  <div class="grid">
+
+    <a class="card" href="d0-command-center.html" target="_blank">
+      <div class="preview">
+        <div class="badge">D0 · DEFAULT</div>
+        <iframe src="d0-command-center.html" loading="lazy" scrolling="no"></iframe>
+      </div>
+      <div class="body">
+        <div class="num">00 / COMMAND CENTER</div>
+        <h2>Command Center</h2>
+        <div class="en">Premium Default — Apple Fitness × Stripe</div>
+        <p>
+          ゴールド×ネイビー基調の格調あるダッシュボード。リング型ゲージ＋ガラスカード＋スパークラインで、毎朝開いて疲れない上品な情報密度。
+          推奨デフォルト案。
+        </p>
+        <div class="tags">
+          <span class="tag">DARK</span>
+          <span class="tag">ELEGANT</span>
+          <span class="tag">RING GAUGE</span>
+          <span class="tag">GLASSMORPHISM</span>
+        </div>
+        <span class="open">▶ デモを開く</span>
+      </div>
+    </a>
+
+    <a class="card" href="d1-gold-cockpit.html" target="_blank">
+      <div class="preview">
+        <div class="badge">D1 · COCKPIT</div>
+        <iframe src="d1-gold-cockpit.html" loading="lazy" scrolling="no"></iframe>
+      </div>
+      <div class="body">
+        <div class="num">01 / GOLD COCKPIT</div>
+        <h2>Gold Cockpit</h2>
+        <div class="en">HUD Style — Tactical · Dense</div>
+        <p>
+          戦闘機HUDをモチーフにした男前の世界観。コーナーブラケット・モノスペースフォント・スキャンラインで「司令室」感を最大化。
+          密度高め、緊張感あり。
+        </p>
+        <div class="tags">
+          <span class="tag">DARK</span>
+          <span class="tag">TACTICAL</span>
+          <span class="tag">HUD</span>
+          <span class="tag">DENSE</span>
+        </div>
+        <span class="open">▶ デモを開く</span>
+      </div>
+    </a>
+
+    <a class="card" href="d2-cyan-observatory.html" target="_blank">
+      <div class="preview">
+        <div class="badge">D2 · OBSERVATORY</div>
+        <iframe src="d2-cyan-observatory.html" loading="lazy" scrolling="no"></iframe>
+      </div>
+      <div class="body">
+        <div class="num">02 / CYAN OBSERVATORY</div>
+        <h2>Cyan Observatory</h2>
+        <div class="en">Holographic Sci-Fi — Aurora · Live</div>
+        <p>
+          宇宙観測室をイメージした未来的な世界観。シアン×バイオレットのオーロラ背景、星空、ホログラフィック効果で「わくわく感」最大。
+          ガジェット好き向け。
+        </p>
+        <div class="tags">
+          <span class="tag">DARK</span>
+          <span class="tag">SCI-FI</span>
+          <span class="tag">AURORA</span>
+          <span class="tag">ANIMATED</span>
+        </div>
+        <span class="open">▶ デモを開く</span>
+      </div>
+    </a>
+
+    <a class="card" href="d3-studio-elegant.html" target="_blank">
+      <div class="preview">
+        <div class="badge">D3 · STUDIO</div>
+        <iframe src="d3-studio-elegant.html" loading="lazy" scrolling="no"></iframe>
+      </div>
+      <div class="body">
+        <div class="num">03 / STUDIO ELEGANT</div>
+        <h2>Studio Elegant</h2>
+        <div class="en">Refined Pro — Linear / Stripe / Attio</div>
+        <p>
+          Linear / Stripe / Attio 系の洗練されたビジネスツール感。ノイズ・控えめなアクセント・余白で「長く飽きない」プロフェッショナル仕様。
+          経営者・士業向け。
+        </p>
+        <div class="tags">
+          <span class="tag">DARK</span>
+          <span class="tag">REFINED</span>
+          <span class="tag">PRO</span>
+          <span class="tag">CLEAN</span>
+        </div>
+        <span class="open">▶ デモを開く</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="usecase">
+    <h2>共通仕様（4案すべて同じ機能）</h2>
+    <table>
+      <tr><td>VITALS（5指標）</td><td>体重・ジム・mybook・売上・支出 など、契約者ごとに完全カスタム。リング型/横バー型から選択。</td></tr>
+      <tr><td>5本柱</td><td>不労所得 / 事業 / 健康 / エンジェル / アナログ など、人生の構造を5階層で可視化。1年/5年目標と進捗。</td></tr>
+      <tr><td>今日のタスク</td><td>プロジェクト横断、ステータス・期限管理。Notion / Supabase と双方向連携。</td></tr>
+      <tr><td>KPT 振り返り</td><td>昨日の Keep / Problem / Try を1画面で。3分で記入・3分で確認。</td></tr>
+      <tr><td>Wishリスト</td><td>今月のフォーカス × 中長期の夢。優先度・年次の見える化。</td></tr>
+      <tr><td>経営サマリー</td><td>事業ごとの売上・支出・利益。スパークライン付き。既存ダッシュボードへリンク。</td></tr>
+      <tr><td>レスポンシブ</td><td>iPhone / iPad / PC すべて対応。朝はスマホ、夜はPCで運用可能。</td></tr>
+      <tr><td>セキュリティ</td><td>パスワード保護（AES-GCM クライアントサイド暗号化）＋ 限定URL。</td></tr>
+    </table>
+  </div>
+
+  <div class="process">
+    <h2>納品までの流れ（最短2週間）</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="n">1</div>
+        <h3>ヒアリング（90分 × 2回）</h3>
+        <p>5本柱 / VITALS / 今月のフォーカス / 5年ゴールを1on1で言語化。</p>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <h3>デザイン選定</h3>
+        <p>4世界観から選択 → カラー・指標項目を微調整。</p>
+      </div>
+      <div class="step">
+        <div class="n">3</div>
+        <h3>構築 & 連携</h3>
+        <p>HTML 構築 → Notion / Supabase 連携 → GitHub Pages デプロイ。</p>
+      </div>
+      <div class="step">
+        <div class="n">4</div>
+        <h3>運用伴走</h3>
+        <p>毎月レビュー、指標調整、新セクション追加（保守 月5,000円）。</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Personal OS — Dashboard Samples v1.0<br>
+    Generated by Claude Code · 2026-04-30 · PharmaEight∞
+  </footer>
+
+</div>
+</body>
+</html>

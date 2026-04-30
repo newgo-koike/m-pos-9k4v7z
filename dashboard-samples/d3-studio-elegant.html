@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal OS — D3 Studio Elegant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-0: #0a0a0c;
+    --bg-1: #131316;
+    --bg-2: #1a1a1f;
+    --bg-3: #232328;
+    --line: rgba(255,255,255,0.07);
+    --line-2: rgba(255,255,255,0.14);
+    --text: #f5f5f5;
+    --text-mute: #a1a1aa;
+    --text-dim: #71717a;
+    --accent: #c9a961;
+    --accent-bright: #e3c485;
+    --accent-glow: rgba(201,169,97,0.3);
+    --emerald: #22c55e;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --orange: #f97316;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Inter", "Hiragino Sans", sans-serif;
+    background: var(--bg-0);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-feature-settings: "cv11", "ss01";
+  }
+  /* Subtle grain */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 100;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    background: var(--bg-0);
+    border-right: 1px solid var(--line);
+    padding: 22px 16px;
+    position: sticky; top: 0; height: 100vh;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; padding: 0 8px 22px; border-bottom: 1px solid var(--line); margin-bottom: 18px; }
+  .brand .logo {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), #8b6f3d);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; color: #0a0a0c; font-size: 14px;
+    box-shadow: 0 2px 0 rgba(255,255,255,0.06) inset;
+  }
+  .brand .name { font-weight: 700; font-size: 14px; letter-spacing: -0.01em; }
+  .brand .ver { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
+
+  .nav-section { margin-bottom: 18px; }
+  .nav-section .label { font-size: 10px; letter-spacing: 0.12em; color: var(--text-dim); padding: 0 12px 8px; font-weight: 600; text-transform: uppercase; }
+  .nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; color: var(--text-mute);
+    text-decoration: none; border-radius: 8px;
+    font-size: 13px; font-weight: 500;
+    margin-bottom: 1px; transition: all 0.12s;
+  }
+  .nav a:hover { background: var(--bg-2); color: var(--text); }
+  .nav a.active { background: var(--bg-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line-2); }
+  .nav a .ic { width: 18px; text-align: center; font-size: 14px; opacity: 0.85; }
+  .nav a .badge { margin-left: auto; font-size: 10px; background: var(--accent); color: #0a0a0c; padding: 1px 7px; border-radius: 6px; font-weight: 700; }
+  .sidebar-footer {
+    position: absolute; bottom: 16px; left: 16px; right: 16px;
+    padding: 12px; background: var(--bg-1);
+    border: 1px solid var(--line); border-radius: 10px;
+    font-size: 11px;
+  }
+  .sidebar-footer .row { display: flex; justify-content: space-between; color: var(--text-mute); }
+  .sidebar-footer .row b { color: var(--emerald); }
+  .sidebar-footer .row b::before { content: "● "; }
+
+  /* MAIN */
+  main { padding: 24px 36px 80px; min-width: 0; max-width: 1400px; }
+
+  /* TopBar */
+  .topbar { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+  .topbar .title { font-size: 12px; color: var(--text-mute); letter-spacing: 0.05em; }
+  .topbar .live { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-mute); }
+  .topbar .live::before { content: ""; width: 6px; height: 6px; background: var(--emerald); border-radius: 50%; }
+  .topbar .clock { margin-left: auto; font-size: 12px; color: var(--text-mute); }
+
+  /* Card base */
+  .card {
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    transition: border-color 0.15s;
+  }
+  .card:hover { border-color: var(--line-2); }
+
+  /* Hero */
+  .hero { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; margin-bottom: 28px; }
+  .hero-left { padding: 32px 36px; }
+  .hero-left .greet { font-size: 12px; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 10px; font-weight: 600; }
+  .hero-left h1 { font-family: "Space Grotesk", sans-serif; font-weight: 600; font-size: 32px; letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 8px; }
+  .hero-left .date { font-size: 13px; color: var(--text-mute); margin-bottom: 24px; }
+  .commit { padding: 16px 20px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px; }
+  .commit .lbl { font-size: 10px; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 6px; font-weight: 700; text-transform: uppercase; }
+  .commit .txt { font-size: 16px; font-weight: 600; }
+  .commit .sub { font-size: 12px; color: var(--text-mute); margin-top: 4px; }
+
+  .hero-right { padding: 22px 24px; display: flex; align-items: center; gap: 18px; }
+  .hero-right .gauge { width: 88px; height: 88px; position: relative; flex-shrink: 0; }
+  .hero-right .gauge svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .hero-right .gauge .num { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .hero-right .gauge .num b { font-family: "Space Grotesk", sans-serif; font-size: 26px; font-weight: 600; line-height: 1; }
+  .hero-right .gauge .num span { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+  .hero-right .info .h { font-size: 11px; color: var(--text-mute); margin-bottom: 4px; font-weight: 600; }
+  .hero-right .info .t { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .hero-right .info .d { font-size: 12px; color: var(--emerald); display: inline-flex; align-items: center; gap: 4px; }
+
+  /* Section header */
+  .stitle { display: flex; align-items: baseline; justify-content: space-between; margin: 32px 0 16px; }
+  .stitle h2 { font-family: "Space Grotesk", sans-serif; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+  .stitle .meta { font-size: 12px; color: var(--text-dim); }
+  .stitle .more { font-size: 12px; color: var(--text-mute); cursor: pointer; }
+
+  /* VITALS */
+  .vitals { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .vital { padding: 22px 20px 20px; }
+  .vital .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .vital .ic { font-size: 18px; }
+  .vital .nm { font-size: 11px; letter-spacing: 0.08em; color: var(--text-mute); font-weight: 600; }
+  .vital .num { font-family: "Space Grotesk", sans-serif; font-size: 32px; font-weight: 600; line-height: 1; margin-bottom: 4px; }
+  .vital .num .u { font-size: 13px; color: var(--text-mute); margin-left: 4px; font-weight: 500; }
+  .vital .delta { font-size: 11px; color: var(--text-mute); margin-bottom: 12px; }
+  .vital .delta b { color: var(--emerald); }
+  .vital .delta b.down { color: var(--red); }
+  .vital .bar { height: 4px; background: var(--bg-3); border-radius: 2px; overflow: hidden; }
+  .vital .bar .fill { height: 100%; border-radius: 2px; background: var(--text); }
+  .vital[data-c="amber"] .bar .fill { background: #fbbf24; }
+  .vital[data-c="emerald"] .bar .fill { background: var(--emerald); }
+  .vital[data-c="violet"] .bar .fill { background: #a78bfa; }
+  .vital[data-c="gold"] .bar .fill { background: var(--accent); }
+  .vital[data-c="cyan"] .bar .fill { background: #06b6d4; }
+
+  /* Metrics */
+  .metrics { display: grid; grid-template-columns: 2fr 1.5fr 1.5fr; gap: 14px; }
+  .metric { padding: 22px 24px; }
+  .metric .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .metric .lbl { font-size: 11px; color: var(--text-mute); font-weight: 600; }
+  .metric .badge { font-size: 11px; padding: 3px 9px; border-radius: 6px; background: rgba(34,197,94,0.1); color: var(--emerald); font-weight: 600; }
+  .metric .badge.down { background: rgba(239,68,68,0.1); color: var(--red); }
+  .metric .num { font-family: "Space Grotesk", sans-serif; font-size: 36px; font-weight: 600; line-height: 1; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .metric .num .u { font-size: 14px; color: var(--text-mute); margin-left: 4px; font-weight: 500; }
+  .metric .sub { font-size: 12px; color: var(--text-mute); margin-bottom: 12px; }
+  .metric svg { width: 100%; height: 60px; }
+
+  /* Pillars */
+  .pillars { display: grid; gap: 8px; }
+  .pillar { padding: 16px 22px; display: grid; grid-template-columns: 32px 1.4fr 2fr 90px 70px; align-items: center; gap: 20px; }
+  .pillar .ic { font-size: 20px; text-align: center; opacity: 0.9; }
+  .pillar .nm { font-size: 14px; font-weight: 600; }
+  .pillar .cm { font-size: 12px; color: var(--text-mute); }
+  .pillar .progress { display: flex; align-items: center; gap: 10px; }
+  .pillar .bar { flex: 1; height: 6px; background: var(--bg-3); border-radius: 3px; overflow: hidden; }
+  .pillar .bar .fill { height: 100%; border-radius: 3px; background: var(--text); }
+  .pillar[data-c="gold"] .bar .fill { background: var(--accent); }
+  .pillar[data-c="cyan"] .bar .fill { background: #06b6d4; }
+  .pillar[data-c="amber"] .bar .fill { background: #fbbf24; }
+  .pillar[data-c="violet"] .bar .fill { background: #a78bfa; }
+  .pillar[data-c="emerald"] .bar .fill { background: var(--emerald); }
+  .pillar .pct { font-family: "Space Grotesk", sans-serif; font-size: 14px; font-weight: 600; min-width: 36px; text-align: right; }
+  .pillar .target { font-size: 12px; color: var(--text-mute); text-align: right; }
+  .pillar .target b { color: var(--text); }
+  .pillar .horizon { font-size: 11px; color: var(--text-mute); background: var(--bg-2); padding: 4px 10px; border-radius: 6px; text-align: center; border: 1px solid var(--line); }
+
+  /* Triple */
+  .triple { display: grid; grid-template-columns: 1.3fr 1.4fr 1fr; gap: 14px; }
+  .panel { padding: 22px; }
+  .panel .h { display: flex; align-items: center; gap: 10px; padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--line); }
+  .panel .h .ic { font-size: 16px; }
+  .panel .h .t { font-size: 14px; font-weight: 600; }
+  .panel .h .c { margin-left: auto; font-size: 11px; color: var(--text-mute); background: var(--bg-2); padding: 3px 9px; border-radius: 6px; }
+  .task { display: flex; gap: 12px; padding: 9px 0; font-size: 13px; border-bottom: 1px solid var(--line); align-items: flex-start; }
+  .task:last-child { border-bottom: none; }
+  .task .ck { width: 16px; height: 16px; border: 1.5px solid var(--text-dim); border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+  .task.done .ck { background: var(--emerald); border-color: var(--emerald); position: relative; }
+  .task.done .ck::after { content: "✓"; position: absolute; top: -3px; left: 1px; color: white; font-weight: 800; font-size: 13px; }
+  .task.doing .ck { border-color: var(--orange); position: relative; }
+  .task.doing .ck::after { content: ""; position: absolute; inset: 3px; background: var(--orange); border-radius: 1px; }
+  .task .body { flex: 1; }
+  .task.done .body .text { color: var(--text-dim); text-decoration: line-through; }
+  .task .body .meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .kpt { display: grid; gap: 10px; }
+  .kpt .b { padding: 12px 14px; background: var(--bg-2); border-radius: 8px; }
+  .kpt .b .l { font-size: 10px; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; }
+  .kpt .b.k .l { color: var(--emerald); }
+  .kpt .b.p .l { color: var(--red); }
+  .kpt .b.t .l { color: var(--orange); }
+  .kpt .b ul { list-style: none; font-size: 12px; line-height: 1.7; color: var(--text-mute); }
+  .kpt .b li { padding-left: 14px; position: relative; }
+  .kpt .b li::before { content: "·"; position: absolute; left: 0; }
+  .wish { display: flex; gap: 10px; padding: 8px 0; font-size: 13px; border-bottom: 1px solid var(--line); align-items: flex-start; }
+  .wish:last-child { border-bottom: none; }
+  .wish .bg { font-size: 10px; padding: 2px 8px; border-radius: 6px; background: var(--bg-2); color: var(--text-mute); border: 1px solid var(--line); flex-shrink: 0; margin-top: 1px; font-weight: 600; }
+  .wish .bg.high { background: var(--accent); color: #0a0a0c; border-color: var(--accent); }
+  .wish .yr { font-size: 11px; color: var(--text-dim); margin-left: auto; }
+
+  /* Biz */
+  .biz { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+  .biz .b { padding: 22px 24px; }
+  .biz .b .h { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .biz .b .h .ic { font-size: 22px; }
+  .biz .b .h .nm { font-weight: 600; font-size: 14px; }
+  .biz .b .h .st { margin-left: auto; font-size: 10px; color: var(--text-mute); background: var(--bg-2); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--line); }
+  .biz .b .row { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; color: var(--text-mute); }
+  .biz .b .row b { color: var(--text); font-family: "Space Grotesk", sans-serif; font-weight: 600; }
+  .biz .b .row.profit b { color: var(--emerald); }
+  .biz .b svg { width: 100%; height: 40px; margin-top: 12px; }
+  .biz .b .link { display: inline-block; margin-top: 12px; font-size: 12px; color: var(--accent); text-decoration: none; font-weight: 500; }
+  .biz .b .link:hover { text-decoration: underline; }
+
+  /* Notice */
+  .notice { text-align: center; padding: 8px; background: var(--bg-1); border-bottom: 1px solid var(--line); color: var(--text-mute); font-size: 12px; font-weight: 600; }
+
+  /* Quote */
+  .quote-card { margin-top: 32px; padding: 36px 40px; text-align: center; border-radius: 14px; background: linear-gradient(135deg, var(--bg-1), var(--bg-2)); border: 1px solid var(--line); }
+  .quote-card .quote { font-family: "Space Grotesk", sans-serif; font-size: 18px; font-weight: 500; line-height: 1.6; margin-bottom: 10px; letter-spacing: -0.01em; }
+  .quote-card .src { font-size: 11px; color: var(--text-dim); letter-spacing: 0.15em; }
+
+  @media (max-width: 1100px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .vitals, .metrics, .triple, .biz, .hero { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="notice">D3 · STUDIO ELEGANT — Linear / Stripe / Attio 系・洗練・ビジネス</div>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">K</div>
+        <div>
+          <div class="name">Personal OS</div>
+          <div class="ver">小池雄悟 · v2.0</div>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="label">Daily</div>
+        <nav class="nav">
+          <a href="#" class="active"><span class="ic">⌂</span>Dashboard</a>
+          <a href="#"><span class="ic">☀</span>朝のチェックイン</a>
+          <a href="#"><span class="ic">🌙</span>夜の振り返り</a>
+        </nav>
+      </div>
+      <div class="nav-section">
+        <div class="label">Plan</div>
+        <nav class="nav">
+          <a href="#"><span class="ic">⭐</span>VITALS</a>
+          <a href="#"><span class="ic">🏛</span>5本柱</a>
+          <a href="#"><span class="ic">✅</span>タスク<span class="badge">3</span></a>
+          <a href="#"><span class="ic">✨</span>Wish</a>
+        </nav>
+      </div>
+      <div class="nav-section">
+        <div class="label">Business</div>
+        <nav class="nav">
+          <a href="#"><span class="ic">💊</span>PharmaEight∞</a>
+          <a href="#"><span class="ic">🌸</span>はなひらく</a>
+          <a href="#"><span class="ic">💰</span>FP実績</a>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <div class="row"><span>Sync</span><b>Notion</b></div>
+        <div class="row" style="margin-top:4px;"><span>Updated</span><span style="color:var(--text-mute);">2分前</span></div>
+      </div>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <div class="title">Dashboard / Overview</div>
+        <div class="live">Live</div>
+        <div class="clock">2026.04.30 (水) 08:42</div>
+      </div>
+
+      <div class="hero">
+        <div class="card hero-left">
+          <div class="greet">Good morning · KOIKE YUGO</div>
+          <h1>おはようございます、小池さん。</h1>
+          <div class="date">2026年4月30日（水） — 5月リリースまで残り <b style="color:var(--accent);">5日</b></div>
+          <div class="commit">
+            <div class="lbl">This Month Commit</div>
+            <div class="txt">Personal OS事業をリリース</div>
+            <div class="sub">3名（小池・岩崎・兵頭）の自分用ダッシュボード構築 ／ ドッグフーディングSS投稿の運用開始</div>
+          </div>
+        </div>
+        <div class="card hero-right">
+          <div class="gauge">
+            <svg viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" fill="none" stroke="var(--bg-3)" stroke-width="7"/>
+              <circle cx="50" cy="50" r="42" fill="none" stroke="var(--accent)" stroke-width="7" stroke-linecap="round" stroke-dasharray="263" stroke-dashoffset="63"/>
+            </svg>
+            <div class="num"><b>76</b><span>Score</span></div>
+          </div>
+          <div class="info">
+            <div class="h">Today's Ready</div>
+            <div class="t">朝の準備、整っています</div>
+            <div class="d">↑ +12 from yesterday</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stitle"><h2>VITALS</h2><span class="meta">5 つの生命指標</span></div>
+      <div class="vitals">
+        <div class="card vital" data-c="amber">
+          <div class="top"><div class="nm">Weight</div><div class="ic">⚖️</div></div>
+          <div class="num">71<span class="u">kg</span></div>
+          <div class="delta">目標 <b>68kg</b> · 40%</div>
+          <div class="bar"><div class="fill" style="width:40%;"></div></div>
+        </div>
+        <div class="card vital" data-c="emerald">
+          <div class="top"><div class="nm">Gym / Week</div><div class="ic">🏋️</div></div>
+          <div class="num">3<span class="u">/4</span></div>
+          <div class="delta">目標 <b>4回</b> · 残 <b>1回</b></div>
+          <div class="bar"><div class="fill" style="width:75%;"></div></div>
+        </div>
+        <div class="card vital" data-c="violet">
+          <div class="top"><div class="nm">Mybook</div><div class="ic">📖</div></div>
+          <div class="num">7<span class="u">日</span></div>
+          <div class="delta">目標 <b>30日</b> · 23%</div>
+          <div class="bar"><div class="fill" style="width:23%;"></div></div>
+        </div>
+        <div class="card vital" data-c="gold">
+          <div class="top"><div class="nm">Revenue</div><div class="ic">💰</div></div>
+          <div class="num">¥510<span class="u">K</span></div>
+          <div class="delta">目標 <b>¥1M</b> · 51%</div>
+          <div class="bar"><div class="fill" style="width:51%;"></div></div>
+        </div>
+        <div class="card vital" data-c="cyan">
+          <div class="top"><div class="nm">Expense</div><div class="ic">💸</div></div>
+          <div class="num">¥185<span class="u">K</span></div>
+          <div class="delta">watch · 観測のみ</div>
+          <div class="bar"><div class="fill" style="width:18%;"></div></div>
+        </div>
+      </div>
+
+      <div class="stitle"><h2>キャッシュフロー</h2><span class="meta">May 2026</span></div>
+      <div class="metrics">
+        <div class="card metric">
+          <div class="head"><span class="lbl">Revenue Trend</span><span class="badge">↗ +33.4% MoM</span></div>
+          <div class="num">¥510<span class="u">,000</span></div>
+          <div class="sub">直近30日 · 月次目標 ¥1M に対して 51% 進捗</div>
+          <svg viewBox="0 0 400 60" preserveAspectRatio="none"><defs><linearGradient id="rg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9a961" stop-opacity="0.3"/><stop offset="1" stop-color="#c9a961" stop-opacity="0"/></linearGradient></defs><path d="M0,45 L30,42 L60,46 L90,32 L120,35 L150,28 L180,30 L210,20 L240,24 L270,17 L300,20 L330,12 L360,16 L400,8 L400,60 L0,60 Z" fill="url(#rg3)"/><path d="M0,45 L30,42 L60,46 L90,32 L120,35 L150,28 L180,30 L210,20 L240,24 L270,17 L300,20 L330,12 L360,16 L400,8" stroke="#c9a961" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </div>
+        <div class="card metric">
+          <div class="head"><span class="lbl">Expense Trend</span><span class="badge down">↘ -8.2% MoM</span></div>
+          <div class="num" style="color:#a1a1aa;">¥185<span class="u">,000</span></div>
+          <div class="sub">出費は減少傾向 · 良い方向</div>
+          <svg viewBox="0 0 400 60"><g>
+            <rect x="10" y="22" width="22" height="38" fill="#3b82f6" opacity="0.6" rx="3"/><rect x="44" y="16" width="22" height="44" fill="#3b82f6" opacity="0.65" rx="3"/><rect x="78" y="24" width="22" height="36" fill="#3b82f6" opacity="0.7" rx="3"/><rect x="112" y="28" width="22" height="32" fill="#3b82f6" opacity="0.7" rx="3"/><rect x="146" y="20" width="22" height="40" fill="#3b82f6" opacity="0.7" rx="3"/><rect x="180" y="26" width="22" height="34" fill="#3b82f6" opacity="0.75" rx="3"/><rect x="214" y="30" width="22" height="30" fill="#3b82f6" opacity="0.8" rx="3"/><rect x="248" y="32" width="22" height="28" fill="#3b82f6" opacity="0.8" rx="3"/><rect x="282" y="34" width="22" height="26" fill="#3b82f6" opacity="0.85" rx="3"/><rect x="316" y="36" width="22" height="24" fill="#3b82f6" rx="3"/><rect x="350" y="38" width="22" height="22" fill="#3b82f6" rx="3"/>
+          </g></svg>
+        </div>
+        <div class="card metric">
+          <div class="head"><span class="lbl">Net Profit</span><span class="badge">Healthy</span></div>
+          <div class="num" style="color:var(--emerald);font-size:30px;">+¥325K</div>
+          <div class="sub">利益率 64%</div>
+          <svg viewBox="0 0 400 60">
+            <path d="M 20 52 A 70 70 0 0 1 380 52" fill="none" stroke="var(--bg-3)" stroke-width="8"/>
+            <path d="M 20 52 A 70 70 0 0 1 280 16" fill="none" stroke="var(--emerald)" stroke-width="8" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="stitle"><h2>5本柱</h2><span class="meta">人生の構造</span></div>
+      <div class="pillars">
+        <div class="card pillar" data-c="gold"><div class="ic">💎</div><div><div class="nm">不労所得構築</div><div class="cm">FP契約の継続収入 / 投資収益</div></div><div class="progress"><div class="bar"><div class="fill" style="width:18%;"></div></div><div class="pct">18%</div></div><div class="target">→ <b>月35万</b></div><div class="horizon">1y</div></div>
+        <div class="card pillar" data-c="cyan"><div class="ic">🚀</div><div><div class="nm">事業拡大</div><div class="cm">PharmaEight∞ / はなひらく / Personal OS</div></div><div class="progress"><div class="bar"><div class="fill" style="width:51%;"></div></div><div class="pct">51%</div></div><div class="target">→ <b>月100万</b></div><div class="horizon">1y</div></div>
+        <div class="card pillar" data-c="amber"><div class="ic">💪</div><div><div class="nm">健康</div><div class="cm">食事 / ジム週4 / 睡眠</div></div><div class="progress"><div class="bar"><div class="fill" style="width:42%;"></div></div><div class="pct">42%</div></div><div class="target">→ <b>68kg</b></div><div class="horizon">1y</div></div>
+        <div class="card pillar" data-c="violet"><div class="ic">👼</div><div><div class="nm">エンジェル投資家</div><div class="cm">応援できる相手のネットワーク</div></div><div class="progress"><div class="bar"><div class="fill" style="width:8%;"></div></div><div class="pct">8%</div></div><div class="target">準備期間</div><div class="horizon">5y</div></div>
+        <div class="card pillar" data-c="emerald"><div class="ic">🌱</div><div><div class="nm">アナログ生活</div><div class="cm">場を持つ / 一緒に料理・畑</div></div><div class="progress"><div class="bar"><div class="fill" style="width:14%;"></div></div><div class="pct">14%</div></div><div class="target">→ <b>飲食店</b></div><div class="horizon">1y</div></div>
+      </div>
+
+      <div class="stitle"><h2>今日のフロー</h2><span class="meta">タスク · KPT · Wish</span></div>
+      <div class="triple">
+        <div class="card panel">
+          <div class="h"><span class="ic">✅</span><span class="t">今日のタスク</span><span class="c">5 件</span></div>
+          <div class="task done"><div class="ck"></div><div class="body"><div class="text">ヒアリング骨格v1ドラフト</div><div class="meta">Personal OS · 完了</div></div></div>
+          <div class="task done"><div class="ck"></div><div class="body"><div class="text">小池さんへヒアリング実演</div><div class="meta">Personal OS · 完了</div></div></div>
+          <div class="task doing"><div class="ck"></div><div class="body"><div class="text">ダッシュボードMVP構築</div><div class="meta">期限 5/5 · 進行中</div></div></div>
+          <div class="task"><div class="ck"></div><div class="body"><div class="text">ドッグフーディング3名構築計画</div><div class="meta">期限 5/10</div></div></div>
+          <div class="task"><div class="ck"></div><div class="body"><div class="text">PharmaEight 議事録レビュー</div><div class="meta">期限 5/2</div></div></div>
+        </div>
+        <div class="card panel">
+          <div class="h"><span class="ic">📔</span><span class="t">昨日の振り返り</span><span class="c">2026.04.29</span></div>
+          <div class="kpt">
+            <div class="b k"><div class="l">Keep</div><ul><li>ヒアリング骨格v1ドラフト完了</li><li>5本柱とVITALSを確定</li></ul></div>
+            <div class="b p"><div class="l">Problem</div><ul><li>ダッシュボード構築まだ</li><li>3名の運用設計まだ</li></ul></div>
+            <div class="b t"><div class="l">Try</div><ul><li>明日からダッシュボードMVPを動かす</li></ul></div>
+          </div>
+        </div>
+        <div class="card panel">
+          <div class="h"><span class="ic">✨</span><span class="t">Wish · Focus</span><span class="c">3 / 7</span></div>
+          <div class="wish"><span class="bg high">事業</span><span>Personal OS事業のリリース</span></div>
+          <div class="wish"><span class="bg high">健康</span><span>ジムを週4回習慣化</span></div>
+          <div class="wish"><span class="bg">学び</span><span>mybookを毎日書く</span></div>
+          <div style="height:1px;background:var(--line);margin:8px 0;"></div>
+          <div class="wish"><span class="bg">場</span><span>飲食店を持つ</span><span class="yr">2027</span></div>
+          <div class="wish"><span class="bg">投資</span><span>エンジェル投資を始める</span><span class="yr">2028</span></div>
+          <div class="wish"><span class="bg">場</span><span>畑を持つ</span></div>
+        </div>
+      </div>
+
+      <div class="stitle"><h2>経営サマリー</h2><span class="meta">3事業 · May 2026</span></div>
+      <div class="biz">
+        <div class="card b">
+          <div class="h"><span class="ic">💊</span><span class="nm">PharmaEight∞</span><span class="st">未連携</span></div>
+          <div class="row"><span>売上</span><b>¥0</b></div><div class="row"><span>支出</span><b>¥0</b></div><div class="row profit"><span>利益</span><b>¥0</b></div>
+          <svg viewBox="0 0 200 40" preserveAspectRatio="none"><path d="M0,32 L40,30 L80,26 L120,22 L160,17 L200,12" stroke="#06b6d4" stroke-width="2" fill="none"/></svg>
+        </div>
+        <div class="card b">
+          <div class="h"><span class="ic">🌸</span><span class="nm">はなひらく</span><span class="st">連携予定</span></div>
+          <div class="row"><span>売上</span><b>¥4.2M</b></div><div class="row"><span>支出</span><b>¥3.6M</b></div><div class="row profit"><span>利益</span><b>¥600K</b></div>
+          <svg viewBox="0 0 200 40"><g><rect x="0" y="22" width="14" height="18" fill="#22c55e" opacity="0.5" rx="2"/><rect x="20" y="20" width="14" height="20" fill="#22c55e" opacity="0.6" rx="2"/><rect x="40" y="16" width="14" height="24" fill="#22c55e" opacity="0.7" rx="2"/><rect x="60" y="24" width="14" height="16" fill="#22c55e" opacity="0.6" rx="2"/><rect x="80" y="18" width="14" height="22" fill="#22c55e" opacity="0.7" rx="2"/><rect x="100" y="12" width="14" height="28" fill="#22c55e" opacity="0.8" rx="2"/><rect x="120" y="14" width="14" height="26" fill="#22c55e" opacity="0.8" rx="2"/><rect x="140" y="10" width="14" height="30" fill="#22c55e" opacity="0.9" rx="2"/><rect x="160" y="8" width="14" height="32" fill="#22c55e" rx="2"/><rect x="180" y="6" width="14" height="34" fill="#22c55e" rx="2"/></g></svg>
+          <a href="#" class="link">詳細ダッシュボードへ →</a>
+        </div>
+        <div class="card b">
+          <div class="h"><span class="ic">💰</span><span class="nm">FP</span><span class="st">連携中</span></div>
+          <div class="row"><span>売上</span><b>¥510K</b></div><div class="row"><span>支出</span><b>¥120K</b></div><div class="row profit"><span>利益</span><b>¥390K</b></div>
+          <svg viewBox="0 0 200 40" preserveAspectRatio="none"><defs><linearGradient id="fp3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9a961" stop-opacity="0.4"/><stop offset="1" stop-color="#c9a961" stop-opacity="0"/></linearGradient></defs><path d="M0,32 L30,30 L60,24 L90,20 L120,14 L150,18 L180,10 L200,6 L200,40 L0,40 Z" fill="url(#fp3)"/><path d="M0,32 L30,30 L60,24 L90,20 L120,14 L150,18 L180,10 L200,6" stroke="#c9a961" stroke-width="2" fill="none"/></svg>
+          <a href="#" class="link">詳細ダッシュボードへ →</a>
+        </div>
+      </div>
+
+      <div class="quote-card">
+        <div class="quote">"数字を整えるのは、数字に縛られない時間を取り戻すため。"</div>
+        <div class="src">PERSONAL OS · KOIKE YUGO</div>
+      </div>
+    </main>
+  </div>
+</body></html>

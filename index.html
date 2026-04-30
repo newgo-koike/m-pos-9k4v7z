@@ -102,6 +102,63 @@
   .card.mkt .open { background: var(--green); box-shadow: 0 4px 12px rgba(33,166,73,0.3); }
   .card.copy .num { color: var(--orange); }
 
+  /* Dashboard demo banner */
+  .demo-banner {
+    background: linear-gradient(135deg, #0a0e1a 0%, #131826 100%);
+    border-radius: 16px;
+    padding: 36px 40px;
+    margin-bottom: 36px;
+    color: #fff;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 32px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    transition: all 0.2s ease;
+  }
+  .demo-banner:hover { transform: translateY(-3px); box-shadow: 0 18px 42px rgba(0,0,0,0.25); }
+  .demo-banner::before {
+    content: ""; position: absolute; top: -100px; right: -100px;
+    width: 360px; height: 360px;
+    background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+    opacity: 0.18;
+  }
+  .demo-banner .left { flex: 1; position: relative; z-index: 1; }
+  .demo-banner .num {
+    font-size: 11px; letter-spacing: 0.3em; color: var(--gold);
+    margin-bottom: 10px; font-weight: 700;
+  }
+  .demo-banner h2 {
+    font-size: 26px; font-weight: 800; line-height: 1.4;
+    margin-bottom: 10px; color: #fff;
+  }
+  .demo-banner h2 .accent { color: var(--gold); }
+  .demo-banner p { font-size: 14px; color: #cbd5e1; line-height: 1.85; max-width: 560px; }
+  .demo-banner .open {
+    margin-top: 16px;
+    display: inline-block;
+    background: var(--gold); color: #1a1208;
+    padding: 12px 24px; border-radius: 24px;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.05em;
+    box-shadow: 0 4px 14px rgba(201,169,97,0.4);
+  }
+  .demo-banner .right {
+    display: flex; gap: 8px; flex-shrink: 0; position: relative; z-index: 1;
+  }
+  .demo-banner .chip {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(201,169,97,0.3);
+    padding: 12px 14px; border-radius: 10px;
+    text-align: center; min-width: 86px;
+    backdrop-filter: blur(10px);
+  }
+  .demo-banner .chip .ic { font-size: 20px; margin-bottom: 4px; }
+  .demo-banner .chip .lbl { font-size: 9px; color: var(--gold); letter-spacing: 0.15em; font-weight: 700; }
+  @media (max-width: 760px) {
+    .demo-banner { flex-direction: column; align-items: flex-start; padding: 28px 22px; }
+    .demo-banner h2 { font-size: 20px; }
+    .demo-banner .right { flex-wrap: wrap; }
+  }
+
   .summary {
     background: var(--paper); border: 1px solid var(--line);
     border-radius: 14px; padding: 36px 40px;
@@ -187,6 +244,23 @@
       <span class="open">▶ コピー一式を開く</span>
     </a>
   </div>
+
+  <a class="demo-banner" href="dashboard-samples/index.html">
+    <div class="left">
+      <div class="num">04 / DASHBOARD DEMO</div>
+      <h2>あなた専用の<span class="accent">「司令塔ダッシュボード」</span><br>4世界観のサンプルを実機デモで体験</h2>
+      <p>
+        Command Center / Gold Cockpit / Cyan Observatory / Studio Elegant — それぞれ異なる世界観で構築したダッシュボードのデモを、実際にブラウザで操作できます。営業時のビジュアル説明・契約前の世界観合わせに最適。
+      </p>
+      <span class="open">▶ ダッシュボードサンプルを見る</span>
+    </div>
+    <div class="right">
+      <div class="chip"><div class="ic">⌂</div><div class="lbl">DEFAULT</div></div>
+      <div class="chip"><div class="ic">⚔</div><div class="lbl">COCKPIT</div></div>
+      <div class="chip"><div class="ic">◆</div><div class="lbl">SCI-FI</div></div>
+      <div class="chip"><div class="ic">○</div><div class="lbl">STUDIO</div></div>
+    </div>
+  </a>
 
   <div class="summary">
     <h2>事業サマリ</h2>
