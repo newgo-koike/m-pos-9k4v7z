@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>マーケティング戦略のご提案｜一人一ホームページ事業</title>
+<style>
+  :root {
+    --green: #21a649;
+    --green-dark: #14803a;
+    --green-light: #e8f5e9;
+    --green-grad-from: #2eb350;
+    --green-grad-to: #1a8c3a;
+    --navy: #1a3a52;
+    --navy-light: #2c5378;
+    --ink: #1f2937;
+    --ink-light: #6b7280;
+    --soft: #f5f7f5;
+    --line: #e1e7e3;
+    --paper: #ffffff;
+    --bg: #f8faf8;
+    --red: #e53935;
+    --red-light: #ffebee;
+    --orange: #ff9800;
+    --yellow: #ffc107;
+    --purple: #9c27b0;
+    --gold: #f4b942;
+    --usp: #ffd54f;
+    --cat: #81c784;
+    --user: #ce93d8;
+    --key: #e91e63;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.7; font-size: 15px;
+  }
+
+  /* Layout */
+  .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  nav.sidebar {
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    background: linear-gradient(180deg, var(--green-grad-from) 0%, var(--green-grad-to) 100%);
+    color: #fff; padding: 28px 20px;
+  }
+  nav.sidebar .brand {
+    font-size: 11px; letter-spacing: 0.3em; color: rgba(255,255,255,0.7); margin-bottom: 8px;
+  }
+  nav.sidebar h1.title {
+    font-size: 16px; font-weight: 700; line-height: 1.5; margin-bottom: 24px;
+    color: #fff; border-bottom: 1px solid rgba(255,255,255,0.25); padding-bottom: 16px;
+  }
+  nav.sidebar ol { list-style: none; counter-reset: tocnum; }
+  nav.sidebar ol li { counter-increment: tocnum; margin-bottom: 4px; }
+  nav.sidebar ol li a {
+    display: block; padding: 8px 12px; color: rgba(255,255,255,0.85); text-decoration: none;
+    font-size: 13px; border-radius: 6px; transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+  nav.sidebar ol li a:hover {
+    background: rgba(255,255,255,0.15); color: #fff;
+    border-left-color: #fff;
+  }
+  nav.sidebar ol li a::before {
+    content: counter(tocnum, decimal-leading-zero) "  ";
+    color: rgba(255,255,255,0.5); font-weight: 600; margin-right: 6px;
+  }
+  nav.sidebar .meta {
+    margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.25);
+    font-size: 11px; color: rgba(255,255,255,0.7); line-height: 1.6;
+  }
+
+  main { padding: 60px 80px; max-width: 1200px; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, #1a3a52 0%, #2c5378 100%);
+    color: #fff; padding: 56px 64px; border-radius: 12px; margin-bottom: 56px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ""; position: absolute; top: -60px; right: -60px;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, var(--green) 0%, transparent 70%);
+    opacity: 0.25;
+  }
+  .hero::after {
+    content: ""; position: absolute; bottom: -100px; left: 30%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, var(--green-light) 0%, transparent 70%);
+    opacity: 0.15;
+  }
+  .hero .label {
+    font-size: 12px; letter-spacing: 0.3em; color: var(--green-light); margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .hero h1 {
+    font-size: 36px; font-weight: 700; line-height: 1.3; margin-bottom: 20px;
+    letter-spacing: 0.02em; position: relative; z-index: 1;
+  }
+  .hero .lead {
+    font-size: 16px; color: #d6e4dd; line-height: 1.8; max-width: 720px;
+    position: relative; z-index: 1;
+  }
+  .hero .stamp {
+    margin-top: 28px; padding: 14px 18px; background: rgba(255,255,255,0.08);
+    border-left: 3px solid var(--green); border-radius: 4px;
+    font-size: 13px; color: #d6e4dd; position: relative; z-index: 1;
+  }
+
+  /* Section */
+  section {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 10px;
+    padding: 40px 48px; margin-bottom: 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+  section h2 {
+    font-size: 22px; color: var(--navy); font-weight: 700;
+    padding-bottom: 12px; border-bottom: 3px solid var(--green);
+    margin-bottom: 24px; display: flex; align-items: baseline; gap: 14px;
+  }
+  section h2 .num {
+    font-size: 30px; color: var(--green); font-weight: 800; font-family: Georgia, serif;
+    line-height: 1;
+  }
+  section h2 .en {
+    font-size: 11px; color: var(--ink-light); letter-spacing: 0.2em; margin-left: auto;
+    text-transform: uppercase; font-weight: 500;
+  }
+  section h3 {
+    font-size: 17px; color: var(--navy); font-weight: 700; margin: 24px 0 12px;
+    padding-left: 14px; border-left: 4px solid var(--green);
+  }
+  section h4 {
+    font-size: 14px; color: var(--navy-light); font-weight: 700; margin: 18px 0 8px;
+  }
+  section p { margin-bottom: 12px; }
+  section strong { color: var(--navy); font-weight: 700; }
+
+  /* Cards */
+  .card-grid { display: grid; gap: 14px; margin: 14px 0 22px; }
+  .cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .card {
+    background: var(--soft); border: 1px solid var(--line); border-radius: 8px;
+    padding: 18px 20px;
+  }
+  .card.green { background: var(--green-light); border-color: #a5d6a7; }
+  .card.highlight { background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); border-color: #ffe082; }
+  .card.danger { background: var(--red-light); border-color: #ffcdd2; }
+  .card.info { background: #e3f2fd; border-color: #90caf9; }
+  .card .num {
+    font-size: 28px; font-weight: 800; color: var(--green-dark); display: block; margin-bottom: 4px;
+    line-height: 1.1;
+  }
+  .card .num.red { color: var(--red); }
+  .card .num.navy { color: var(--navy); }
+  .card .label {
+    font-size: 11px; letter-spacing: 0.15em; color: var(--ink-light); text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .card .body { font-size: 13px; line-height: 1.6; color: var(--ink); }
+  .card h4 { margin-top: 0; font-size: 14px; color: var(--navy); margin-bottom: 6px; }
+
+  /* Tables */
+  table {
+    width: 100%; border-collapse: collapse; margin: 14px 0;
+    font-size: 13px; background: var(--paper);
+  }
+  table th {
+    background: var(--green); color: #fff; padding: 11px 13px;
+    text-align: left; font-weight: 600; font-size: 12px;
+    border: 1px solid var(--green-dark);
+  }
+  table td {
+    padding: 10px 13px; border: 1px solid var(--line); vertical-align: top;
+  }
+  table tr:nth-child(even) td { background: #fafafa; }
+  table tr td.highlight { background: #fff9c4; font-weight: 700; }
+  table .red-text { color: var(--red); font-weight: 700; }
+  table .green-text { color: var(--green-dark); font-weight: 700; }
+
+  /* Bar (横棒) */
+  .bar-row {
+    display: grid; grid-template-columns: 140px 1fr 60px;
+    gap: 12px; align-items: center; margin: 6px 0; font-size: 13px;
+  }
+  .bar-bg {
+    height: 22px; background: var(--soft); border-radius: 3px; position: relative; overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%; background: linear-gradient(90deg, var(--green) 0%, var(--green-dark) 100%);
+    border-radius: 3px;
+  }
+  .bar-fill.blue { background: linear-gradient(90deg, #42a5f5 0%, #1565c0 100%); }
+  .bar-fill.pink { background: linear-gradient(90deg, #ec407a 0%, #ad1457 100%); }
+  .bar-fill.orange { background: linear-gradient(90deg, #ffa726 0%, #ef6c00 100%); }
+  .bar-val { font-size: 12px; font-weight: 700; color: var(--navy); }
+
+  /* Strategy Pyramid (KGI→WHO→WHAT→HOW) */
+  .pyramid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 20px 0;
+    position: relative;
+  }
+  .pyramid-step {
+    background: var(--paper); border: 2px solid var(--green); border-radius: 8px;
+    padding: 16px 14px; text-align: left; position: relative;
+  }
+  .pyramid-step.kgi { border-color: var(--navy); }
+  .pyramid-step.who { border-color: var(--green); }
+  .pyramid-step.what { border-color: var(--orange); }
+  .pyramid-step.how { border-color: var(--purple); }
+  .pyramid-step .stage {
+    font-size: 10px; letter-spacing: 0.2em; color: var(--ink-light); margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+  .pyramid-step .label {
+    font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 8px;
+  }
+  .pyramid-step.kgi .label { color: var(--navy); }
+  .pyramid-step.who .label { color: var(--green-dark); }
+  .pyramid-step.what .label { color: #e65100; }
+  .pyramid-step.how .label { color: #6a1b9a; }
+  .pyramid-step ul {
+    margin: 0 0 0 16px; padding: 0; font-size: 11px; line-height: 1.6;
+  }
+  .pyramid-step ul li { margin-bottom: 2px; }
+  .pyramid-arrow {
+    position: absolute; top: 50%; right: -14px; transform: translateY(-50%);
+    color: var(--green); font-size: 22px; z-index: 2;
+  }
+
+  /* Venn Diagram */
+  .venn-wrapper {
+    position: relative; width: 480px; height: 380px; margin: 30px auto;
+  }
+  .venn-circle {
+    position: absolute; width: 240px; height: 240px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    font-weight: 700; font-size: 13px; mix-blend-mode: multiply;
+  }
+  .venn-circle.usp { background: var(--usp); top: 20px; left: 30px; color: #6d4c00; }
+  .venn-circle.cat { background: var(--cat); top: 20px; right: 30px; color: #1b5e20; }
+  .venn-circle.user { background: var(--user); bottom: 0; left: 50%; transform: translateX(-50%); color: #4a148c; }
+  .venn-key {
+    position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
+    background: var(--key); color: #fff; padding: 12px 24px; border-radius: 30px;
+    font-weight: 700; font-size: 14px; z-index: 5;
+    box-shadow: 0 4px 12px rgba(233,30,99,0.4);
+  }
+
+  /* Wordcloud (CSS based) */
+  .wordcloud {
+    background: var(--soft); border: 1px solid var(--line); border-radius: 8px;
+    padding: 24px; text-align: center; line-height: 2.6;
+  }
+  .wordcloud .w {
+    display: inline-block; margin: 0 6px; color: #607d8b; font-weight: 500;
+  }
+  .wordcloud .w-xl { font-size: 26px; color: var(--navy); font-weight: 800; }
+  .wordcloud .w-l { font-size: 20px; color: var(--green-dark); font-weight: 700; }
+  .wordcloud .w-m { font-size: 16px; color: var(--navy-light); font-weight: 600; }
+  .wordcloud .w-s { font-size: 13px; }
+  .wordcloud .w-hl { color: var(--red); border-bottom: 2px solid var(--red); padding: 0 4px; }
+
+  /* Insight box */
+  .insight {
+    background: linear-gradient(90deg, #fff9c4 0%, transparent 100%);
+    border-left: 4px solid var(--orange); padding: 14px 18px; margin: 16px 0;
+    font-size: 14px;
+  }
+  .insight.green {
+    background: linear-gradient(90deg, var(--green-light) 0%, transparent 100%);
+    border-left-color: var(--green);
+  }
+  .insight.red {
+    background: linear-gradient(90deg, var(--red-light) 0%, transparent 100%);
+    border-left-color: var(--red);
+  }
+  .insight .label {
+    font-size: 11px; letter-spacing: 0.2em; color: var(--green-dark);
+    font-weight: 700; margin-bottom: 4px; text-transform: uppercase;
+  }
+  .insight.red .label { color: var(--red); }
+
+  /* Funnel Stages */
+  .funnel-map {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 16px 0; font-size: 12px;
+  }
+  .funnel-stage-h {
+    background: var(--green-dark); color: #fff; padding: 8px 6px; text-align: center; font-weight: 700;
+    font-size: 11px; letter-spacing: 0.05em;
+  }
+  .funnel-row { display: contents; }
+  .funnel-cell {
+    background: var(--soft); padding: 8px 10px; border: 1px solid var(--line); font-size: 11px;
+    line-height: 1.4;
+  }
+  .funnel-cell.active { background: var(--green-light); border-color: var(--green); }
+  .funnel-cell.digital { background: #e3f2fd; border-color: #90caf9; color: #1565c0; }
+  .funnel-cell.real { background: #fff3e0; border-color: #ffb74d; color: #e65100; }
+  .funnel-cell.both { background: #f3e5f5; border-color: #ce93d8; color: #6a1b9a; }
+
+  /* Persona */
+  .persona-card {
+    background: linear-gradient(135deg, #fff 0%, #f9fafb 100%);
+    border: 2px solid var(--line); border-radius: 12px; padding: 22px 24px;
+    position: relative; overflow: hidden;
+  }
+  .persona-card::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 6px; height: 100%;
+    background: var(--green);
+  }
+  .persona-card .avatar {
+    display: inline-block; width: 56px; height: 56px; border-radius: 50%;
+    background: var(--green-light); font-size: 28px; line-height: 56px; text-align: center;
+    margin-bottom: 8px; font-weight: 800; color: var(--green-dark);
+  }
+  .persona-card .name {
+    font-size: 16px; font-weight: 800; color: var(--navy); margin-bottom: 4px;
+  }
+  .persona-card .meta {
+    font-size: 11px; color: var(--ink-light); margin-bottom: 12px; letter-spacing: 0.05em;
+  }
+  .persona-card .row {
+    font-size: 13px; line-height: 1.7; padding: 6px 0; border-top: 1px dashed var(--line);
+  }
+  .persona-card .row strong { color: var(--green-dark); margin-right: 6px; }
+
+  /* Footer */
+  footer {
+    text-align: center; padding: 36px 20px; color: var(--ink-light);
+    font-size: 12px; line-height: 1.8;
+  }
+  footer .seal {
+    display: inline-block; padding: 10px 22px; border: 1px solid var(--green);
+    color: var(--green-dark); letter-spacing: 0.3em; font-size: 11px; margin-bottom: 12px;
+  }
+
+  /* Note */
+  .note {
+    font-size: 11px; color: var(--ink-light); margin-top: 6px; line-height: 1.5;
+  }
+
+  /* PDF button */
+  .pdf-btn {
+    position: fixed; bottom: 28px; right: 28px; z-index: 200;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 24px; background: var(--green); color: #fff;
+    border: none; border-radius: 32px;
+    font-family: inherit; font-weight: 700; font-size: 13px; letter-spacing: 0.1em;
+    cursor: pointer; box-shadow: 0 6px 20px rgba(33,166,73,0.35);
+    transition: all 0.2s;
+  }
+  .pdf-btn:hover { transform: translateY(-2px); background: var(--green-dark); box-shadow: 0 10px 28px rgba(33,166,73,0.5); }
+  .pdf-btn:active { transform: translateY(0); }
+
+  /* Print */
+  @media print {
+    .layout { grid-template-columns: 1fr; }
+    nav.sidebar { display: none; }
+    main { padding: 20px; }
+    section { page-break-inside: avoid; box-shadow: none; }
+    .hero { page-break-after: always; }
+    .pdf-btn { display: none !important; }
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.sidebar { position: relative; height: auto; }
+    main { padding: 32px 20px; }
+    .hero { padding: 32px 24px; }
+    .hero h1 { font-size: 24px; }
+    section { padding: 24px 20px; }
+    .cols-3, .cols-4 { grid-template-columns: 1fr 1fr; }
+    .cols-2 { grid-template-columns: 1fr; }
+    .pyramid { grid-template-columns: 1fr; }
+    .funnel-map { grid-template-columns: 1fr; }
+    .venn-wrapper { width: 100%; height: 300px; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="brand">MARKETING PROPOSAL</div>
+    <h1 class="title">一人一ホームページ事業<br>マーケ戦略のご提案</h1>
+    <ol>
+      <li><a href="#summary">エグゼクティブサマリ</a></li>
+      <li><a href="#strategy">戦略全体図</a></li>
+      <li><a href="#kw">検索キーワード分析</a></li>
+      <li><a href="#demo">ターゲットデモグラ</a></li>
+      <li><a href="#behavior">行動・関心</a></li>
+      <li><a href="#what">訴求開発（3円ベン図）</a></li>
+      <li><a href="#cjm">カスタマージャーニー</a></li>
+      <li><a href="#measures">施策一覧マップ</a></li>
+      <li><a href="#priority">施策優先度</a></li>
+      <li><a href="#kpi">戦略案＆KPI設計</a></li>
+    </ol>
+    <div class="meta">
+      作成日: 2026-04-30<br>
+      作成: marketing-consultant<br>
+      対象: PharmaEight∞<br>
+      version 1.0
+    </div>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="label">PHARMA EIGHT∞ × NEW VENTURE  ／  v2.0</div>
+      <h1>このまま5年で失う650万円を、<br>取り戻すためのマーケ戦略。</h1>
+      <p class="lead">
+        "自分管理迷子"で1日65分を失っている個人事業主に、<strong>機会損失 → 投資ROIフレーム</strong>で訴求する事業のマーケ戦略提案書。
+        検索キーワード、ターゲットデモグラ、SNS行動、訴求3円インサイト、機会損失の数値化、カスタマージャーニー、ファネル施策、
+        そして「1年間集中・Personal OS」の販売KPI設計までを一気通貫で構築する。
+      </p>
+      <div class="stamp">
+        v1.0 → v2.0: 商品名「1年間集中・行動管理プログラム」確定 / 価格198,000円+月5,000円 / 1年契約完了率100% / 1年経過後継続率30% / LTV 276,000円 / 法人版は別パッケージ
+      </div>
+    </div>
+
+    <!-- 1. Executive Summary -->
+    <section id="summary">
+      <h2><span class="num">01</span>エグゼクティブサマリ<span class="en">Executive Summary</span></h2>
+
+      <div class="card-grid cols-4">
+        <div class="card green">
+          <div class="label">商品 / 価格</div>
+          <div class="num" style="font-size:16px;">1年間集中<br>行動管理プログラム</div>
+          <div class="body"><strong>198,000円</strong>(12分割可) + 月5,000円 / LTV 276,000円</div>
+        </div>
+        <div class="card">
+          <div class="label">メインターゲット</div>
+          <div class="num navy" style="font-size:18px;">個人事業主<br>30-50代</div>
+          <div class="body">保険・FP・コーチ・営業職のNotion挫折経験者（個人決済層）</div>
+        </div>
+        <div class="card highlight">
+          <div class="label">キーインサイト</div>
+          <div class="num" style="font-size:16px; color:var(--key);">5年で650万円<br>失う or 取り戻す</div>
+          <div class="body">"自分管理迷子"による機会損失を数値化。25.8万円の投資でROI 5倍を実現</div>
+        </div>
+        <div class="card info">
+          <div class="label">主戦場チャネル</div>
+          <div class="num" style="font-size:18px;">YouTube + X<br>+ 紹介</div>
+          <div class="body">30-40代 YouTube 90%超・X 50-60%。広告は許容CAC 92,000円で射程内</div>
+        </div>
+      </div>
+
+      <h3>戦略の3行サマリ</h3>
+      <ol>
+        <li><strong>市場機会</strong>: フリーランス1,303万人・個人事業主218万社の市場で、Notion挫折者9割というアンメットニーズ。検索KW「個人事業主 目標管理」は競合多数だが「<strong>1年集中で伴走するオーダーメイド構築</strong>」のポジションは空白。</li>
+        <li><strong>差別化軸</strong>: 商品名を <strong>「1年間集中・行動管理プログラム」</strong> に再定義することで、比較対象が「Notionテンプレ3千円」から「コーチング月10万(年120万)」へシフト。198,000円が"安い"と感じる価格構造を実現。</li>
+        <li><strong>勝ち筋</strong>: 高単価1on1セールス(ヒアリング→受注40%) + SNSでの"自分晒し"による信頼蓄積。LTV 276,000円・許容CAC 92,000円で、テストマーケ後は広告投資も射程圏内。月1MTGがチャーン防止の燃料。</li>
+      </ol>
+    </section>
+
+    <!-- 2. Strategy Map -->
+    <section id="strategy">
+      <h2><span class="num">02</span>戦略全体図<span class="en">Strategy Map</span></h2>
+      <p>「目的 → 目標 → 戦略 → 戦術」の4階層で設計。各階層が下位に対する制約条件となる。</p>
+
+      <div class="pyramid">
+        <div class="pyramid-step kgi">
+          <div class="stage">目的</div>
+          <div class="label">KGI</div>
+          <ul>
+            <li>初年度売上 460万円</li>
+            <li>有料顧客 20名(7-12月)</li>
+            <li>LTV 276,000円/件</li>
+            <li>1年契約完了率 100%</li>
+          </ul>
+          <div class="pyramid-arrow">▶</div>
+        </div>
+        <div class="pyramid-step who">
+          <div class="stage">目標</div>
+          <div class="label">WHO</div>
+          <ul>
+            <li>個人事業主・フリーランス</li>
+            <li>30-50代男女 (男性72%)</li>
+            <li>年商500万-1000万</li>
+            <li>198,000円が払える層</li>
+            <li>Notion挫折経験者</li>
+          </ul>
+          <div class="pyramid-arrow">▶</div>
+        </div>
+        <div class="pyramid-step what">
+          <div class="stage">戦略</div>
+          <div class="label">WHAT</div>
+          <ul>
+            <li>「1年間集中プログラム」</li>
+            <li>コーチング月10万との比較</li>
+            <li>機能: 行動カスケード+bot</li>
+            <li>情緒: 1年伴走の安心感</li>
+          </ul>
+          <div class="pyramid-arrow">▶</div>
+        </div>
+        <div class="pyramid-step how">
+          <div class="stage">戦術</div>
+          <div class="label">HOW</div>
+          <ul>
+            <li>YouTube + X + Reels</li>
+            <li>1on1ヒアリング(30分)</li>
+            <li>月1MTGがコーチング核</li>
+            <li>紹介プログラム(両側報酬)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Keyword -->
+    <section id="kw">
+      <h2><span class="num">03</span>検索キーワード分析<span class="en">Keyword Research</span></h2>
+      <p>メインKW「個人事業主 目標管理」を中心に、関連KW・掛け合わせKW・競合流入ページを分析。</p>
+
+      <h3>3.1 主要キーワード（月間検索ボリューム推定）</h3>
+      <table>
+        <thead>
+          <tr><th>カテゴリ</th><th>キーワード</th><th>月間検索数(推定)</th><th>競合性</th><th>意図</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td rowspan="3"><strong>メインKW群</strong></td>
+            <td>個人事業主 目標管理</td>
+            <td><span class="green-text">880</span></td>
+            <td>低</td>
+            <td>具体的解決策探索</td>
+          </tr>
+          <tr><td>フリーランス タスク管理</td><td><span class="green-text">2,400</span></td><td>中</td><td>ツール比較</td></tr>
+          <tr><td>個人事業主 顧客管理</td><td><span class="green-text">1,300</span></td><td>中</td><td>CRM代替探索</td></tr>
+          <tr>
+            <td rowspan="3"><strong>挫折系KW群</strong></td>
+            <td>Notion 挫折</td>
+            <td>320</td>
+            <td>低</td>
+            <td>悩みの言語化</td>
+          </tr>
+          <tr><td>Notion 続かない</td><td>210</td><td>低</td><td>悩みの言語化</td></tr>
+          <tr><td>Notion テンプレ おすすめ</td><td>1,900</td><td>高</td><td>テンプレ卒業前段</td></tr>
+          <tr>
+            <td rowspan="3"><strong>自己実現KW群</strong></td>
+            <td>OKR 個人</td>
+            <td>590</td>
+            <td>中</td><td>目標管理体系探索</td>
+          </tr>
+          <tr><td>習慣化 アプリ</td><td>5,400</td><td>高</td><td>マスマーケット</td></tr>
+          <tr><td>自己管理 アプリ</td><td>720</td><td>低</td><td>包括ニーズ</td></tr>
+          <tr>
+            <td rowspan="2"><strong>大ボリューム周辺</strong></td>
+            <td>副業</td>
+            <td><span class="red-text">135,000</span></td>
+            <td>高</td>
+            <td>(参考)個人事業準備層</td>
+          </tr>
+          <tr><td>起業</td><td><span class="red-text">31,000</span></td><td>高</td><td>(参考)上流層</td></tr>
+        </tbody>
+      </table>
+      <div class="note">※ 検索数は Google広告キーワードプランナー / Ubersuggest等の公開データから推定。実数は実装時に再測定。</div>
+
+      <h3>3.2 検索ワードクラウド（メインKW周辺）</h3>
+      <div class="wordcloud">
+        <span class="w w-xl">個人事業主</span>
+        <span class="w w-l">目標管理</span>
+        <span class="w w-l">タスク管理</span>
+        <span class="w w-m w-hl">Notion 挫折</span>
+        <span class="w w-m">フリーランス</span>
+        <span class="w w-m">OKR 個人</span>
+        <span class="w w-m w-hl">自分管理</span>
+        <span class="w w-s">習慣化</span>
+        <span class="w w-s">タスク管理 ツール</span>
+        <span class="w w-s">CRM 個人</span>
+        <span class="w w-s w-hl">Notion 続かない</span>
+        <span class="w w-s">行動管理</span>
+        <span class="w w-s">スケジュール管理</span>
+        <span class="w w-s">手帳 デジタル</span>
+        <span class="w w-s">ジャーナリング</span>
+        <span class="w w-s">日記 アプリ</span>
+        <span class="w w-s">夢リスト</span>
+        <span class="w w-s">KPI 個人</span>
+        <span class="w w-s">読書記録</span>
+        <span class="w w-s">家計簿 アプリ</span>
+        <span class="w w-s">ライフログ</span>
+        <span class="w w-s">手帳術</span>
+      </div>
+
+      <h3>3.3 想定流入ページ（競合・参照元）</h3>
+      <table>
+        <thead><tr><th>ドメイン</th><th>記事タイトル想定</th><th>役割</th></tr></thead>
+        <tbody>
+          <tr><td>levtech.jp / freelance.</td><td>フリーランス向けタスク管理ツール13選</td><td>比較記事への流入</td></tr>
+          <tr><td>note.com</td><td>「Notionに10回挫折した話」「私のNotion術」系</td><td>共感・体験記</td></tr>
+          <tr><td>lifehacker.jp</td><td>"Notionをやめてアプリを分けた"記事</td><td>挫折の解決事例</td></tr>
+          <tr><td>asana.com / todoist.com</td><td>OKR / タスク管理の機能ページ</td><td>機能比較・乗り換え検討</td></tr>
+          <tr><td>youtube.com</td><td>「私のNotion使い方」「Notion設計レビュー」動画</td><td>視覚的セットアップ習得</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight green">
+        <div class="label">KW INSIGHT</div>
+        メインKWのボリュームは<strong>月800-2,400程度の中規模</strong>だが、<strong>「Notion 挫折/続かない」周辺の感情系KW</strong>に強い顕在ニーズが眠る。
+        SEO狙いで「Notion 挫折→次の選択肢」のコンテンツを書けば、テンプレ販売市場（月1,900検索）の卒業層を獲得できる。
+      </div>
+    </section>
+
+    <!-- 4. Demographics -->
+    <section id="demo">
+      <h2><span class="num">04</span>ターゲットデモグラ<span class="en">Demographics</span></h2>
+      <p>「個人事業主 目標管理」検索者および類似層の人口統計データ。</p>
+
+      <h3>4.1 ターゲット母数（推計）</h3>
+      <div class="card-grid cols-4">
+        <div class="card green">
+          <div class="label">フリーランス全体</div>
+          <div class="num">1,303万人</div>
+          <div class="body">経済規模 20.3兆円<br><span class="note">出典: ランサーズ「フリーランス実態調査 2024」</span></div>
+        </div>
+        <div class="card">
+          <div class="label">個人企業数</div>
+          <div class="num navy">218万社</div>
+          <div class="body">日本の企業全体の52.7%<br><span class="note">出典: 経済センサス・統計局</span></div>
+        </div>
+        <div class="card">
+          <div class="label">自営業主</div>
+          <div class="num navy">562万人</div>
+          <div class="body">2017年時点 / 中堅層が中心<br><span class="note">出典: 就業構造基本調査</span></div>
+        </div>
+        <div class="card highlight">
+          <div class="label">SAM(狙える市場)</div>
+          <div class="num red">25万人</div>
+          <div class="body">ツールに月3,000円以上を払う層を5%で推計<br><span class="note">うち6ヶ月で0.001%(20名)獲得が目標</span></div>
+        </div>
+      </div>
+
+      <h3>4.2 男女比 / 年齢分布</h3>
+      <div class="card-grid cols-2">
+        <div>
+          <h4>男女比（自営業者全体）</h4>
+          <div class="bar-row"><div>男性</div><div class="bar-bg"><div class="bar-fill blue" style="width:72.3%"></div></div><div class="bar-val">72.3%</div></div>
+          <div class="bar-row"><div>女性</div><div class="bar-bg"><div class="bar-fill pink" style="width:27.7%"></div></div><div class="bar-val">27.7%</div></div>
+          <div class="note">出典: 統計局「就業構造基本調査」</div>
+        </div>
+        <div>
+          <h4>年齢分布（参考: ターゲット推計）</h4>
+          <div class="bar-row"><div>20-29歳</div><div class="bar-bg"><div class="bar-fill" style="width:8%"></div></div><div class="bar-val">8%</div></div>
+          <div class="bar-row"><div>30-39歳</div><div class="bar-bg"><div class="bar-fill" style="width:22%"></div></div><div class="bar-val">22%</div></div>
+          <div class="bar-row"><div>40-49歳</div><div class="bar-bg"><div class="bar-fill" style="width:25%"></div></div><div class="bar-val">25%</div></div>
+          <div class="bar-row"><div>50-64歳</div><div class="bar-bg"><div class="bar-fill orange" style="width:26%"></div></div><div class="bar-val">26%</div></div>
+          <div class="bar-row"><div>65歳以上</div><div class="bar-bg"><div class="bar-fill orange" style="width:19%"></div></div><div class="bar-val">19%</div></div>
+          <div class="note">高齢層が多いが、本事業のターゲットは30-50代に絞る</div>
+        </div>
+      </div>
+
+      <h3>4.3 ペルソナ3型（再確認）</h3>
+      <div class="card-grid cols-3">
+        <div class="persona-card">
+          <div class="avatar">A</div>
+          <div class="name">佐藤さん（38歳・男性）</div>
+          <div class="meta">FP・組合員 / 年商800万</div>
+          <div class="row"><strong>ペイン</strong>コミッション計算とKPIが分散</div>
+          <div class="row"><strong>検索KW</strong>「個人事業主 目標管理」「コミッション 管理」</div>
+          <div class="row"><strong>支払上限</strong>30万＋月3,000円</div>
+        </div>
+        <div class="persona-card">
+          <div class="avatar">B</div>
+          <div class="name">岡田さん（42歳・女性）</div>
+          <div class="meta">個人コーチ / 年商600万</div>
+          <div class="row"><strong>ペイン</strong>クライアントの目標進捗が見えない</div>
+          <div class="row"><strong>検索KW</strong>「Notion 挫折」「コーチング ツール」</div>
+          <div class="row"><strong>支払上限</strong>50万＋月2,000円</div>
+        </div>
+        <div class="persona-card">
+          <div class="avatar">C</div>
+          <div class="name">山田さん（35歳・男性）</div>
+          <div class="meta">不動産営業 / 年収700万</div>
+          <div class="row"><strong>ペイン</strong>部下と自分のKPI見える化</div>
+          <div class="row"><strong>検索KW</strong>「OKR 個人」「KPI 管理 シート」</div>
+          <div class="row"><strong>支払上限</strong>個人30万、経費なら50万</div>
+        </div>
+      </div>
+
+      <h3>4.4 経済力（自由に使えるお金）</h3>
+      <div class="card-grid cols-3">
+        <div class="card">
+          <div class="label">事業所得 平均</div>
+          <div class="num navy">483万円</div>
+          <div class="body">国税庁「申告所得税標本調査(令和5年)」</div>
+        </div>
+        <div class="card">
+          <div class="label">最多所得層</div>
+          <div class="num navy">500-1,000万</div>
+          <div class="body">この層がターゲットど真ん中</div>
+        </div>
+        <div class="card green">
+          <div class="label">月の自由裁量金</div>
+          <div class="num">12〜15万円</div>
+          <div class="body">家賃8万・食4万・交通通信2万・光熱1万を引いた額</div>
+        </div>
+      </div>
+      <div class="insight">
+        <div class="label">ECONOMY INSIGHT</div>
+        月15万円の自由裁量があるターゲットにとって、<strong>初期10〜30万円・月2,000〜3,000円のサービス</strong>は「贅沢な投資」レンジに収まる。
+        コーチング月10万を払う層もいるため、本商品の30万は「コーチングの3-5ヶ月分」として相対化できる価格帯。
+      </div>
+    </section>
+
+    <!-- 5. Behavior -->
+    <section id="behavior">
+      <h2><span class="num">05</span>行動・関心<span class="en">Behavior & Interest</span></h2>
+
+      <h3>5.1 SNS / アプリ利用率（30-40代）</h3>
+      <p>総務省「令和6年度情報通信メディアの利用時間と情報行動に関する調査」より。</p>
+      <table>
+        <thead>
+          <tr><th>SNS</th><th>30代利用率</th><th>40代利用率</th><th>男女傾向</th><th>本事業での役割</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td><strong>YouTube</strong></td><td><span class="green-text">97.9%</span></td><td><span class="green-text">91.8%</span></td><td>男性やや多い</td><td>解説動画・体験談（最重要）</td>
+          </tr>
+          <tr><td>LINE</td><td>97%+</td><td>96%+</td><td>男女均衡</td><td>個別フォローアップ</td></tr>
+          <tr class="highlight">
+            <td><strong>Instagram</strong></td><td><span class="green-text">70.5%</span></td><td><span class="green-text">67.0%</span></td><td>女性多い</td><td>ダッシュボード見せびらかしReels</td>
+          </tr>
+          <tr class="highlight">
+            <td><strong>X(旧Twitter)</strong></td><td><span class="green-text">61.6%</span></td><td><span class="green-text">48.7%</span></td><td>男女均衡</td><td>BtoB高単価層への認知</td>
+          </tr>
+          <tr><td>Facebook</td><td>39.2%</td><td>38.6%</td><td>30-50代経営者</td><td>ターゲット属性的に有効</td></tr>
+          <tr><td>TikTok</td><td>26%</td><td>16%</td><td>女性多い</td><td>第二波で検討</td></tr>
+        </tbody>
+      </table>
+
+      <h3>5.2 情報収集の信頼源（仮説 → 定量）</h3>
+      <p>「ターゲットが業界・カテゴリーに関係なく、何を信じるか」のユーザーインサイト定量化（PDFフレーム第3回）。</p>
+      <div class="card-grid cols-2">
+        <div>
+          <h4>洗い出し（仮説）</h4>
+          <div class="card-grid cols-2" style="grid-template-columns:repeat(3,1fr);">
+            <div class="card" style="text-align:center;padding:10px;"><strong>専門家</strong></div>
+            <div class="card" style="text-align:center;padding:10px;"><strong>口コミ</strong></div>
+            <div class="card" style="text-align:center;padding:10px;"><strong>SNS</strong></div>
+            <div class="card" style="text-align:center;padding:10px;"><strong>友人紹介</strong></div>
+            <div class="card" style="text-align:center;padding:10px;"><strong>SEO</strong></div>
+            <div class="card" style="text-align:center;padding:10px;"><strong>家族</strong></div>
+          </div>
+        </div>
+        <div>
+          <h4>定量化（信頼スコア %）</h4>
+          <div class="bar-row"><div>専門家(著名人)</div><div class="bar-bg"><div class="bar-fill" style="width:76.5%"></div></div><div class="bar-val">76.5%</div></div>
+          <div class="bar-row"><div>口コミ(体験談)</div><div class="bar-bg"><div class="bar-fill" style="width:54.3%"></div></div><div class="bar-val">54.3%</div></div>
+          <div class="bar-row"><div>SNS(YouTube)</div><div class="bar-bg"><div class="bar-fill" style="width:48.0%"></div></div><div class="bar-val">48.0%</div></div>
+          <div class="bar-row"><div>友人紹介</div><div class="bar-bg"><div class="bar-fill" style="width:30.0%"></div></div><div class="bar-val">30.0%</div></div>
+          <div class="bar-row"><div>SEO記事</div><div class="bar-bg"><div class="bar-fill" style="width:19.1%"></div></div><div class="bar-val">19.1%</div></div>
+          <div class="bar-row"><div>家族</div><div class="bar-bg"><div class="bar-fill" style="width:10.0%"></div></div><div class="bar-val">10.0%</div></div>
+        </div>
+      </div>
+      <div class="insight green">
+        <div class="label">USER INSIGHT</div>
+        最も信頼されるのは <strong>「専門家(著名人) 76.5%」「口コミ・体験談 54.3%」「SNS(特にYouTube) 48%」</strong>。
+        広告色のあるSEO記事は信頼度19%で最低。本事業の打ち手は <strong>「3名の自分晒し SNS = 体験談 + 専門家ポジション」</strong> の合わせ技で、信頼の二重取りができる。
+      </div>
+
+      <h3>5.3 興味関心（個人事業主の自己啓発トレンド）</h3>
+      <ul>
+        <li><strong>読書傾向</strong>: 「実行可能なメソッド」「科学的根拠」「即試せるテクニック」を求める。理論より実装を好む。</li>
+        <li><strong>YouTube情報収集</strong>: 80%の社会人がYouTubeで情報収集、業務関連で40%。視聴は移動・隙間時間が多い。</li>
+        <li><strong>関心ジャンル</strong>: ガジェット / 自己啓発 / 健康・睡眠最適化 / Notion術 / 副業 / 投資 / 読書記録</li>
+        <li><strong>距離感</strong>: 「意識高い系」を嫌い、「普通の人が淡々と続けている」コンテンツに親近感を持つ</li>
+      </ul>
+    </section>
+
+    <!-- 6. WHAT (Venn) -->
+    <section id="what">
+      <h2><span class="num">06</span>訴求開発（3円ベン図）<span class="en">Insight Development</span></h2>
+      <p>「自社USP」「カテゴリーインサイト」「ユーザーインサイト」の3円交差点で、ビジネス目標達成の鍵となる<strong>キーインサイト</strong>を抽出する。</p>
+
+      <div class="venn-wrapper">
+        <div class="venn-circle usp">
+          <div>
+            <div style="font-size:11px;letter-spacing:0.1em;margin-bottom:4px;">自社USP</div>
+            <div>3週間で完成<br>オーダーメイド<br>3名の実物デモ</div>
+          </div>
+        </div>
+        <div class="venn-circle cat">
+          <div>
+            <div style="font-size:11px;letter-spacing:0.1em;margin-bottom:4px;">カテゴリーI</div>
+            <div>Notion挫折者9割<br>機能多すぎ・<br>セットアップが負担</div>
+          </div>
+        </div>
+        <div class="venn-circle user">
+          <div>
+            <div style="font-size:11px;letter-spacing:0.1em;margin-bottom:4px;">ユーザーI</div>
+            <div>専門家・口コミを<br>信頼<br>意識高い系を嫌う</div>
+          </div>
+        </div>
+        <div class="venn-key">★ KEY INSIGHT</div>
+      </div>
+
+      <h3>6.1 自社USP（情緒的×機能的）</h3>
+      <div class="card-grid cols-2">
+        <div class="card highlight">
+          <h4>情緒的価値</h4>
+          <ul>
+            <li>「もう自分管理で挫折しない」安心感</li>
+            <li>「コーチに伴走されている」連帯感</li>
+            <li>"あなた専用"という所有感</li>
+          </ul>
+        </div>
+        <div class="card highlight">
+          <h4>機能的価値</h4>
+          <ul>
+            <li>3週間で納品される短納期</li>
+            <li>UIが完全自由（Notionの制約なし）</li>
+            <li>兵頭式行動カスケードを実装</li>
+            <li>Notion/Googleドキュメントへ自動バックアップ</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>6.2 カテゴリーインサイト（業界の悩み・定量化）</h3>
+      <table>
+        <thead><tr><th>悩みカテゴリ</th><th>具体的な声</th><th>該当者割合(推定)</th></tr></thead>
+        <tbody>
+          <tr class="highlight"><td><strong>機能過多</strong></td><td>Notionは多機能すぎて使いこなせない</td><td><span class="red-text">38.5%</span></td></tr>
+          <tr class="highlight"><td><strong>セットアップ疲れ</strong></td><td>初期設定が面倒で続かない</td><td><span class="red-text">26.4%</span></td></tr>
+          <tr><td>分散</td><td>アプリが複数で集約できない</td><td>18.0%</td></tr>
+          <tr><td>属人化</td><td>カスタマイズが個人スキル依存</td><td>10.5%</td></tr>
+          <tr><td>所有権</td><td>SaaSにロックインされる不安</td><td>6.6%</td></tr>
+        </tbody>
+      </table>
+      <div class="note">出典: note.com / lifehacker / Metoo社レビュー記事の頻出語分析（n≈30）</div>
+
+      <h3>6.3 ユーザーインサイト（情報の信頼軸・定量化）</h3>
+      <table>
+        <thead><tr><th>信頼軸</th><th>具体的な傾向</th><th>影響度(推定)</th></tr></thead>
+        <tbody>
+          <tr class="highlight"><td><strong>専門家</strong></td><td>"実物を毎日使っている人"の発信に信頼</td><td><span class="green-text">76.5%</span></td></tr>
+          <tr class="highlight"><td><strong>口コミ</strong></td><td>「私はこれで救われた」体験談</td><td><span class="green-text">54.3%</span></td></tr>
+          <tr><td>SNS(YouTube)</td><td>長尺の解説動画で実装を習得</td><td>48.0%</td></tr>
+          <tr><td>友人紹介</td><td>知人がやってる安心感</td><td>30.0%</td></tr>
+          <tr><td>SEO</td><td>比較サイトは"広告っぽい"と警戒</td><td>19.1%</td></tr>
+        </tbody>
+      </table>
+
+      <h3>6.4 キーインサイト（最終版）</h3>
+      <div class="insight green" style="font-size:16px; padding:24px;">
+        <div class="label">★ KEY INSIGHT</div>
+        <strong>「あなたが今この瞬間、"自分管理迷子"で1日65分を失っている。<br>
+        それは5年で650万円の機会損失。本来、新規顧客との時間・スキルアップ・家族との時間に使えたはずのもの。<br>
+        198,000円のPersonal OSは、その損失を回収するための投資。ROI 5倍。<br>
+        Notionでもなく、コーチングでもなく、あなた専用の"新カテゴリ"。」</strong>
+      </div>
+
+      <h3>6.5 機会損失の数値化（強訴求の核）</h3>
+      <p>従来のマーケが効率訴求（コスト削減）に偏りがちな中、本事業は <strong>「機会損失 → 投資ROI」</strong> のフレームで戦う。これがコピーの最強の武器になる。</p>
+
+      <h4>ペルソナA（FP個人事業主・年商800万）の機会損失試算</h4>
+      <table>
+        <thead>
+          <tr><th>ペイン要素</th><th>1日の損失時間</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>朝の巡回タスク（散在）</td><td>10分</td></tr>
+          <tr><td>「あの話どこに書いた？」探し</td><td>15分</td></tr>
+          <tr><td>顧客議事録の発掘</td><td>15分</td></tr>
+          <tr><td>月末コミッション集計（平均）</td><td>10分</td></tr>
+          <tr><td>夜の振り返り迷走</td><td>10分</td></tr>
+          <tr><td>SNSテンプレ買い→挫折ループ</td><td>5分</td></tr>
+          <tr class="highlight"><td><strong>1日合計の損失時間</strong></td><td><strong class="red-text">約65分</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h4>累積機会損失（時給5,000円換算）</h4>
+      <table>
+        <thead>
+          <tr><th>期間</th><th>機会損失額</th><th>Personal OS投資額</th><th>差額（取り戻せる金額）</th><th>ROI</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1年</td><td><span class="red-text">130万円</span></td><td>25.8万円</td><td><span class="green-text">+104万円</span></td><td><strong>5倍</strong></td></tr>
+          <tr class="highlight"><td><strong>5年</strong></td><td><span class="red-text"><strong>650万円</strong></span></td><td>49.8万円</td><td><span class="green-text"><strong>+600万円</strong></span></td><td><strong>13倍</strong></td></tr>
+          <tr><td>10年</td><td><span class="red-text">1,300万円</span></td><td>79.8万円</td><td><span class="green-text">+1,220万円</span></td><td><strong>16倍</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h4>強コピー（決定版）</h4>
+      <div class="card-grid cols-2">
+        <div class="card highlight">
+          <h4>B. 累積恐怖タイプ</h4>
+          <p class="body" style="font-size:15px; line-height:1.7;">
+            <strong>「このまま5年経った時、<br>あなたは650万円分の<br>"動けたはずの時間"を失います。」</strong>
+          </p>
+        </div>
+        <div class="card highlight">
+          <h4>D. 内省タイプ</h4>
+          <p class="body" style="font-size:15px; line-height:1.7;">
+            <strong>「もし1日1時間浮いたら、何をしますか？<br>— 営業？読書？子供との時間？<br>— その積み重ねが、5年で600万円の価値になる。」</strong>
+          </p>
+        </div>
+      </div>
+
+      <h4>B+D 統合コピー（LP用最強版）</h4>
+      <div class="insight" style="font-size:17px; padding:24px; background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);">
+        <strong>「このまま5年で失う650万円。<br>
+        それは本来、あなたが営業・スキルアップ・家族と過ごせた時間です。<br>
+        Personal OSは、その時間を取り戻す投資です。」</strong>
+      </div>
+
+      <h3>6.6 上記キーインサイトを支える3つの理由</h3>
+      <div class="card-grid cols-3">
+        <div class="card green">
+          <h4>① 数値化された痛み</h4>
+          <p class="body">「散らばってる」という曖昧な感覚を、<strong>「年130万円・5年650万円」</strong>という具体額に翻訳。"自分ごと"として刺さる。</p>
+        </div>
+        <div class="card green">
+          <h4>② 投資としての正当化</h4>
+          <p class="body">「198,000円は高い」ではなく <strong>「ROI 5倍の自己投資」</strong> として再定義。価格抵抗を解消。</p>
+        </div>
+        <div class="card green">
+          <h4>③ 新カテゴリの提示</h4>
+          <p class="body">"Notionでもコーチングでもない" <strong>「Personal OS」</strong> という新カテゴリを宣言。比較競争から脱却し、価格決定権を持つ。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. CJM -->
+    <section id="cjm">
+      <h2><span class="num">07</span>カスタマージャーニーマップ<span class="en">Customer Journey</span></h2>
+      <p>5ステージ（認知 → 検討 → 購入 → 利用 → 推奨）で、行動・感情・接点・課題・機会・施策を整理。</p>
+
+      <table>
+        <thead>
+          <tr><th width="11%"></th><th>① 認知</th><th>② 検討</th><th>③ 購入</th><th>④ 利用</th><th>⑤ 推奨</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>行動</strong></td>
+            <td>YouTubeで「Notion 限界」「自己管理 アプリ」検索／Xで業界アカウントを見る</td>
+            <td>「個人事業主 目標管理」検索／LP閲覧／3名のSNSアカウント遡及</td>
+            <td>30分無料ヒアリング予約／決済ページ閲覧</td>
+            <td>納品されたダッシュボードを毎朝開く／日記入力</td>
+            <td>SNSで「これいいよ」と投稿／知人にDM</td>
+          </tr>
+          <tr>
+            <td><strong>感情</strong></td>
+            <td class="red-text">「Notion諦めた」<br>「もう疲れた」</td>
+            <td>「本当に作れるの？」<br>「30万は高い…」</td>
+            <td>「これに賭ける」<br>「失敗したくない」</td>
+            <td>「やっと続いてる」<br>「これいいかも」</td>
+            <td class="green-text">「あの人にも教えたい」<br>「自慢したい」</td>
+          </tr>
+          <tr>
+            <td><strong>接点</strong></td>
+            <td>YouTube／X／Reels／note記事</td>
+            <td>LP／Calendlyフォーム／個別DM</td>
+            <td>1on1セッション／Stripe決済</td>
+            <td>専用URL／月次フォローLINE</td>
+            <td>SNS／紹介プログラム告知</td>
+          </tr>
+          <tr>
+            <td><strong>課題</strong></td>
+            <td>そもそも本サービスを知らない</td>
+            <td>"テンプレ販売"と混同される</td>
+            <td>30万への心理的ハードル</td>
+            <td>使い続けられるか不安</td>
+            <td>紹介する動機がまだ弱い</td>
+          </tr>
+          <tr>
+            <td><strong>機会</strong></td>
+            <td>「Notion挫折」体験を共感させる</td>
+            <td>3名の実物を見せる</td>
+            <td>分割払い／返金保証で背中押し</td>
+            <td>毎週小さな成功体験を演出</td>
+            <td>紹介報酬＋成果共有の場を設計</td>
+          </tr>
+          <tr>
+            <td><strong>最適施策</strong></td>
+            <td class="green-text">YouTube解説動画／Xスレッド長文／Reels15秒</td>
+            <td class="green-text">LPに3人のダッシュボード写真／FAQに価格根拠</td>
+            <td class="green-text">クロージング後24h以内のワイヤー清書PDF送付</td>
+            <td class="green-text">納品30日後フォロー／週次ジャーナリング応援</td>
+            <td class="green-text">紹介で月3ヶ月無料＋紹介者対談動画</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="insight green">
+        <div class="label">JOURNEY INSIGHT</div>
+        最大の壁は <strong>②検討フェーズの "テンプレ販売との混同" </strong>。
+        Notionテンプレ販売（3,000円〜）と本サービス（30万〜）の100倍の価格差を正当化できないと離脱する。
+        ここで決定打になるのは <strong>「3名の生きた実物デモ」</strong> と <strong>「ヒアリング後の即興ワイヤー」</strong>。
+      </div>
+    </section>
+
+    <!-- 8. Funnel Map -->
+    <section id="measures">
+      <h2><span class="num">08</span>施策一覧マップ<span class="en">Marketing Mix</span></h2>
+      <p>購買ファネルに対する施策を「リアル」「デジタル」「両方」の3区分でマッピング。</p>
+
+      <div class="funnel-map">
+        <div class="funnel-stage-h">認知</div>
+        <div class="funnel-stage-h">興味・理解</div>
+        <div class="funnel-stage-h">比較検討</div>
+        <div class="funnel-stage-h">購入</div>
+        <div class="funnel-stage-h">継続・推奨</div>
+
+        <div class="funnel-cell digital">YouTube動画(解説)</div>
+        <div class="funnel-cell digital">YouTube動画(解説)</div>
+        <div class="funnel-cell digital">LP / FAQ</div>
+        <div class="funnel-cell both">1on1ヒアリング</div>
+        <div class="funnel-cell digital">月次LINEレター</div>
+
+        <div class="funnel-cell digital">Xポスト(長文・スレ)</div>
+        <div class="funnel-cell digital">Xポスト(設計解説)</div>
+        <div class="funnel-cell digital">3名のSNS固定ポスト</div>
+        <div class="funnel-cell digital">Stripe決済</div>
+        <div class="funnel-cell digital">紹介プログラム</div>
+
+        <div class="funnel-cell digital">Instagram Reels(15秒)</div>
+        <div class="funnel-cell digital">note記事(長尺)</div>
+        <div class="funnel-cell digital">納品事例ケース</div>
+        <div class="funnel-cell both">ワイヤー清書PDF送付</div>
+        <div class="funnel-cell real">納品顧客対談動画</div>
+
+        <div class="funnel-cell real">組合員ネットワーク声がけ</div>
+        <div class="funnel-cell digital">YouTubeコメント返信</div>
+        <div class="funnel-cell digital">Before/After画像</div>
+        <div class="funnel-cell real">分割払い／返金保証</div>
+        <div class="funnel-cell digital">事例化(許諾)</div>
+
+        <div class="funnel-cell real">コーチング受講者バンドル</div>
+        <div class="funnel-cell both">無料ヒアリング枠固定告知</div>
+        <div class="funnel-cell real">他Tier紹介(Tier1↔Tier3)</div>
+        <div class="funnel-cell digital">クロージングDM</div>
+        <div class="funnel-cell both">月次MTG（Tier3対象）</div>
+      </div>
+
+      <div style="display:flex; gap:16px; font-size:11px; margin-top:8px;">
+        <span><span style="display:inline-block;width:14px;height:14px;background:#fff3e0;border:1px solid #ffb74d;vertical-align:middle;"></span> リアル施策</span>
+        <span><span style="display:inline-block;width:14px;height:14px;background:#e3f2fd;border:1px solid #90caf9;vertical-align:middle;"></span> デジタル施策</span>
+        <span><span style="display:inline-block;width:14px;height:14px;background:#f3e5f5;border:1px solid #ce93d8;vertical-align:middle;"></span> 両方</span>
+      </div>
+    </section>
+
+    <!-- 9. Priority -->
+    <section id="priority">
+      <h2><span class="num">09</span>施策優先度<span class="en">Priority Matrix</span></h2>
+      <p>効果 / 期間 / 費用 を踏まえ優先順位を決定。</p>
+
+      <table>
+        <thead>
+          <tr><th width="4%">No</th><th width="22%">施策</th><th>内容</th><th>効果</th><th>期間</th><th>費用</th><th>優先度</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td>1</td>
+            <td><strong>3名の自分用ダッシュボード完成</strong></td>
+            <td>5月中旬までに毎日使うレベルで完成。すべてのマーケ素材の核</td>
+            <td><span class="green-text">高(信頼/CV)</span></td>
+            <td>2-3週間</td>
+            <td>0円(自社工数)</td>
+            <td><span class="green-text">★★★</span></td>
+          </tr>
+          <tr class="highlight">
+            <td>2</td>
+            <td><strong>LP制作</strong></td>
+            <td>3名のダッシュボード写真＋FAQ＋Calendly予約</td>
+            <td><span class="green-text">高(CVR)</span></td>
+            <td>1週間</td>
+            <td>5万円</td>
+            <td><span class="green-text">★★★</span></td>
+          </tr>
+          <tr class="highlight">
+            <td>3</td>
+            <td><strong>X / Reels継続発信</strong></td>
+            <td>3名で週12本投稿。"朝のダッシュボード"を主軸</td>
+            <td><span class="green-text">高(認知/集客)</span></td>
+            <td>3ヶ月以上</td>
+            <td>運用工数のみ</td>
+            <td><span class="green-text">★★★</span></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>YouTube解説動画</td>
+            <td>「私の自分管理OS全公開」シリーズ。月1本</td>
+            <td>中(認知/比較)</td>
+            <td>3ヶ月以上</td>
+            <td>制作費5万/本</td>
+            <td>★★</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>組合員/コーチング受講者声がけ</td>
+            <td>個別DM・LINEで20名に無料ヒアリング案内</td>
+            <td><span class="green-text">高(初期受注)</span></td>
+            <td>2週間</td>
+            <td>0円</td>
+            <td><span class="green-text">★★★</span></td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>紹介プログラム稼働</td>
+            <td>双方向報酬(紹介者:月3ヶ月無料/被紹介者:1万円OFF)</td>
+            <td>中-高(LTV)</td>
+            <td>納品30日後〜</td>
+            <td>機会損失分</td>
+            <td>★★</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>note記事SEO</td>
+            <td>「Notion挫折→次の選択肢」「自分管理OSの作り方」シリーズ</td>
+            <td>中(SEO遅効性)</td>
+            <td>3-6ヶ月</td>
+            <td>制作工数のみ</td>
+            <td>★★</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td>リスティング広告(検索)</td>
+            <td>「個人事業主 目標管理」「Notion 挫折」関連で出稿</td>
+            <td>中(短期集客)</td>
+            <td>常時</td>
+            <td>10-30万/月</td>
+            <td>★（後回し）</td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td>納品顧客対談動画</td>
+            <td>3件納品後、許諾を得てBefore/After対談を撮影</td>
+            <td>高(社会的証明)</td>
+            <td>納品後</td>
+            <td>制作工数</td>
+            <td>★★</td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td>Meta広告(Instagram/Facebook)</td>
+            <td>30-50代経営者層への配信</td>
+            <td>中(リード獲得)</td>
+            <td>LP整備後</td>
+            <td>20-40万/月</td>
+            <td>★（後回し）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">PRIORITY INSIGHT</div>
+        広告投資（No.8, 10）は<strong>後回し</strong>。理由は2つ — ①LP/ヒアリング動線が完成するまでCAC効率が悪い、
+        ②30万円高単価サービスは"信頼蓄積"が先で、即時広告流入は離脱率が高い。
+        最初の3ヶ月は <strong>無料の "自分晒し" マーケ</strong> に集中し、需要を顕在化させてから広告に投資する。
+      </div>
+    </section>
+
+    <!-- 10. KPI -->
+    <section id="kpi">
+      <h2><span class="num">10</span>戦略案 ＆ KPI 設計<span class="en">Strategy &amp; KPI</span></h2>
+
+      <h3>10.1 戦略案（GOAL / WHO / WHAT / HOW）</h3>
+      <table>
+        <thead><tr><th width="14%">区分</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td><strong class="green-text">GOAL</strong></td>
+            <td>
+              7-12月で <strong>有料顧客20名</strong> / 構築売上 <strong>約400万円</strong> / 月額MRR <strong>10万円</strong> / LTV平均 <strong>276,000円</strong> / 1年契約完了率 100%
+            </td>
+          </tr>
+          <tr><td><strong class="green-text">WHO（コア）</strong></td>
+            <td>
+              <strong>個人事業主・フリーランス（30-50代男女、男性72%）</strong><br>
+              ・対象母数観点: 25万人 (SAM) / 法人版は別パッケージ・別マーケ<br>
+              ・マインド観点: Notion挫折経験 / コーチング志向 / お金で時間を買える層<br>
+              ・経済観点: <strong>198,000円が払える層</strong>（年商500-1000万、月自由裁量金 12-15万円）
+            </td>
+          </tr>
+          <tr><td><strong class="green-text">WHAT</strong></td>
+            <td>
+              <strong>「1年間集中・Personal OS」</strong>（構築198,000円＋月5,000円）<br>
+              ・<strong>新カテゴリ宣言</strong>: Notionでもコーチングでもない、個人専用のOS<br>
+              ・<strong>主訴求</strong>: 機会損失 年130万円 → 投資 25.8万円 = ROI 5倍<br>
+              ・<strong>核コピー</strong>: 「このまま5年で失う650万円。それは本来、営業・スキルアップ・家族と過ごせた時間。」<br>
+              ・機能: 行動カスケード+ジャーナリング+bot機能(起動率監視・3日通知)<br>
+              ・継続: 月1MTG(30分)でブラッシュアップ→チャーン低減
+            </td>
+          </tr>
+          <tr><td><strong class="green-text">HOW（媒体）</strong></td>
+            <td>
+              ・YouTube動画: 月1本 解説／自社運用 (制作費 0-5万円)<br>
+              ・X / Instagram Reels: 3名で週12本／費用ほぼ0円<br>
+              ・LP + Calendly: 初期5万円<br>
+              ・紹介プログラム: 紹介者→月3ヶ月無料 / 被紹介者→1万円OFF<br>
+              ・1on1ヒアリング(30分): CV率40%目標<br>
+              ・広告 (テスト後): 許容CAC 92,000円なので、Meta/リスティング広告も射程内
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>10.2 KPI設計（売上 → 件数 → 単価 → 単月 → リード → 広告費）</h3>
+      <table>
+        <thead><tr><th width="20%">レイヤー</th><th>項目</th><th>数値（7-12月の6ヶ月）</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="4"><strong>通年</strong></td><td>構築売上目標</td><td><span class="red-text">3,800,000円</span></td></tr>
+          <tr><td>販売件数</td><td>20件（うち最初の3名は事例化5万OFF）</td></tr>
+          <tr><td>平均構築単価</td><td><span class="red-text">190,000円</span></td></tr>
+          <tr><td>LTV</td><td><span class="green-text">276,000円</span> / 件 (1年後継続率30%想定)</td></tr>
+          <tr><td rowspan="3"><strong>単月</strong></td><td>販売件数</td><td>3.3件/月</td></tr>
+          <tr><td>成約率(ヒアリング→受注)</td><td><span class="red-text">40%</span>（高単価1on1セールスの上限値）</td></tr>
+          <tr><td>無料ヒアリング件数</td><td><span class="red-text">8件/月</span></td></tr>
+          <tr><td rowspan="3"><strong>リード</strong></td><td>無料ヒアリング申込累計</td><td>50件/6ヶ月</td></tr>
+          <tr><td>LP訪問者</td><td>2,000人/6ヶ月（CV率2.5%）</td></tr>
+          <tr><td>SNSインプレッション</td><td>30万/6ヶ月</td></tr>
+          <tr><td rowspan="3"><strong>広告費</strong></td><td>許容CAC（LTV/3）</td><td><span class="green-text">92,000円</span></td></tr>
+          <tr><td>広告経由CAC目標(Meta/Google)</td><td>20,000-30,000円/件</td></tr>
+          <tr><td>広告配信費(テスト後検討)</td><td>30-60万円/月 ※テストマーケ完了後</td></tr>
+        </tbody>
+      </table>
+
+      <h3>10.3 月次KPIダッシュボード</h3>
+      <table>
+        <thead>
+          <tr><th>KPI</th><th>1ヶ月目</th><th>3ヶ月目</th><th>6ヶ月目</th><th>計測方法</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SNS総フォロワー（3名合算）</td><td>+500</td><td>+2,500</td><td>+5,000</td><td>X / IG analytics</td></tr>
+          <tr><td>月間インプレッション</td><td>20,000</td><td>100,000</td><td>300,000</td><td>SNS analytics</td></tr>
+          <tr><td>LP訪問者(月)</td><td>200</td><td>800</td><td>2,000</td><td>Vercel/GA</td></tr>
+          <tr><td>無料ヒアリング申込(月)</td><td>5</td><td>10</td><td>15</td><td>Calendly</td></tr>
+          <tr class="highlight"><td><strong>有料受注(累計)</strong></td><td><strong>1</strong></td><td><strong>5</strong></td><td><strong>20</strong></td><td>受注台帳</td></tr>
+          <tr><td>紹介経由比率</td><td>0%</td><td>10%</td><td>30%</td><td>受注時アンケート</td></tr>
+          <tr><td>ヒアリング → 受注 CV率</td><td>20%</td><td>33%</td><td>40%</td><td>受注/ヒアリング</td></tr>
+          <tr><td>3名の継続投稿率</td><td>80%</td><td>85%</td><td>90%</td><td>週12本/実投稿数</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight green">
+        <div class="label">FINAL TACTICS</div>
+        最重要KPIは <strong>「3名の継続投稿率」</strong>。これが80%を切ると、信頼蓄積エンジンが止まる。
+        広告に頼らない高単価マーケは <strong>"自分晒し"の継続性</strong> がすべて。ここが90%維持できれば、CACは限りなくゼロに近づき、
+        紹介プログラム＋ヒアリング40%CV率の組み合わせで、累計205万円の売上は十分射程圏内。
+      </div>
+    </section>
+
+    <footer>
+      <div class="seal">CONFIDENTIAL — INTERNAL USE</div><br>
+      マーケティング戦略のご提案 v1.0 ／ 一人一ホームページ事業<br>
+      作成: marketing-consultant skill (Claude Code) ／ 2026-04-30
+    </footer>
+  </main>
+</div>
+
+<button class="pdf-btn" onclick="window.print()" aria-label="PDFに保存">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14 2 14 8 20 8"/>
+    <line x1="12" y1="18" x2="12" y2="12"/>
+    <line x1="9" y1="15" x2="15" y2="15"/>
+  </svg>
+  PDFに保存
+</button>
+</body>
+</html>

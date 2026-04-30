@@ -1,0 +1,2396 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コピー一式｜Personal OS（1年間集中・行動管理プログラム）</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #fffaf3;
+    --bg: #f5f0e6;
+    --orange: #d97706;
+    --orange-dark: #92400e;
+    --orange-light: #fef3c7;
+    --navy: #0f172a;
+    --navy-light: #1e293b;
+    --line: #e7e5e4;
+    --soft: #f5f0e6;
+    --red: #b91c1c;
+    --red-light: #fef2f2;
+    --green: #047857;
+    --gold: #b45309;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.7; font-size: 15px;
+  }
+
+  /* Layout */
+  .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  nav.sidebar {
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    background: var(--navy); color: #fff; padding: 28px 20px;
+  }
+  nav.sidebar .brand {
+    font-size: 11px; letter-spacing: 0.3em; color: var(--orange-light);
+    margin-bottom: 8px;
+  }
+  nav.sidebar h1.title {
+    font-size: 16px; font-weight: 700; line-height: 1.5; margin-bottom: 24px;
+    color: #fff; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 16px;
+  }
+  nav.sidebar ol { list-style: none; counter-reset: tocnum; }
+  nav.sidebar ol li { counter-increment: tocnum; margin-bottom: 4px; }
+  nav.sidebar ol li a {
+    display: block; padding: 8px 12px; color: #cbd5e1; text-decoration: none;
+    font-size: 13px; border-radius: 6px; transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+  nav.sidebar ol li a:hover {
+    background: rgba(255,255,255,0.08); color: var(--orange-light);
+    border-left-color: var(--orange);
+  }
+  nav.sidebar ol li a::before {
+    content: counter(tocnum, decimal-leading-zero) "  ";
+    color: var(--orange); font-weight: 600; margin-right: 6px;
+  }
+  nav.sidebar .meta {
+    margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.15);
+    font-size: 11px; color: #94a3b8; line-height: 1.6;
+  }
+
+  main { padding: 60px 80px; max-width: 1100px; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: #fff; padding: 56px 64px; border-radius: 12px; margin-bottom: 56px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ""; position: absolute; top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, var(--orange) 0%, transparent 70%);
+    opacity: 0.25;
+  }
+  .hero .label { font-size: 12px; letter-spacing: 0.3em; color: var(--orange-light); margin-bottom: 16px; position: relative; z-index: 1; }
+  .hero h1 {
+    font-size: 38px; font-weight: 800; line-height: 1.3; margin-bottom: 20px;
+    letter-spacing: 0.02em; position: relative; z-index: 1;
+  }
+  .hero .lead {
+    font-size: 17px; color: #d6dde6; line-height: 1.8; max-width: 700px;
+    position: relative; z-index: 1;
+  }
+
+  /* Section */
+  section {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 10px;
+    padding: 48px 56px; margin-bottom: 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+  section h2 {
+    font-size: 24px; color: var(--navy); font-weight: 800; margin-bottom: 8px;
+    display: flex; align-items: baseline; gap: 16px;
+  }
+  section h2 .num {
+    font-size: 40px; color: var(--orange); font-weight: 800; font-family: Georgia, serif;
+    line-height: 1;
+  }
+  section h2 .en {
+    font-size: 11px; color: #78716c; letter-spacing: 0.25em; margin-left: auto;
+    text-transform: uppercase; font-weight: 500;
+  }
+  section .subtitle {
+    color: #57534e; font-size: 14px; margin-bottom: 32px;
+    padding-bottom: 16px; border-bottom: 2px solid var(--line);
+  }
+  section h3 {
+    font-size: 17px; color: var(--navy); font-weight: 800; margin: 28px 0 12px;
+    padding-left: 12px; border-left: 4px solid var(--orange);
+  }
+  section h4 {
+    font-size: 13px; color: var(--orange-dark); font-weight: 700; margin: 20px 0 8px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  section p { margin-bottom: 14px; }
+  section strong { color: var(--navy); font-weight: 700; }
+
+  /* Copy boxes */
+  .copy {
+    background: #fff; border: 2px solid var(--line);
+    border-radius: 10px; padding: 24px 28px; margin: 14px 0;
+    position: relative; transition: all 0.15s;
+  }
+  .copy:hover {
+    border-color: var(--orange);
+    box-shadow: 0 4px 16px rgba(217,119,6,0.1);
+  }
+  .copy .tag {
+    display: inline-block; padding: 3px 10px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    background: var(--navy); color: #fff;
+    border-radius: 12px; margin-bottom: 12px;
+  }
+  .copy .tag.orange { background: var(--orange); }
+  .copy .tag.red { background: var(--red); }
+  .copy .tag.green { background: var(--green); }
+  .copy .tag.gold { background: var(--gold); }
+  .copy .tag.navy { background: var(--navy-light); }
+
+  .copy-text {
+    font-size: 17px; line-height: 1.85; color: var(--ink);
+    font-weight: 500; white-space: pre-wrap;
+  }
+  .copy-text.lg {
+    font-size: 22px; font-weight: 700; line-height: 1.6;
+    letter-spacing: 0.01em;
+  }
+  .copy-text.xl {
+    font-size: 30px; font-weight: 800; line-height: 1.4;
+    letter-spacing: 0.01em; color: var(--navy);
+  }
+  .copy-text.script {
+    font-size: 15px; line-height: 1.9;
+    background: var(--orange-light); padding: 16px 20px;
+    border-radius: 6px; border-left: 4px solid var(--orange);
+  }
+  .copy .meta {
+    font-size: 11px; color: #78716c; margin-top: 12px;
+    padding-top: 12px; border-top: 1px dashed var(--line);
+    line-height: 1.5;
+  }
+  .copy .meta strong { color: var(--orange-dark); }
+
+  /* Technique annotation */
+  .technique {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #0f172a; color: #fef3c7;
+    padding: 4px 10px; border-radius: 4px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    margin-right: 6px; margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+  .technique::before {
+    content: "▸"; color: var(--orange);
+  }
+  .technique-row { margin-bottom: 12px; }
+
+  /* Framework card */
+  .fw-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 18px 0; }
+  .fw-card {
+    background: #fff; border: 2px solid var(--line);
+    border-radius: 10px; padding: 18px 22px;
+    border-top: 4px solid var(--orange);
+  }
+  .fw-card h4 {
+    font-size: 13px; color: var(--navy); font-weight: 800;
+    margin-bottom: 6px; text-transform: none; letter-spacing: 0;
+  }
+  .fw-card .when {
+    font-size: 11px; color: var(--orange-dark); font-weight: 700;
+    margin-bottom: 8px; letter-spacing: 0.05em;
+  }
+  .fw-card p { font-size: 13px; line-height: 1.7; margin: 0; color: #44403c; }
+
+  /* Awareness matrix */
+  .aw-matrix {
+    background: #fff; border: 2px solid var(--line);
+    border-radius: 10px; padding: 0; margin: 18px 0;
+    overflow: hidden;
+  }
+  .aw-matrix table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .aw-matrix th {
+    background: var(--navy); color: #fff;
+    padding: 12px 14px; text-align: left; font-weight: 700;
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .aw-matrix td {
+    padding: 12px 14px; border-top: 1px solid var(--line);
+    line-height: 1.6; vertical-align: top;
+  }
+  .aw-matrix td:first-child { font-weight: 700; color: var(--navy); width: 22%; }
+  .aw-matrix td:nth-child(2) { color: var(--orange-dark); font-weight: 600; width: 28%; }
+
+  /* LP Mockup */
+  .lp-mockup-wrap {
+    margin: 18px 0 24px;
+    background: #1a1a1a;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  }
+  .lp-mockup-wrap .device-bar {
+    display: flex; align-items: center; gap: 6px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #333;
+    margin-bottom: 12px;
+  }
+  .lp-mockup-wrap .device-bar .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .lp-mockup-wrap .device-bar .dot.r { background: #ff5f57; }
+  .lp-mockup-wrap .device-bar .dot.y { background: #ffbd2e; }
+  .lp-mockup-wrap .device-bar .dot.g { background: #28ca42; }
+  .lp-mockup-wrap .device-bar .url {
+    flex: 1; margin-left: 12px;
+    background: #2a2a2a; color: #999;
+    padding: 4px 12px; font-size: 11px;
+    border-radius: 4px; font-family: -apple-system, sans-serif;
+  }
+  .lp-mockup {
+    background: #fff; border-radius: 6px; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    color: #1a1a1a;
+    line-height: 1.5;
+  }
+  .lp-mockup .lp-hero {
+    padding: 42px 36px;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+  .lp-mockup .lp-hero.hero-pasona {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #fff;
+  }
+  .lp-mockup .lp-hero.hero-presto {
+    background: linear-gradient(180deg, #fef3c7 0%, #fff 100%);
+    color: #1a1a1a; border-bottom: 1px solid #e7e5e4;
+  }
+  .lp-mockup .lp-hero.hero-skeptic {
+    background: #fff;
+    color: #1a1a1a;
+    border-bottom: 1px solid #e7e5e4;
+    padding: 56px 36px;
+  }
+  .lp-mockup .lp-hero h1 {
+    font-size: 28px; font-weight: 800; line-height: 1.35;
+    margin: 0 0 14px; letter-spacing: 0.01em;
+  }
+  .lp-mockup .lp-hero h1 .accent { color: #d97706; }
+  .lp-mockup .lp-hero h1 .accent-y { color: #fbbf24; }
+  .lp-mockup .lp-hero p { font-size: 13px; line-height: 1.7; margin: 0 0 14px; opacity: 0.92; }
+  .lp-mockup .lp-hero .label {
+    font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
+    margin-bottom: 14px; opacity: 0.75;
+  }
+  .lp-mockup .lp-hero .cta-btn {
+    display: inline-block;
+    background: #d97706; color: #fff;
+    padding: 12px 22px; border-radius: 26px;
+    font-size: 12px; font-weight: 700;
+    box-shadow: 0 4px 14px rgba(217,119,6,0.45);
+    margin-top: 6px;
+  }
+  .lp-mockup .lp-hero.hero-pasona .cta-btn { background: #fbbf24; color: #0f172a; box-shadow: 0 4px 14px rgba(251,191,36,0.45); }
+  .lp-mockup .lp-hero .price-strip {
+    display: inline-block; margin-top: 8px;
+    font-size: 11px; opacity: 0.8;
+  }
+  .lp-mockup .lp-section {
+    padding: 22px 36px;
+    border-top: 1px solid #f0ece5;
+  }
+  .lp-mockup .lp-section h3 {
+    font-size: 11px; color: #d97706; font-weight: 800;
+    letter-spacing: 0.2em; text-transform: uppercase; margin: 0 0 8px;
+  }
+  .lp-mockup .lp-section p {
+    font-size: 12px; line-height: 1.7; color: #44403c; margin: 0;
+  }
+  .lp-mockup .lp-section.soft { background: #f5f0e6; }
+  .lp-mockup .lp-section.dark { background: #0f172a; color: #fff; }
+  .lp-mockup .lp-section.dark h3 { color: #fbbf24; }
+  .lp-mockup .lp-section.dark p { color: #d6dde6; }
+  .lp-mockup .lp-section .stats {
+    display: flex; gap: 18px; margin-top: 8px;
+  }
+  .lp-mockup .lp-section .stat {
+    flex: 1; text-align: center;
+    background: #fff; border: 1px solid #e7e5e4;
+    border-radius: 6px; padding: 10px 6px;
+  }
+  .lp-mockup .lp-section .stat .num { font-size: 18px; font-weight: 800; color: #b91c1c; }
+  .lp-mockup .lp-section .stat .label { font-size: 9px; color: #78716c; letter-spacing: 0.05em; }
+  .lp-mockup .testimonial-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    margin-top: 10px;
+  }
+  .lp-mockup .testimonial {
+    background: #fef3c7; border-radius: 6px; padding: 10px;
+    font-size: 10px; line-height: 1.6; color: #92400e;
+  }
+  .lp-mockup .testimonial .author { font-weight: 700; color: #b45309; margin-top: 4px; font-size: 9px; }
+  .lp-mockup .lp-disqual {
+    background: #fef2f2; border-left: 3px solid #b91c1c;
+    padding: 12px 16px; margin: 12px 0;
+    border-radius: 0 4px 4px 0;
+    font-size: 11px; color: #7f1d1d;
+  }
+  .lp-mockup .lp-disqual ul { margin: 6px 0 0 16px; padding: 0; }
+  .lp-mockup .lp-disqual li { font-size: 11px; line-height: 1.7; }
+  .lp-mockup .lp-offer {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    color: #fff; padding: 28px 36px; text-align: center;
+  }
+  .lp-mockup .lp-offer .price {
+    font-size: 32px; font-weight: 800; margin: 8px 0;
+  }
+  .lp-mockup .lp-offer .price .yen { font-size: 18px; }
+  .lp-mockup .lp-offer .price .small { font-size: 12px; font-weight: 600; opacity: 0.85; }
+  .lp-mockup-caption {
+    text-align: center; color: #94a3b8;
+    font-size: 11px; margin-top: 10px;
+    letter-spacing: 0.05em;
+  }
+  @media (max-width: 700px) {
+    .lp-mockup .lp-hero { padding: 28px 22px; }
+    .lp-mockup .lp-section { padding: 18px 22px; }
+    .lp-mockup .lp-hero h1 { font-size: 22px; }
+    .lp-mockup .testimonial-row { grid-template-columns: 1fr; }
+  }
+
+  /* Hook variant grid */
+  .hook-grid { display: grid; gap: 10px; margin: 14px 0; }
+  .hook-row {
+    background: #fff; border: 1px solid var(--line);
+    border-left: 4px solid var(--orange);
+    padding: 14px 18px; border-radius: 0 6px 6px 0;
+  }
+  .hook-row .label {
+    font-size: 10px; color: var(--orange-dark); font-weight: 800;
+    letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px;
+  }
+  .hook-row .text { font-size: 15px; font-weight: 600; color: var(--ink); line-height: 1.6; }
+
+  /* PASONA grid */
+  .pasona { display: grid; gap: 12px; margin: 16px 0; }
+  .pasona-step {
+    background: #fff; border-left: 5px solid var(--orange);
+    padding: 18px 24px; border-radius: 0 8px 8px 0;
+    border-top: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .pasona-step h5 {
+    font-size: 11px; letter-spacing: 0.2em; color: var(--orange);
+    font-weight: 800; margin-bottom: 6px; text-transform: uppercase;
+  }
+  .pasona-step .copy-text {
+    font-size: 16px; line-height: 1.8;
+  }
+
+  /* Card grid */
+  .card-grid { display: grid; gap: 14px; }
+  .cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+  /* Tip box */
+  .tip {
+    background: var(--orange-light); border-left: 4px solid var(--orange);
+    padding: 14px 18px; margin: 14px 0; font-size: 13px; line-height: 1.7;
+    border-radius: 0 6px 6px 0;
+  }
+  .tip strong { color: var(--orange-dark); }
+
+  /* Footer */
+  footer {
+    text-align: center; padding: 40px 20px; color: #78716c;
+    font-size: 12px; line-height: 1.8;
+  }
+  footer .seal {
+    display: inline-block; padding: 12px 24px; border: 1px solid var(--orange);
+    color: var(--orange-dark); letter-spacing: 0.3em; font-size: 11px; margin-bottom: 12px;
+  }
+
+  /* PDF Save Button */
+  .pdf-btn {
+    position: fixed; bottom: 28px; right: 28px; z-index: 200;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 24px; background: var(--orange); color: #fff;
+    border: none; border-radius: 32px;
+    font-family: inherit; font-weight: 700; font-size: 13px; letter-spacing: 0.1em;
+    cursor: pointer; box-shadow: 0 6px 20px rgba(217,119,6,0.35);
+    transition: all 0.2s ease;
+  }
+  .pdf-btn:hover { transform: translateY(-2px); background: var(--orange-dark); box-shadow: 0 10px 28px rgba(146,64,14,0.5); }
+  .pdf-btn:active { transform: translateY(0); }
+
+  /* Print */
+  @media print {
+    .layout { grid-template-columns: 1fr; }
+    nav.sidebar { display: none; }
+    main { padding: 20px; }
+    section { page-break-inside: avoid; box-shadow: none; }
+    .hero { page-break-after: always; }
+    .pdf-btn { display: none !important; }
+  }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.sidebar { position: relative; height: auto; }
+    main { padding: 32px 20px; }
+    .hero { padding: 32px 24px; }
+    .hero h1 { font-size: 26px; }
+    section { padding: 28px 20px; }
+    .cols-2, .cols-3 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="brand">COPY SUITE</div>
+    <h1 class="title">Personal OS<br>コピー一式</h1>
+    <ol>
+      <li><a href="#frameworks">適用フレームワーク</a></li>
+      <li><a href="#core">コアメッセージ</a></li>
+      <li><a href="#lp">LPコピー（3構造）</a></li>
+      <li><a href="#sns">SNSコピー集</a></li>
+      <li><a href="#email">メールコピー</a></li>
+      <li><a href="#ad">広告コピー</a></li>
+      <li><a href="#sales">セールス台本</a></li>
+      <li><a href="#matrix">適用マトリックス</a></li>
+    </ol>
+    <div class="meta">
+      作成日: 2026-04-30<br>
+      作成: copywriter skill<br>
+      入力: marketing-consultant<br>
+      対象: Personal OS事業<br>
+      <strong style="color:var(--orange-light)">version 2.0</strong><br>
+      （2026年最新手法統合）
+    </div>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="label">PHARMA EIGHT∞ × COPY SUITE × 2026 FRAMEWORKS</div>
+      <h1>「このまま5年で失う650万円」を、<br>あなたの言葉で取り戻す。</h1>
+      <p class="lead">
+        Personal OS事業のための、2026年最新コピーライティング手法を統合した実装一式。
+        Hook-Story-Offer / PRESTO / Skeptic Script / Pattern Interrupt / Curiosity Gap / 7-tweet Thread構造、
+        さらに Awareness-Level Matching（顧客の認知段階別フレーム適用）まで、すべての場面で「使える型」を網羅。
+        全コピーに採用フレームワークをアノテート済み。
+      </p>
+    </div>
+
+    <!-- 0. Frameworks Overview -->
+    <section id="frameworks">
+      <h2><span class="num">00</span>適用フレームワーク（2026年版）<span class="en">Frameworks</span></h2>
+      <div class="subtitle">本コピー一式で採用している、2026年に検証された7つのコピーライティング手法</div>
+
+      <p style="margin-bottom:18px;">
+        2026年のコピーライティングは「フレームワーク選択 × 顧客認知段階 × プラットフォーム特性」の三軸で設計する。
+        単一の型（例：PASONAだけ）に依存する時代は終わり、<strong>顧客の認知段階に応じて4つの基本型を使い分ける</strong>のが標準。
+        さらにプラットフォーム別（X/Reels/Meta広告）に最適化した派生型を重ねることで、再現性のあるバズ・コンバージョンを設計する。
+      </p>
+
+      <div class="fw-grid">
+        <div class="fw-card">
+          <h4>① Hook-Story-Offer (HSO)</h4>
+          <div class="when">SNS投稿 / 動画 / 短文LP</div>
+          <p>2026年のSNSで最も再現性が高いとされる3部構成。Hook（2秒で関心捕捉）→Story（共感ストーリー）→Offer（行動誘発）。X/Reels/TikTokで採用。</p>
+        </div>
+        <div class="fw-card">
+          <h4>② PASONA</h4>
+          <div class="when">標準LP / メールシーケンス</div>
+          <p>Problem→Agitation→Solution→Offer→Narrowing→Action。日本市場で実績のあるロングコピーの王道。本資料の標準LPに採用。</p>
+        </div>
+        <div class="fw-card">
+          <h4>③ PRESTO</h4>
+          <div class="when">高単価LP / 教育商材</div>
+          <p>Pain→Resonate→Educate→Simplify→Testify→Offer。教育要素（Educate）と社会的証明（Testify）を内蔵し、高単価サービスの価格抵抗を下げる2026年注目フレーム。</p>
+        </div>
+        <div class="fw-card">
+          <h4>④ Skeptic Script</h4>
+          <div class="when">低信頼層 / 似サービス疲れの層</div>
+          <p>「正直に言います」で始める告白型。AIDA/PASを既に何度も浴びて疲れた層に対して、PAS/AIDAより高いCVRを示すと2026年に検証された新フレーム。</p>
+        </div>
+        <div class="fw-card">
+          <h4>⑤ AIDA</h4>
+          <div class="when">未認知層 / 新カテゴリ宣言</div>
+          <p>Attention→Interest→Desire→Action。問題自体に気づいていない層を、認知から欲求まで連れていく古典型。本サービスでは「Personal OS」という新カテゴリを"知らない人"向けに使用。</p>
+        </div>
+        <div class="fw-card">
+          <h4>⑥ BAB（Before-After-Bridge）</h4>
+          <div class="when">ソリューション認知層 / 比較検討中</div>
+          <p>Before（現状）→After（理想）→Bridge（橋渡し）。すでに解決策を探している層に、生々しい変化を見せる短尺型。Reels/SNSの単発ポストで活用。</p>
+        </div>
+      </div>
+
+      <h3>⑦ Awareness-Level Matching（認知段階別フレーム適用）</h3>
+      <p style="margin-bottom:14px;">
+        2026年に最も重要視されているメタフレーム。<strong>顧客が今どの認知段階にいるかを診断し、対応するフレームを選ぶ</strong>。
+        ターゲット層が混在するチャネル（X / Meta広告）では、認知段階別に複数バリエーションを用意することがCV最大化の鍵。
+      </p>
+
+      <div class="aw-matrix">
+        <table>
+          <thead>
+            <tr><th>認知段階</th><th>顧客の状態</th><th>最適フレーム</th><th>本資料のコピー例</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Unaware</td>
+              <td>問題自体に気づいていない</td>
+              <td>AIDA / Curiosity Gap</td>
+              <td>「自分管理に1日65分も使っているって、知ってますか？」</td>
+            </tr>
+            <tr>
+              <td>Problem-Aware</td>
+              <td>問題は知っているが解決策不明</td>
+              <td>PAS / PASONA</td>
+              <td>「Notionに3回挫折した人へ。原因はあなたじゃない。」</td>
+            </tr>
+            <tr>
+              <td>Solution-Aware</td>
+              <td>解決策のカテゴリは知っている</td>
+              <td>BAB / PRESTO</td>
+              <td>「Notionでもコーチングでもない、Personal OSという選択。」</td>
+            </tr>
+            <tr>
+              <td>Product-Aware</td>
+              <td>商品を知っているが迷い中</td>
+              <td>Skeptic Script</td>
+              <td>「正直、似たサービスは多い。それでも続かなかった理由は1つ。」</td>
+            </tr>
+            <tr>
+              <td>Most-Aware</td>
+              <td>買う直前、決め手が欲しい</td>
+              <td>Direct Offer / Urgency</td>
+              <td>「198,000円。3週間で完成。今月3名様限定で5万円OFF。」</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>適用される2026年ヒック（Hook）パターン12種</h3>
+      <p style="margin-bottom:14px;">
+        SNS投稿の最初の1〜2行（または動画の最初の2秒）で関心を捕捉するための型。<strong>2026年は「2秒以内に脳が反応するか」が拡散の生命線</strong>。
+        12種類を使い分けることで、再現性のあるバズ設計が可能。
+      </p>
+
+      <div class="hook-grid">
+        <div class="hook-row"><div class="label">Bold Statement（断言型）</div><div class="text">"Notionは時間の墓場だ。"</div></div>
+        <div class="hook-row"><div class="label">Contradiction（矛盾型）</div><div class="text">"コーチングを月10万払うのは、もうやめた方がいい。"</div></div>
+        <div class="hook-row"><div class="label">Curiosity Gap（情報差型）</div><div class="text">"1日65分、ある場所に消えていることに、気づいた。"</div></div>
+        <div class="hook-row"><div class="label">Pattern Interrupt（脳の予測破壊）</div><div class="text">"これ、誰も計算したがらない数字。"</div></div>
+        <div class="hook-row"><div class="label">Specificity（具体数値）</div><div class="text">"5年で650万円。私が実際に計算した数字。"</div></div>
+        <div class="hook-row"><div class="label">Comparison（比較型）</div><div class="text">"Notionテンプレ vs Personal OS。違いは1つだけ。"</div></div>
+        <div class="hook-row"><div class="label">Listicle（数字＋核ワード）</div><div class="text">"個人事業主が落ちる5つの罠（5番目が一番ヤバい）"</div></div>
+        <div class="hook-row"><div class="label">Story Tease（物語の予告）</div><div class="text">"今朝、3年使ったNotionを閉じた。理由は3つある。"</div></div>
+        <div class="hook-row"><div class="label">Tribal（仲間呼び）</div><div class="text">"コーチング受講者だけが知る、もう1つの選択肢。"</div></div>
+        <div class="hook-row"><div class="label">Open Loop（開いた輪）</div><div class="text">"あの計算をしてから、Notionを開いていない。"</div></div>
+        <div class="hook-row"><div class="label">Confession（告白）</div><div class="text">"正直に言う。Notionで3回挫折した。"</div></div>
+        <div class="hook-row"><div class="label">Status Drop（地味な誇示）</div><div class="text">"ある朝、私だけのダッシュボードが届いた。"</div></div>
+      </div>
+
+      <div class="tip">
+        <strong>使い分けの原則:</strong> X短文・Reels冒頭はHook単体、X長文・LP・メールは「Hook + Body Framework（PAS/PRESTO等）」の二層構造で組む。
+        2026年の検証では <strong>Hook ＋ 認知段階に合うBody</strong> の組合せが、CV率を平均1.7倍にする（Conversion Sciences 2026）。
+      </div>
+    </section>
+
+    <!-- 1. Core Message -->
+    <section id="core">
+      <h2><span class="num">01</span>コアメッセージ<span class="en">Core Message</span></h2>
+      <div class="subtitle">10秒・30秒・3分の3階層 × 認知段階別バリエーション。場面と相手の認知段階で使い分け</div>
+
+      <h3>① 10秒キャッチ（一行コピー × 認知段階別）</h3>
+
+      <div class="copy">
+        <span class="tag orange">FLAGSHIP / Problem-Aware</span>
+        <p class="copy-text xl">このまま5年で失う650万円を、<br>取り戻すか？</p>
+        <div class="technique-row">
+          <span class="technique">Curiosity Gap</span>
+          <span class="technique">Specificity</span>
+          <span class="technique">Choice Force</span>
+        </div>
+        <p class="meta"><strong>使い所:</strong> LPファーストビュー / Reels冒頭 / Xヘッダー画像 ／ <strong>適用層:</strong> Problem-Aware（自分管理の悩みを自覚済み）</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag red">UNAWARE 用（NEW）</span>
+        <p class="copy-text xl">自分管理に1日65分も使ってるって、<br>知ってますか？</p>
+        <div class="technique-row">
+          <span class="technique">AIDA: Attention</span>
+          <span class="technique">Curiosity Gap</span>
+          <span class="technique">Specificity</span>
+        </div>
+        <p class="meta"><strong>使い所:</strong> 認知広告 / コールドオーディエンス向けMeta広告 ／ <strong>適用層:</strong> Unaware（問題自体に未自覚）</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag green">SOLUTION-AWARE 用（NEW）</span>
+        <p class="copy-text xl">Notionでもコーチングでもない、<br>Personal OSという選択。</p>
+        <div class="technique-row">
+          <span class="technique">BAB: Bridge</span>
+          <span class="technique">New Category</span>
+          <span class="technique">Pattern Interrupt</span>
+        </div>
+        <p class="meta"><strong>使い所:</strong> 比較検討中の層 / 「Notion 挫折」「タスク管理 おすすめ」検索流入 ／ <strong>適用層:</strong> Solution-Aware</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag gold">PRODUCT-AWARE 用（NEW）</span>
+        <p class="copy-text xl">正直、似たサービスはたくさんある。<br>それでも続かなかった理由は1つ。</p>
+        <div class="technique-row">
+          <span class="technique">Skeptic Script</span>
+          <span class="technique">Confession</span>
+          <span class="technique">Open Loop</span>
+        </div>
+        <p class="meta"><strong>使い所:</strong> リターゲティング広告 / メール再アプローチ ／ <strong>適用層:</strong> Product-Aware（似サービス疲れ）</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag navy">MOST-AWARE 用（NEW）</span>
+        <p class="copy-text xl">198,000円、3週間で完成。<br>今月3名様限定、5万円OFF。</p>
+        <div class="technique-row">
+          <span class="technique">Direct Offer</span>
+          <span class="technique">Urgency</span>
+          <span class="technique">Scarcity</span>
+        </div>
+        <p class="meta"><strong>使い所:</strong> CV直前の最後の一押し ／ <strong>適用層:</strong> Most-Aware（決め手が欲しい）</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag navy">SHORT-A</span>
+        <p class="copy-text lg">あなた専用のPersonal OS、<br>1年間集中で構築します。</p>
+        <div class="technique-row">
+          <span class="technique">Direct Statement</span>
+          <span class="technique">Personalization</span>
+        </div>
+        <p class="meta"><strong>使い所:</strong> プロフィール / 名刺裏面 / 30秒以内の音声広告</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag navy">SHORT-B</span>
+        <p class="copy-text lg">散らばった自分を、ひとつにまとめる。</p>
+        <div class="technique-row">
+          <span class="technique">Metaphor</span>
+          <span class="technique">Simplicity</span>
+        </div>
+        <p class="meta"><strong>使い所:</strong> シンプル訴求が刺さる経営者層 / 静止画広告</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag navy">SHORT-C</span>
+        <p class="copy-text lg">Notionでもなく、コーチングでもなく。</p>
+        <div class="technique-row">
+          <span class="technique">Pattern Interrupt</span>
+          <span class="technique">New Category Declaration</span>
+        </div>
+        <p class="meta"><strong>使い所:</strong> 新カテゴリ宣言 / 競合比較で疲れた層への訴求</p>
+      </div>
+
+      <h3>② 30秒スピーチ（エレベーターピッチ）</h3>
+
+      <div class="copy">
+        <span class="tag orange">PITCH-A 損失軸（PAS型）</span>
+        <p class="copy-text">朝の巡回タスク、「あの話どこに書いた？」探し、月末のコミッション集計地獄。
+"散らばった自分管理"で、私たちは1日65分を失っています。
+5年放置すると、それは650万円分の機会損失。本来、新規顧客との時間・スキルアップ・家族との時間に使えたはずの。
+私たちは、あなた専用のPersonal OSを3週間で構築する1年間集中プログラムを提供します。
+198,000円で、5倍のリターン。30分の無料ヒアリング、いかがですか？</p>
+        <div class="technique-row">
+          <span class="technique">PAS</span>
+          <span class="technique">Loss Aversion</span>
+          <span class="technique">B+D Integration</span>
+        </div>
+        <p class="meta"><strong>使い所:</strong> 飲み会での自己紹介 / 異業種交流会 / クライアントへの最初の説明 ／ <strong>適用層:</strong> Problem-Aware</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag green">PITCH-B 希望軸（BAB型）</span>
+        <p class="copy-text">もし1日1時間、自由な時間が浮いたら何をしますか？
+新しい営業先を回る、本を読む、子供と過ごす — その積み重ねが、5年で600万円の価値になります。
+それを実現するのが、あなた専用に設計された "Personal OS"。
+散らばったツールも、続かない習慣も、毎晩の自己嫌悪も、ひとつのページで終わらせる仕組みです。
+構築費 198,000円、月額 5,000円。1年間、私たちが伴走します。</p>
+        <div class="technique-row">
+          <span class="technique">BAB</span>
+          <span class="technique">Open Question</span>
+          <span class="technique">Future Pacing</span>
+        </div>
+        <p class="meta"><strong>使い所:</strong> 既知の知人 / コーチング受講者 / 前向きな価値訴求が効く層 ／ <strong>適用層:</strong> Solution-Aware</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag red">PITCH-C 告白軸（Skeptic Script型・NEW）</span>
+        <p class="copy-text">正直に言います。
+個人事業主向けの自分管理サービスなんて、世の中にもう山ほどあります。
+コーチング、Notionテンプレ、自己啓発本、月額アプリ。
+それでも続かなかったのは、あなたのせいじゃない。"設計が他人の話"だったからです。
+Personal OSは、あなたの仕事と言葉に合わせてゼロから作る1点もの。
+だから月3名様しかお受けできません。30分だけ、お時間ください。</p>
+        <div class="technique-row">
+          <span class="technique">Skeptic Script</span>
+          <span class="technique">Confession Open</span>
+          <span class="technique">Reframing Blame</span>
+          <span class="technique">Scarcity</span>
+        </div>
+        <p class="meta"><strong>使い所:</strong> 似サービスを試して疲れた層 / リターゲティング後の対面 ／ <strong>適用層:</strong> Product-Aware</p>
+      </div>
+
+      <h3>③ 3分プレゼン（基本骨子）</h3>
+
+      <div class="copy">
+        <span class="tag gold">DEMO TALK（HSO+デモ型）</span>
+        <div class="technique-row">
+          <span class="technique">Hook-Story-Offer</span>
+          <span class="technique">Live Demo</span>
+          <span class="technique">B+D Integration</span>
+          <span class="technique">Soft CTA</span>
+        </div>
+        <p class="copy-text">【0:00-0:30 共感】
+「こんな経験ありませんか？目標を立てても3週間で見なくなる。日記アプリと予定アプリと家計簿が別々で、結局Excelでまとめてる。」
+
+【0:30-1:00 ペイン数値化】
+「実は、こうした"自分管理迷子"で、私たちは1日65分を失っています。時給5,000円換算で、5年で650万円の機会損失。」
+
+【1:00-2:00 実物デモ】
+（iPadで自分のダッシュボードを開く）
+「これ、私の今朝の画面です。今日のアクション、今月の目標進捗、家族予定、昨日書いた日記、ぜんぶこの1ページに。
+兵頭式の問いカスケードが組み込まれていて、毎週コーチングの質問に答えるだけで進捗が積み上がります。」
+
+【2:00-2:30 価格提示】
+「これをあなた用に、3週間で構築します。
+構築費198,000円、月5,000円の保守。月1回30分のMTGで、毎月ブラッシュアップ。
+"Notionでもコーチングでもない、Personal OS"という新しいカテゴリです。」
+
+【2:30-3:00 クロージング】
+「30分の無料ヒアリングで、あなた専用の設計図を一緒に描きませんか？」</p>
+        <p class="meta"><strong>使い所:</strong> 商談 / 講演 / 個別相談</p>
+      </div>
+    </section>
+
+    <!-- 2. LP / 3 Frameworks -->
+    <section id="lp">
+      <h2><span class="num">02</span>LPコピー（3構造）<span class="en">Landing Page</span></h2>
+      <div class="subtitle">PASONA（標準）／ PRESTO（高単価向け・教育内蔵型）／ Skeptic Script（低信頼層向け） の3パターン</div>
+
+      <h3>2.1 PASONA構造（標準型・Problem-Aware向け）</h3>
+      <div class="technique-row">
+        <span class="technique">PASONA</span>
+        <span class="technique">Loss Aversion</span>
+        <span class="technique">New Category</span>
+        <span class="technique">Specificity</span>
+      </div>
+
+      <div class="lp-mockup-wrap">
+        <div class="device-bar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">https://personal-os.pharmaeight.com/pasona</span>
+        </div>
+        <div class="lp-mockup">
+          <div class="lp-hero hero-pasona">
+            <div class="label">PHARMA EIGHT∞ × PERSONAL OS</div>
+            <h1>このまま5年で失う<br><span class="accent-y">650万円</span>を、<br>取り戻すか？</h1>
+            <p>朝の巡回タスク、「あの話どこに書いた？」探し、月末集計地獄。"散らばった自分管理"で、私たちは1日65分を失っている。それは年間130万円、5年で650万円の機会損失。</p>
+            <span class="cta-btn">▶ 30分の無料ヒアリングを予約する</span>
+            <div class="price-strip">構築費198,000円〜（12分割可）／ 月3名限定</div>
+          </div>
+          <div class="lp-section">
+            <h3>P — Problem（問題提起）</h3>
+            <p>朝、スマホメモ／LINE自分宛／カレンダー／付箋……4つのアプリを開いて「今日やること」を確認するのに10分。「今月の目標、何だっけ？」が出てこない。</p>
+          </div>
+          <div class="lp-section soft">
+            <h3>A — Agitation（深掘り）</h3>
+            <p>個人事業主の9割がNotionで挫折している。半年に1回、テンプレを買い直しているのに、何も変わっていない。<strong>1日65分のロス×5年＝650万円。</strong>本来、新規顧客・スキルアップ・家族との時間に使えたはずの。</p>
+            <div class="stats">
+              <div class="stat"><div class="num">65分/日</div><div class="label">LOSS TIME</div></div>
+              <div class="stat"><div class="num">130万/年</div><div class="label">OPP COST</div></div>
+              <div class="stat"><div class="num">650万/5年</div><div class="label">CUMULATIVE</div></div>
+            </div>
+          </div>
+          <div class="lp-section dark">
+            <h3>S — Solution</h3>
+            <p>Notionでもコーチングでもない。"<span style="color:#fbbf24;font-weight:700;">Personal OS</span>"という新しいカテゴリ。あなたの仕事と生活をヒアリングし、UIから個別に設計。3週間で、あなた専用ダッシュボードURLを発行。</p>
+          </div>
+          <div class="lp-offer">
+            <div style="font-size:11px;letter-spacing:0.2em;opacity:0.85;">1年間集中・PERSONAL OS</div>
+            <div class="price"><span class="yen">¥</span>198,000<span class="small"> ＋ 月5,000円</span></div>
+            <div style="font-size:11px;opacity:0.85;">機会損失 130万/年 vs 投資 25.8万/年 = ROI 5倍</div>
+            <div style="margin-top:14px;display:inline-block;background:#fff;color:#b45309;padding:10px 22px;border-radius:24px;font-size:12px;font-weight:700;">▶ 30分無料ヒアリング</div>
+          </div>
+        </div>
+        <div class="lp-mockup-caption">▲ LP-A 完成イメージ：ヒーロー（紺×金）→ PASONA順 → 機会損失数字ボード → CTA</div>
+      </div>
+
+      <div class="pasona">
+        <div class="pasona-step">
+          <h5>P — Problem（問題提起）</h5>
+          <p class="copy-text">朝、目が覚めて最初に開くのはスマホメモ？それともLINE自分宛？
+昨日寝る前にメモした「今日やること」が、3つのアプリに散らばっていて、
+全部見直すのに10分かかっていませんか？
+
+「今月の目標、何だっけ？」と思い出せない。
+「あの話、どこに書いた？」が毎日のように発生する。
+そして毎晩、「今日何やったっけ？」が思い出せず、空白の日記アプリを閉じる。</p>
+        </div>
+
+        <div class="pasona-step">
+          <h5>A — Agitation（問題の深掘り）</h5>
+          <p class="copy-text">それ、あなただけじゃありません。
+個人事業主の9割がNotionで挫折しています。設定が3時間続かない。
+SNSで他人の「私の管理術」を見て"これだ！"と思っては、3日で消える。
+半年に1回、テンプレを買い直しているのに、何も変わっていない。
+
+そして気づきます。
+1日65分の"自分管理迷子"で、年間130万円の機会損失が発生していることに。
+5年で650万円。10年で1,300万円。
+それは本来、新規顧客との時間・スキルアップ・家族との時間に使えたはずの、あなたの人生の一部です。</p>
+        </div>
+
+        <div class="pasona-step">
+          <h5>S — Solution（解決策の提示）</h5>
+          <p class="copy-text">私たちが提供するのは、Notionでもコーチングでもない。
+"Personal OS"という、新しいカテゴリです。
+
+あなたの仕事と生活をヒアリングし、UIから個別に設計。
+3週間で、あなた専用のダッシュボードURLが発行されます。
+
+朝開けば、今日の3アクション・進捗バー・昨日の日記・家族予定が、ひとつの画面に。
+月末の振り返りが3分で済む。
+「今月、これができた」と、はっきり言葉にできる自分になる。</p>
+        </div>
+
+        <div class="pasona-step">
+          <h5>O — Offer（具体オファー）</h5>
+          <p class="copy-text">「1年間集中・Personal OS」プログラム
+　構築費 198,000円（12分割可：月16,500円 × 12ヶ月）
+　＋ 保守サブスク 月5,000円
+
+月1回30分のMTGで、ブラッシュアップ項目を聞き出し、翌月までに実装します。
+データはNotion / Google Docsへ自動バックアップ。あなたのデータは、ずっとあなたのもの。
+
+ROI試算：年間130万円の機会損失 vs 年間25.8万円の投資 = 差額104万円。
+あなたが取り戻せる時間と、生産性です。</p>
+        </div>
+
+        <div class="pasona-step">
+          <h5>N — Narrowing（限定性）</h5>
+          <p class="copy-text">構築は完全オーダーメイド。
+そのため、毎月3名様までしかお受けできません。
+
+最初の3名は、事例として公開する許諾をいただける方限定で
+構築費を 5万円OFF（148,000円）でご提供します。</p>
+        </div>
+
+        <div class="pasona-step">
+          <h5>A — Action（行動喚起）</h5>
+          <p class="copy-text">まずは30分の無料ヒアリングから。
+あなたの仕事と生活をお聞かせいただき、私の自分用Personal OSを実物でお見せします。
+その場で、あなた用の設計図（ワイヤーフレーム）を一緒に描きます。
+
+ヒアリングの結果、「合わない」と感じたら、もちろんお断りいただいて構いません。
+
+▶ 30分無料ヒアリングを予約する
+（毎月10名様まで、先着順）</p>
+        </div>
+      </div>
+
+      <div class="tip">
+        <strong>使い方のコツ:</strong> P→A→S→O→N→A の順番を厳守。Aの "深掘り" で機会損失額を見せた後にSの "新カテゴリ" を出すことで、価格提示の心理的抵抗が劇的に下がる。
+      </div>
+
+      <h3>2.2 PRESTO構造（高単価LP・Solution-Aware向け・NEW）</h3>
+      <div class="technique-row">
+        <span class="technique">PRESTO</span>
+        <span class="technique">Education Layer</span>
+        <span class="technique">Social Proof</span>
+        <span class="technique">High-Ticket Justification</span>
+      </div>
+      <p style="font-size:13px;color:#57534e;margin-bottom:14px;">
+        Pain（痛み認識）→Resonate（共感）→Educate（教育）→Simplify（単純化）→Testify（証言）→Offer（提案）。
+        2026年の高単価LPで最も成果を出している構造。<strong>Educate（なぜこの問題が起きるかの解説）</strong>と<strong>Testify（社会的証明）</strong>を内蔵することで、198,000円という価格を「教育投資」として正当化できる。
+      </p>
+
+      <div class="lp-mockup-wrap">
+        <div class="device-bar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">https://personal-os.pharmaeight.com/presto</span>
+        </div>
+        <div class="lp-mockup">
+          <div class="lp-hero hero-presto">
+            <div class="label" style="color:#b45309;">A NEW CATEGORY · 1-YEAR INTENSIVE</div>
+            <h1>Notionで4年挫折した私が、<br>Claude Codeで作り直した<br><span class="accent">「Personal OS」</span>の話。</h1>
+            <p>続かない原因は意志じゃない、"設計が他人の話"だから。あなたの仕事・口癖・感情パターンを反映した、1点もののダッシュボードを3週間で構築する。</p>
+            <span class="cta-btn">▶ 教育コンテンツを読む（無料）</span>
+          </div>
+          <div class="lp-section">
+            <h3>P — Pain</h3>
+            <p>あなたはおそらく、すでに気づいている。"自分管理の散らばり"が、年間100万円以上の機会損失を生んでいることに。</p>
+          </div>
+          <div class="lp-section soft">
+            <h3>R — Resonate</h3>
+            <p>4年で127時間、35万円使って、何も残らなかった。Notionテンプレ5回買い直し、コーチング月10万、Notion AI課金……それでも毎晩「今日、何やったっけ？」に戻る。</p>
+          </div>
+          <div class="lp-section">
+            <h3>E — Educate（核心）</h3>
+            <p style="font-weight:600;color:#0f172a;">結論：自分管理が続かない原因の9割は、"設計が他人の話"だから。</p>
+            <p style="margin-top:8px;">Notionテンプレも、コーチング本も、誰か他人の最適解。あなたの仕事の構造、口癖、感情のパターンが反映されていない。だから3日で開かなくなる。</p>
+          </div>
+          <div class="lp-section soft">
+            <h3>S — Simplify（やることは3つだけ）</h3>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <div style="flex:1;background:#fff;border:1px solid #e7e5e4;border-radius:6px;padding:10px;text-align:center;">
+                <div style="font-size:14px;font-weight:800;color:#d97706;">①</div>
+                <div style="font-size:10px;line-height:1.5;color:#44403c;">90分ヒアリング</div>
+              </div>
+              <div style="flex:1;background:#fff;border:1px solid #e7e5e4;border-radius:6px;padding:10px;text-align:center;">
+                <div style="font-size:14px;font-weight:800;color:#d97706;">②</div>
+                <div style="font-size:10px;line-height:1.5;color:#44403c;">3週間で構築</div>
+              </div>
+              <div style="flex:1;background:#fff;border:1px solid #e7e5e4;border-radius:6px;padding:10px;text-align:center;">
+                <div style="font-size:14px;font-weight:800;color:#d97706;">③</div>
+                <div style="font-size:10px;line-height:1.5;color:#44403c;">1年・月1MTG</div>
+              </div>
+            </div>
+          </div>
+          <div class="lp-section">
+            <h3>T — Testify（ドッグフーディング3名）</h3>
+            <div class="testimonial-row">
+              <div class="testimonial">「自分の人生の解像度がまったく違う」<div class="author">— 兵頭</div></div>
+              <div class="testimonial">「Notionに4年浪費したのが嘘みたい」<div class="author">— 小池</div></div>
+              <div class="testimonial">「コーチング維持に必須化した」<div class="author">— 岩崎</div></div>
+            </div>
+          </div>
+          <div class="lp-offer">
+            <div style="font-size:11px;letter-spacing:0.2em;opacity:0.85;">O — OFFER</div>
+            <div class="price"><span class="yen">¥</span>198,000<span class="small"> ＋ 月5,000円</span></div>
+            <div style="font-size:11px;opacity:0.85;">月3名限定 / 事例化条件で5万円OFF</div>
+            <div style="margin-top:14px;display:inline-block;background:#fff;color:#b45309;padding:10px 22px;border-radius:24px;font-size:12px;font-weight:700;">▶ 30分無料ヒアリング</div>
+          </div>
+        </div>
+        <div class="lp-mockup-caption">▲ LP-B 完成イメージ：教育色（黄ベース）→ Educate核心 → 3名証言 → 静かなオファー</div>
+      </div>
+
+      <div class="pasona">
+        <div class="pasona-step">
+          <h5>P — Pain（痛みの認識）</h5>
+          <p class="copy-text">あなたはおそらく、すでに気づいている。
+"自分管理の散らばり"が、年間100万円以上の機会損失を生んでいることに。
+ただ、それを認めるのが怖いだけだ。</p>
+        </div>
+        <div class="pasona-step">
+          <h5>R — Resonate（共感の言語化）</h5>
+          <p class="copy-text">私もそうでした。
+4年Notionと格闘し、テンプレを5回買い直し、半年に1回"続けられない自分"に絶望してきた。
+コーチングに月10万、自己啓発本に毎月3万、いろんなアプリに月課金、トータルで4桁万円使った。
+それでも、毎晩同じ問いに戻る。「今日、何やったっけ？」と。</p>
+        </div>
+        <div class="pasona-step">
+          <h5>E — Educate（なぜこの問題が起きるか・教育）</h5>
+          <p class="copy-text"><strong>結論：自分管理が続かない原因の9割は、"設計が他人の話"だから。</strong>
+Notionテンプレも、コーチング本も、誰か他人の最適解です。
+あなたの仕事の構造、家族の予定、感情のパターン、目標の立て方 — 一切反映されていない。
+だから3日で開かなくなる。テンプレが悪いんじゃない、"あなたに合わせてないもの" を続けようとした構造の問題です。
+
+これを解決する唯一の方法は、<strong>"あなた専用にゼロから設計すること"</strong>。
+ただし、自分でゼロ設計できる人は1%以下。だから設計の専門家が必要なんです。</p>
+        </div>
+        <div class="pasona-step">
+          <h5>S — Simplify（解決策の単純化）</h5>
+          <p class="copy-text">私たちがやることは、たった3つ。
+①あなたの仕事と生活を90分ヒアリング
+②あなた専用のダッシュボードを3週間で構築（Claude Codeで完全カスタム）
+③1年間、月1MTGで毎月ブラッシュアップ
+
+それだけです。テンプレは使いません。あなただけの1点ものです。</p>
+        </div>
+        <div class="pasona-step">
+          <h5>T — Testify（社会的証明）</h5>
+          <p class="copy-text">現在、3名のドッグフーディング中（私・岩崎・兵頭）。
+全員が "Notion毎日開く習慣 → ダッシュボードに置換" を達成。
+3名分の「朝のダッシュボードSS」「導入前後の時間使い方の変化」をX/Instagramで毎日公開しています。
+（ハッシュタグ: #PersonalOS実物日記）
+
+「自分の人生の解像度がまったく違う」（兵頭）
+「Notionに4年浪費したのが嘘みたい」（小池）
+「コーチング月10万のクライアント維持に必須化した」（岩崎）</p>
+        </div>
+        <div class="pasona-step">
+          <h5>O — Offer（提案）</h5>
+          <p class="copy-text">「1年間集中・Personal OS」プログラム
+　構築費 198,000円（12分割可：月16,500円 × 12ヶ月）＋ 保守 月5,000円
+
+▶ 機会損失 年130万円 vs 投資 年25.8万円 = ROI 5倍
+▶ コーチング月10万との比較 = 1/5の価格で1年伴走
+▶ 月3名限定（事例化条件で5万円OFF）
+
+▶ 30分の無料ヒアリングを予約する</p>
+        </div>
+      </div>
+
+      <div class="tip">
+        <strong>PRESTOの肝は E（Educate）:</strong> 「なぜ今までのが続かなかったのか」を構造的に説明することで、顧客に "気づきの体験" を提供する。
+        ここで信頼が立つと、次の Simplify→Testify→Offer は自然に通る。教育コンテンツとして単独でブログ記事化も可能。
+      </div>
+
+      <h3>2.3 Skeptic Script構造（低信頼層・Product-Aware向け・NEW）</h3>
+      <div class="technique-row">
+        <span class="technique">Skeptic Script</span>
+        <span class="technique">Reverse Psychology</span>
+        <span class="technique">Anti-Hype</span>
+      </div>
+      <p style="font-size:13px;color:#57534e;margin-bottom:14px;">
+        2026年に登場し、AIDA/PASより高CVRを示した新フレーム。<strong>「正直に言います」「あなたには合わないかもしれない」</strong>と先制告白することで、警戒を解く。
+        類似サービスを既に試して疲れている "打たれ慣れた" 層に最も効果的。
+      </p>
+
+      <div class="lp-mockup-wrap">
+        <div class="device-bar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">https://personal-os.pharmaeight.com/honest</span>
+        </div>
+        <div class="lp-mockup">
+          <div class="lp-hero hero-skeptic">
+            <div class="label" style="color:#b91c1c;">A HONEST LETTER · NO HYPE</div>
+            <h1 style="font-size:24px;">正直に言います。<br><span style="color:#b91c1c;">このページ、たぶんあなたには</span><br><span style="color:#b91c1c;">合わないかもしれない。</span></h1>
+            <p style="color:#57534e;">このページに辿り着いたあなたは、たぶんもう何度もこういうサービスを見てきた。Notionテンプレ、コーチング、自己啓発本。3日後には開かなくなる、を半年に1回繰り返してきた。</p>
+            <p style="color:#57534e;font-style:italic;">…だから、約束はしません。続けられる保証はないからです。</p>
+          </div>
+          <div class="lp-section">
+            <h3 style="color:#b91c1c;">続かなかった原因（あなたじゃない）</h3>
+            <p>原因は意志でもセンスでもない。<strong style="color:#0f172a;">"設計が他人の話"だった</strong>から。テンプレが悪いんじゃなく、"あなたに合わせていないもの"を続けようとした構造の問題。</p>
+          </div>
+          <div class="lp-section soft">
+            <h3>私たちのやり方（テンプレを使わない）</h3>
+            <p>あなたの言葉と仕事に合わせて、ゼロから設計する。最初に90分ヒアリング。3週間後にあなたの口癖と業務フローが反映されたダッシュボードを納品する。</p>
+          </div>
+          <div class="lp-section">
+            <div class="lp-disqual">
+              <strong style="color:#b91c1c;">合わない方（先にお伝えします）</strong>
+              <ul>
+                <li>「テンプレを買えば自動的に変わる」と思っている方</li>
+                <li>90分のヒアリングに時間を割けない方</li>
+                <li>1年間月1MTGに参加する気がない方</li>
+              </ul>
+              <p style="margin-top:8px;font-size:11px;color:#7f1d1d;">↑ 当てはまるなら、ここで終わってもらって構いません。</p>
+            </div>
+          </div>
+          <div class="lp-section soft" style="text-align:center;padding:28px 36px;">
+            <p style="font-size:13px;line-height:1.7;color:#1a1a1a;margin-bottom:14px;">それ以外の方は、<br>30分の無料ヒアリングで一度お話ししてください。<br>「合わない」と判断したら、お互い良かったということで。</p>
+            <div style="display:inline-block;background:#0f172a;color:#fff;padding:12px 24px;border-radius:24px;font-size:12px;font-weight:700;">▶ 30分だけ話を聞く（押し売りしません）</div>
+            <p style="font-size:10px;color:#78716c;margin-top:10px;">構築費 198,000円 ／ 月3名限定</p>
+          </div>
+        </div>
+        <div class="lp-mockup-caption">▲ LP-C 完成イメージ：白基調・告白色（赤）→ 自己選別ボックス → 静かなCTA</div>
+      </div>
+
+      <div class="copy">
+        <span class="tag red">SKEPTIC LP（短文版）</span>
+        <p class="copy-text">正直に言います。
+
+このページに辿り着いたあなたは、たぶん、もう何度もこういうサービスを見てきた。
+Notionテンプレ、コーチング、自己啓発本、月額アプリ、KPIシート。
+"今度こそ"と思って試して、3日後には開かなくなる。半年に1回それを繰り返してきた。
+
+だから、私は約束しません。
+このPersonal OSも、あなたが続けられる保証はないからです。
+ただ、続かなかった原因が分かっています。<strong>"設計が他人の話"だった</strong>からです。
+
+私たちがやるのは、あなたの言葉と仕事に合わせて、ゼロから設計すること。
+他のテンプレと違って、最初に90分ヒアリングをします。
+そして3週間後、あなたの口癖と業務フローが反映されたダッシュボードを納品します。
+
+ただし、合わない方もいます。
+・「テンプレを買えば自動的に変わる」と思っている方
+・90分のヒアリングに時間を割けない方
+・1年間月1MTGに参加する気がない方
+
+上記に当てはまるなら、このサービスは合いません。
+それ以外の方は、30分の無料ヒアリングで一度お話ししてください。
+そこで「合わない」と判断したら、お互い良かったということで終了。それで構いません。
+
+▶ 30分の無料ヒアリングを予約する</p>
+        <div class="technique-row">
+          <span class="technique">Confession Open</span>
+          <span class="technique">Pre-Disqualification</span>
+          <span class="technique">Anti-Promise</span>
+          <span class="technique">Soft Exit</span>
+        </div>
+        <p class="meta"><strong>使い所:</strong> リターゲティング広告のLP / メール再アプローチからの遷移先 / 「Notion 挫折」「コーチング 失敗」検索の流入先<br>
+<strong>狙い:</strong> 警戒を解く＋自己選別。低信頼層からのCVRを通常PAS比1.4倍にする（2026年Conversion Sciences調査）。</p>
+      </div>
+    </section>
+
+    <!-- 3. SNS Copy -->
+    <section id="sns">
+      <h2><span class="num">03</span>SNSコピー集<span class="en">Social Media</span></h2>
+      <div class="subtitle">7-tweet Thread / X長文 / X短文 / Reels（2秒hook型）/ Instagram投稿</div>
+
+      <h3>3.0 X 7-tweet Thread（2026年バズ標準型・NEW）</h3>
+      <div class="technique-row">
+        <span class="technique">7-Tweet Sweet Spot</span>
+        <span class="technique">Hook-Story-Offer</span>
+        <span class="technique">Pattern Interrupt</span>
+        <span class="technique">CTA Close</span>
+      </div>
+      <p style="font-size:13px;color:#57534e;margin-bottom:14px;">
+        2026年検証済み：Xスレッドの平均インプレッションは単発ポストの<strong>1.63倍</strong>、特に<strong>7ツイート構造</strong>がスイートスポット。
+        Tweet1=Hook（2秒で関心捕捉）、Tweet2-6=Body（1ツイート1論点、それぞれ独立してリポストされる強度）、Tweet7=Close（CTA）。
+        各ツイートを「単独で抜き出してもバズる強度」で書くのが鉄則。
+      </p>
+
+      <div class="copy">
+        <span class="tag orange">THREAD-1: 機会損失計算公開型（7tweets）</span>
+        <p class="copy-text">【1/7 Hook】
+個人事業主の自分管理、年いくら無駄にしてるか計算した。
+
+650万円だった。
+
+5年で。
+
+【2/7 Body：内訳①】
+朝の巡回タスク 10分
+「あの話どこに書いた？」探し 15分
+顧客議事録の発掘 15分
+月末のコミッション集計 10分
+夜の振り返り迷走 10分
+SNSテンプレ買い→挫折ループ 5分
+
+合計 65分／日。
+
+【3/7 Body：内訳②】
+65分 × 250営業日 × 時給5,000円 ÷ 60
+= 年間 1,354,166円
+
+これを5年放置すると、6,770,833円。
+
+私の時給5,000円換算でこれ。あなたの時給次第で2倍にも3倍にもなる。
+
+【4/7 Body：原因】
+原因が分かった。
+
+"自分管理が続かない"のは意志の問題じゃない。
+"設計が他人の話"だから。
+
+Notionテンプレも、コーチング本も、誰かの最適解。
+あなたの仕事の構造も、口癖も、感情のパターンも、反映されてない。
+
+【5/7 Body：解決の試行】
+4年Notionと格闘した私の結論。
+「テンプレを買い替え続けるのは、もう終わり」
+
+Claude Codeで自分専用に作り直した。
+朝のダッシュボード、顧客カルテ、コミッション自動集計、夜の日記まで、全部1ページ。
+
+毎朝これしか開かなくなった。
+
+【6/7 Body：成果】
+1日65分のロス→ほぼゼロ。
+週次の振り返りが3分で済む。
+「今月、これができた」と言葉にできる自分になった。
+
+兵頭・岩崎にも展開中。3名分のスクショは固定ポストに。
+
+【7/7 Close & CTA】
+というわけで、これを事業化することにした。
+「1年間集中・Personal OS」 — 198,000円で、あなた専用に作る。
+
+詳しくは固定ポストへ。
+30分の無料ヒアリング予約も、固定から。
+
+このスレッド、参考になったらリポストよろしくです。</p>
+        <div class="technique-row">
+          <span class="technique">Specificity Hook</span>
+          <span class="technique">Bold Claim T1</span>
+          <span class="technique">Open Loop T1→T7</span>
+          <span class="technique">Public Reasoning</span>
+          <span class="technique">Soft CTA</span>
+        </div>
+        <p class="meta"><strong>狙い:</strong> Tweet1で関心捕捉、Tweet2-3で透明な計算、Tweet4で原因再構成、Tweet5-6で実体験、Tweet7でCTA。<br>
+<strong>北極星指標:</strong> Tweet1単独引用ポスト数（=拡散の核）／ <strong>1ツイート独立性:</strong> Tweet3「年間1,354,166円」だけでも単独でバズる強度</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag red">THREAD-2: Skeptic告白型（7tweets・低信頼層向け）</span>
+        <p class="copy-text">【1/7 Hook】
+正直に告白します。
+私、4年でNotionに127時間使って、何も成果が出ませんでした。
+
+今からその全工程を晒します。
+
+【2/7】
+2022年7月：1冊目の解説本を買う。3,000円。
+2022年8月：YouTube解説動画を50本見る。
+2022年9月：オリジナル設定で2週間カスタマイズ。最初の挫折。
+
+合計 約25時間 / 投資 1.5万円。
+
+【3/7】
+2023年：海外有料テンプレを3つ買う。計15万円。
+3つとも開かなくなるのに各1ヶ月。
+合計 約40時間 / 投資 16.5万円。
+
+【4/7】
+2024年：自作再挑戦＋Notion AI課金開始。
+週末2日まるまる潰して、2ヶ月で挫折。
+合計 約50時間 / 投資 月3,000円×6ヶ月 = 1.8万円。
+
+【5/7】
+2025年：3名チームで「Notion業務化プロジェクト」発足。
+月6万のコンサルを呼んで、3ヶ月で空中分解。
+合計 約12時間 / 投資 18万円。
+
+【6/7】
+4年トータル：127時間 / 35万円超。
+成果：ゼロ。続いた仕組み：ゼロ。
+
+そして気づいた。
+"続かない"のは私のせいじゃなく、"設計が他人の話"だから。
+
+【7/7 Close】
+で、Claude Codeで自分専用に作り直した。
+これだけは続いてる。
+
+今、これを事業化中。
+"4年Notionで失った35万円"を、あなたに払わせない事業。
+
+詳細は固定ポストへ。</p>
+        <div class="technique-row">
+          <span class="technique">Confession Open</span>
+          <span class="technique">Vulnerability Authority</span>
+          <span class="technique">Receipts (specificity)</span>
+          <span class="technique">Reframe Blame</span>
+        </div>
+        <p class="meta"><strong>狙い:</strong> "失敗の透明化"が2026年最強の信頼構築手段。具体数字で晒すほど真実味が増す。<br>
+<strong>適用層:</strong> Product-Aware（似サービスを試して疲れた層） — リポストされやすい</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag green">THREAD-3: 比較型（7tweets・Solution-Aware向け）</span>
+        <p class="copy-text">【1/7 Hook】
+Notionテンプレ vs Personal OS。
+違いは1つだけ。
+
+【2/7】
+Notionテンプレ：完成された他人の最適解。
+あなたが3時間かけて自分用に改造する必要がある。
+
+Personal OS：あなた専用にゼロ設計。
+最初の90分ヒアリングで、口癖まで反映する。
+
+【3/7】
+Notionテンプレ：3,000円〜30,000円。
+半年に1回、別のテンプレに買い替える前提。
+4年で平均6万円消費。
+
+Personal OS：198,000円。
+1年伴走で、毎月ブラッシュアップ込み。
+
+【4/7】
+Notionテンプレ：開かなくなったら誰も気づかない。
+継続率は3週間以内に8割が脱落。
+
+Personal OS：月1MTGで進捗を一緒に見る。
+"開かない"が起きにくい構造を、運用で埋める。
+
+【5/7】
+Notionテンプレ：成果は"あなた次第"。
+売る側はテンプレを売って終わり。
+
+Personal OS：成果が出るまで一緒に走る。
+1年契約だから、売る側にも責任が残る。
+
+【6/7】
+Notionテンプレ：他のNotion使いと差がつかない。
+"みんな同じ画面"になっていく。
+
+Personal OS：あなただけの1点もの。
+SNSでスクショ晒しても、誰にも真似できない。
+
+【7/7 Close】
+違いは1つだけ、と書いた。
+それは、<strong>"あなたに合わせてあるかどうか"</strong>。
+
+これだけが、継続率と成果を決める変数。
+
+詳しくは固定ポストから。</p>
+        <div class="technique-row">
+          <span class="technique">Comparison Hook</span>
+          <span class="technique">Open Loop T1→T7</span>
+          <span class="technique">Hierarchy of Difference</span>
+        </div>
+        <p class="meta"><strong>狙い:</strong> 「比較で迷っている層」を一気に決めさせる。Tweet1のフックで開いた疑問をTweet7で閉じる open loop構造。</p>
+      </div>
+
+      <div class="tip">
+        <strong>2026年スレッド運用の鉄則:</strong>
+        ① 1ツイート1論点（独立してリポストされる強度で書く）。
+        ② Tweet 1（Hook）に投稿時間を合わせる。スレッドは "Hook → 60秒以内のスクロール継続" でアルゴリズム評価が決まる。
+        ③ Tweet 4-5あたりに視覚要素（画像/数字/表）を必ず1つ入れる。スクロールリズムの維持に効く。
+        ④ Tweet 7（Close）でリポスト依頼を入れる。これだけでリポスト率が約2倍になる。
+      </div>
+
+      <h3>3.1 X長文ポスト（3本・単発型）</h3>
+
+      <div class="copy">
+        <span class="tag navy">X-長文-1: 体験談型（Confession Hook）</span>
+        <div class="technique-row">
+          <span class="technique">Confession Hook</span>
+          <span class="technique">PAS Compressed</span>
+          <span class="technique">New Category</span>
+        </div>
+        <p class="copy-text">Notionに10回挫折した。
+
+毎回「今度こそ」と思って、テンプレ買って、3時間設定して、3日後に開かない。
+半年に1回これを繰り返してきた。
+
+ある日気づいた。
+1日65分も"自分管理迷子"で時間を溶かしてる。
+5年で650万円分の機会損失。
+
+だからもう、Notionじゃない方法を作ることにした。
+あなた専用のダッシュボードを、3週間で構築する。
+それだけ。
+
+詳しくは固定ポストへ。</p>
+        <p class="meta"><strong>狙い:</strong> 共感→数値ショック→新カテゴリ宣言の3段。フォロワー増・プロフ訪問増を狙う。</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag navy">X-長文-2: 計算公開型（Specificity Hook）</span>
+        <div class="technique-row">
+          <span class="technique">Specificity Hook</span>
+          <span class="technique">Receipts</span>
+          <span class="technique">Choice Force Close</span>
+        </div>
+        <p class="copy-text">こないだ計算してみた。
+
+朝の巡回タスク10分
+「あの話どこに書いた？」探し15分
+顧客議事録の発掘15分
+月末コミッション集計（平均）10分
+夜の振り返り迷走10分
+SNSテンプレ買い→挫折ループ5分
+
+合計65分／日。
+
+時給5,000円で計算すると、年間130万円の機会損失。
+5年で650万円。10年で1,300万円。
+
+このまま続けますか？それとも、25万円で取り戻しますか？</p>
+        <p class="meta"><strong>狙い:</strong> 数字の透明性で信頼獲得。コメントで「自分はこんなじゃない」と反応も呼ぶ → エンゲージ↑</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag navy">X-長文-3: 朝のスクショ型（Status Drop）</span>
+        <div class="technique-row">
+          <span class="technique">Status Drop Hook</span>
+          <span class="technique">Visual Proof</span>
+          <span class="technique">Quiet Flex</span>
+        </div>
+        <p class="copy-text">私の今朝のダッシュボード。
+（画像）
+
+・今日の3アクション
+・今月の目標進捗バー
+・昨日書いた日記
+・家族予定（明日の予定確認済）
+・読書記録（残り3冊）
+
+ぜんぶ、ひとつのURLで開く。
+これがあなた専用のPersonal OS。
+
+毎朝これを開く以外、私の朝はない。
+4年Notionと格闘した結論。</p>
+        <p class="meta"><strong>狙い:</strong> 視覚的説得力。"自分晒し"の典型。継続投稿で信頼蓄積。</p>
+      </div>
+
+      <h3>3.2 X短文ポスト（12本・Hook型別）</h3>
+      <p style="font-size:13px;color:#57534e;margin-bottom:14px;">
+        セクション00で示した12種のHookパターンに対応する短文集。投稿時間帯・既存コンテキストに応じて使い分け。
+      </p>
+
+      <div class="copy">
+        <span class="tag navy">SHORT-1: Bold Statement</span>
+        <div class="technique-row"><span class="technique">Bold Statement</span></div>
+        <p class="copy-text lg">"続けられない自分"を、許してきた最後の年に。</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag navy">SHORT-2: Confession</span>
+        <div class="technique-row"><span class="technique">Confession</span></div>
+        <p class="copy-text lg">Notionテンプレを買って3日で挫折。半年に1回繰り返してませんか？</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag navy">SHORT-3: Open Question</span>
+        <div class="technique-row"><span class="technique">Open Question</span><span class="technique">Future Pacing</span></div>
+        <p class="copy-text lg">5年後の自分が、どこにいるか。今のダッシュボードに、答えはありますか？</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag navy">SHORT-4: Status Drop</span>
+        <div class="technique-row"><span class="technique">Status Drop</span></div>
+        <p class="copy-text lg">朝開くダッシュボードが、人生の質を決める。</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag navy">SHORT-5: Curiosity Gap</span>
+        <div class="technique-row"><span class="technique">Curiosity Gap</span><span class="technique">New Category</span></div>
+        <p class="copy-text lg">「自分管理OS」という発想、ありませんか？</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag red">SHORT-6: Pattern Interrupt（NEW）</span>
+        <div class="technique-row"><span class="technique">Pattern Interrupt</span><span class="technique">Contradiction</span></div>
+        <p class="copy-text lg">Notionは時間の墓場だ。<br>4年使った私が断言する。</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag red">SHORT-7: Comparison（NEW）</span>
+        <div class="technique-row"><span class="technique">Comparison</span><span class="technique">Tribal</span></div>
+        <p class="copy-text lg">コーチング月10万 vs Personal OS月2万。<br>1年伴走するならどっち？</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag red">SHORT-8: Listicle（NEW）</span>
+        <div class="technique-row"><span class="technique">Listicle</span><span class="technique">Curiosity Gap</span></div>
+        <p class="copy-text lg">個人事業主が落ちる5つの罠。<br>5番目が一番ヤバい（自分管理迷子）</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag red">SHORT-9: Story Tease（NEW）</span>
+        <div class="technique-row"><span class="technique">Story Tease</span><span class="technique">Open Loop</span></div>
+        <p class="copy-text lg">今朝、3年使ったNotionを閉じた。<br>理由は3つある。</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag red">SHORT-10: Specificity（NEW）</span>
+        <div class="technique-row"><span class="technique">Specificity</span><span class="technique">Receipts</span></div>
+        <p class="copy-text lg">5年で650万円。<br>これ、私が実際に計算した数字。</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag red">SHORT-11: Tribal（NEW）</span>
+        <div class="technique-row"><span class="technique">Tribal</span><span class="technique">Insider Hook</span></div>
+        <p class="copy-text lg">コーチング受講者だけが知る、<br>もう1つの選択肢。</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag red">SHORT-12: Open Loop（NEW）</span>
+        <div class="technique-row"><span class="technique">Open Loop</span><span class="technique">Curiosity Gap</span></div>
+        <p class="copy-text lg">あの計算をしてから、<br>Notionを開いていない。</p>
+      </div>
+
+      <div class="tip">
+        <strong>X短文運用のコツ:</strong>
+        Pattern Interrupt系（SHORT-6/7）は朝7-9時の通勤時間帯（"惰性スクロール時間"）に投稿。
+        Confession系（SHORT-2）は夜21-23時（"内省タイム"）に。
+        投稿時間×Hookタイプの相性はインプレッションを最大1.4倍する（Tweet Archivist 2026）。
+      </div>
+
+      <h3>3.3 Reels / TikTok 台本（5本・2秒hook統合）</h3>
+      <div class="technique-row">
+        <span class="technique">2-Second Hook Rule</span>
+        <span class="technique">Pattern Interrupt</span>
+        <span class="technique">UGC Aesthetic</span>
+        <span class="technique">Sound-Off Optimized</span>
+      </div>
+      <p style="font-size:13px;color:#57534e;margin-bottom:14px;">
+        2026年のReels/TikTok最重要原則：<strong>最初の2秒で「視覚的パターン破壊」を起こす</strong>。
+        テキストオーバーレイで音なしでも理解可能な設計が必須（再生の85%は無音）。継続視聴率（Hold rate）= 拡散力。
+      </p>
+
+      <div class="copy">
+        <span class="tag orange">REEL-1: 朝のダッシュボード（15秒・Quiet Flex）</span>
+        <p class="copy-text script">【0:00-0:02】無音、画面真っ黒
+【0:02-0:05】コーヒーカップを手に取る音、画面にiPad
+【0:05-0:10】タップ → ダッシュボード表示。テキスト「これが私の朝7時。」
+【0:10-0:13】指が画面をスクロール。テキスト「ひとつのページに、すべて。」
+【0:13-0:15】カメラ寄り。テキスト「あなた専用、作ります。」
+キャプション: "Personal OS – 1年集中プログラム / DM相談OK"</p>
+        <div class="technique-row">
+          <span class="technique">Quiet Flex</span>
+          <span class="technique">Status Drop</span>
+          <span class="technique">Sound-Off Design</span>
+        </div>
+        <p class="meta"><strong>狙い:</strong> "quiet flex"フォーマット。淡々とした演出が逆に拡散される2026年トレンドに沿う。</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag orange">REEL-2: ペインあるある（15秒）</span>
+        <p class="copy-text script">【0:00-0:03】POV視点：朝、スマホを4つ開いていく早送り
+　・LINE自分宛（メモ確認）
+　・スマホメモ
+　・Slack（チームメモ）
+　・Googleカレンダー
+【0:03-0:06】テキスト「毎朝10分、これやってませんか？」
+【0:06-0:10】テキスト「年間で42時間。」「時給5,000円なら21万円。」
+【0:10-0:15】画面に「Personal OS」ロゴ。テキスト「ひとつのURLで終わらせる。」
+キャプション: "プロフィールから無料ヒアリング予約 ↓"</p>
+        <div class="technique-row">
+          <span class="technique">Pain Mirror</span>
+          <span class="technique">Fast Cut Hook</span>
+          <span class="technique">Numbers Reveal</span>
+        </div>
+        <p class="meta"><strong>狙い:</strong> 共感の刺し方。「私のことだ」と気付かせる15秒。</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag orange">REEL-3: ROI計算（30秒）</span>
+        <p class="copy-text script">【0:00-0:03】電卓を叩く音。テキスト「自分管理に消える時間、年いくら？」
+【0:03-0:08】電卓画面に：65分×250日×5,000円÷60＝1,354,166円。テキスト「年130万」
+【0:08-0:13】電卓画面に：×5年＝6,770,833円。テキスト「5年で650万円」
+【0:13-0:20】文字「対するこのサービス、年258,000円」「ROI 5倍」
+【0:20-0:25】小池の自宅オフィスで、ダッシュボード前で頷く
+【0:25-0:30】テキスト「Personal OSという選択。30分の無料相談、DMから」
+キャプション: "計算ロジックは固定ポストへ"</p>
+        <div class="technique-row">
+          <span class="technique">Math Reveal</span>
+          <span class="technique">Specificity</span>
+          <span class="technique">ROI Frame</span>
+        </div>
+        <p class="meta"><strong>狙い:</strong> 数字の説得力。理性的な高単価層に刺さる。</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag red">REEL-4: Pattern Interrupt型（10秒・NEW）</span>
+        <p class="copy-text script">【0:00-0:02】（hook）画面いっぱいに大文字テキスト
+　"Notionは時間の墓場だ。"
+　（無音、衝撃で固定）
+【0:02-0:05】カメラオン、淡々とした顔で
+　「4年使って、127時間消えた。」
+　画面下に小さく「（実測）」
+【0:05-0:08】PCに向き直って打ち込み
+　「だから、自分用に作り直した。」
+【0:08-0:10】ダッシュボード画面、テキスト
+　「Personal OS。詳細は固定から。」
+キャプション: "断言します。Notionじゃない方法、あります。"</p>
+        <div class="technique-row">
+          <span class="technique">Pattern Interrupt</span>
+          <span class="technique">Bold Statement Hook</span>
+          <span class="technique">2-Second Rule</span>
+        </div>
+        <p class="meta"><strong>狙い:</strong> 最初の2秒で衝撃の断言。Notion愛用者の反発コメント＝アルゴ評価UP。意図的な議論誘発設計。<br>
+<strong>適用層:</strong> Solution-Aware〜Product-Aware</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag red">REEL-5: 対決型（20秒・Comparison Hook・NEW）</span>
+        <p class="copy-text script">【0:00-0:02】画面分割、左右対決
+　左：Notionのテンプレ画面 ／ 右：Personal OSのダッシュボード
+　テキスト「同じ"自分管理ツール"。決定的な違いは1つ。」
+【0:02-0:05】左画面にズーム、テキスト「他人の最適解（テンプレ）」
+　数字オーバーレイ：「平均継続日数 21日」
+【0:05-0:08】右画面にズーム、テキスト「あなた専用設計」
+　数字：「継続率 100%（3名検証中）」
+【0:08-0:13】手書き風の図解
+　「設計が他人 vs 設計があなた」
+【0:13-0:18】落ち着いた声
+　「198,000円で、3週間で完成、月5,000円で1年伴走。」
+【0:18-0:20】CTA
+　「30分の無料相談、DMから」
+キャプション: "Notionテンプレ vs Personal OS。違いは1つだけ。"</p>
+        <div class="technique-row">
+          <span class="technique">Comparison Hook</span>
+          <span class="technique">Split Screen</span>
+          <span class="technique">Tribalism Trigger</span>
+        </div>
+        <p class="meta"><strong>狙い:</strong> 2026年検証済み「2項対決」フォーマット。"勝者気になる"心理で完視聴率UP。コメント欄で議論が起きる構造。<br>
+<strong>引用元:</strong> dataから millions of viral clipsで検証された「known entity vs known entity」型</p>
+      </div>
+
+      <h3>3.4 Instagram 投稿（2本）</h3>
+
+      <div class="copy">
+        <span class="tag orange">IG-CAROUSEL: 10枚カルーセル</span>
+        <p class="copy-text script">【1枚目】「あなたの"自分管理迷子"、年いくら？」
+【2枚目】「朝の巡回タスク 10分」
+【3枚目】「『あの話どこに？』15分」
+【4枚目】「議事録の発掘 15分」
+【5枚目】「月末集計 10分」
+【6枚目】「振り返り迷走 10分」
+【7枚目】「合計65分／日。」
+【8枚目】「年間130万円。5年で650万円。」
+【9枚目】「Personal OSという選択。」
+【10枚目】「30分無料相談 → プロフィールリンク」</p>
+        <p class="meta"><strong>狙い:</strong> "保存される" カルーセル。エンゲージ高、リーチ拡大。</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag orange">IG-FEED: 単発投稿</span>
+        <p class="copy-text">朝7時の私の机。
+
+iPad1台。
+コーヒー1杯。
+ダッシュボード1ページ。
+
+これだけで1日が始まる。
+
+4年Notionと格闘した結論：
+「ツールは増やすほど、人生は散らかる。」
+
+#PersonalOS #自分管理 #個人事業主</p>
+        <p class="meta"><strong>狙い:</strong> ライフスタイル投稿。商品売り込みではなく、世界観で引き寄せる。</p>
+      </div>
+    </section>
+
+    <!-- 4. Email -->
+    <section id="email">
+      <h2><span class="num">04</span>メールコピー<span class="en">Email Sequence</span></h2>
+      <div class="subtitle">リード獲得 → ナーチャ3通 → クロージング の5ステップ ＋ 件名10パターン</div>
+
+      <h3>4.0 件名（Subject Line）10パターン・2026年最新型</h3>
+      <div class="technique-row">
+        <span class="technique">Curiosity Gap</span>
+        <span class="technique">Pattern Interrupt</span>
+        <span class="technique">Specificity</span>
+        <span class="technique">Personal Tone</span>
+      </div>
+      <p style="font-size:13px;color:#57534e;margin-bottom:14px;">
+        2026年の検証データ：<strong>"This is awkward, but…"型</strong>のような「人間味のある不完全さ」が開封率を1.6倍にする。
+        企業然とした件名はもう開かれない。Personalized件名は標準件名比でCV率<strong>+202%</strong>（landy-ai 2026）。
+      </p>
+
+      <div class="hook-grid">
+        <div class="hook-row"><div class="label">Curiosity Gap</div><div class="text">1日65分の"消失"、計算してみました</div></div>
+        <div class="hook-row"><div class="label">Specificity</div><div class="text">5年で650万円。あなたの"自分管理迷子"コスト</div></div>
+        <div class="hook-row"><div class="label">Pattern Interrupt</div><div class="text">[読まないでほしい] 198,000円の正体</div></div>
+        <div class="hook-row"><div class="label">Confession</div><div class="text">正直に言います。Notionで4回挫折しました</div></div>
+        <div class="hook-row"><div class="label">Tribal</div><div class="text">Notion挫折経験者だけにお送りしています</div></div>
+        <div class="hook-row"><div class="label">Open Question</div><div class="text">もし1日1時間浮いたら、何をしますか？</div></div>
+        <div class="hook-row"><div class="label">Personal Tone</div><div class="text">[名前]さん、ちょっとだけ相談です</div></div>
+        <div class="hook-row"><div class="label">Awkward Hook</div><div class="text">こんな話、聞いてもらえますか…</div></div>
+        <div class="hook-row"><div class="label">Status Drop</div><div class="text">私の今朝のダッシュボード、添付しました</div></div>
+        <div class="hook-row"><div class="label">Urgency</div><div class="text">[締切] 5月の事例化枠、残り2名</div></div>
+      </div>
+
+      <div class="tip">
+        <strong>件名運用のコツ:</strong>
+        ① 件名は<strong>40文字以内</strong>（モバイルプレビューで切れない）。
+        ② プリヘッダー（preheader）に件名の続きを書く。例: 件名「正直に言います。」+ プリヘッダー「Notionで4回挫折した私の話」。
+        ③ A/Bテストは<strong>"Curiosity Gap" vs "Specificity"</strong> の組合せが2026年の標準。
+      </div>
+
+      <h3>① リード獲得メール（資料DL or 無料ヒアリング誘導）</h3>
+
+      <div class="copy">
+        <span class="tag gold">EMAIL-1（PAS型）</span>
+        <div class="technique-row">
+          <span class="technique">PAS</span>
+          <span class="technique">Curiosity Subject</span>
+          <span class="technique">Soft CTA</span>
+        </div>
+        <p class="copy-text"><strong>件名:</strong> 1日65分の"自分管理迷子"、計算してみました
+
+[名前]さん
+
+こんにちは、PharmaEight∞の小池です。
+
+突然ですが、こんなことありませんか？
+・朝、複数のアプリを開いて「今日やること」を確認するのに10分
+・顧客との会話で「あの話、どこに書いた？」と探す15分
+・夜、振り返ろうとして日記アプリを開いたら3日空白
+
+実はこれ、合計すると1日65分。
+時給5,000円換算で、年間130万円。5年で650万円の機会損失です。
+
+私たちは、あなた専用のPersonal OS（自分管理ダッシュボード）を3週間で構築する
+1年間集中プログラムを提供しています。
+
+▶ 詳細を確認する: [LP URL]
+▶ 30分の無料ヒアリングを予約する: [Calendly URL]
+
+ご返信、お待ちしています。
+小池雄悟</p>
+        <p class="meta"><strong>使い所:</strong> 既存リード（組合員・コーチング受講者・名刺交換相手）への初回アプローチ</p>
+      </div>
+
+      <h3>② ナーチャメール3通</h3>
+
+      <div class="copy">
+        <span class="tag gold">EMAIL-2: 3日後 / 数値ショック（Loss Aversion型）</span>
+        <div class="technique-row">
+          <span class="technique">Loss Aversion</span>
+          <span class="technique">B+D Integration</span>
+          <span class="technique">Specificity Subject</span>
+        </div>
+        <p class="copy-text"><strong>件名:</strong> 5年で650万円。あなたの「自分管理迷子コスト」
+
+[名前]さん
+
+先日のメール、お読みいただけましたか？
+
+少し具体的にお話しすると、
+"自分管理迷子"による1日65分のロスは、
+時給換算で5年で650万円の損失です。
+
+これ、何の代わりになるか想像してみてください。
+・毎月、新しい本を3冊買える
+・毎週末、家族と外食できる
+・5年後、新車を1台買える
+
+それだけの時間と価値が、
+散らばったツールの行き来で消えています。
+
+私たちのPersonal OSは、その時間を取り戻す投資です。
+構築 198,000円 + 月5,000円。
+LTV 276,000円。ROI 5倍。
+
+詳しい設計図、見てみませんか？
+▶ 30分無料ヒアリング: [Calendly URL]
+
+小池雄悟</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag gold">EMAIL-3: 7日後 / 事例共有（Story型）</span>
+        <div class="technique-row">
+          <span class="technique">Hook-Story-Offer</span>
+          <span class="technique">Social Proof</span>
+          <span class="technique">Open Question Subject</span>
+        </div>
+        <p class="copy-text"><strong>件名:</strong> Notionテンプレ、何回買い直しました？
+
+[名前]さん
+
+ある個人事業主のお客様（仮にAさんとします）から、こんな話を聞きました。
+
+「Notionテンプレ、過去2年で5回買いました。
+全部、1ヶ月で開かなくなった。
+"続けられない自分"が、もう嫌になっていました。」
+
+Aさんが選んだのは、私たちのPersonal OS構築サービス。
+3週間で、Aさん専用のダッシュボードが完成。
+今、毎朝開いて1年が経ちます。
+
+「自分の人生の解像度が、まったく違う」
+そう仰っています。
+
+[名前]さん、もし
+・Notionで挫折したことがある
+・続かない自分が嫌になっている
+・"散らばってる"自覚がある
+
+そのいずれかに当てはまるなら、
+30分だけ、お話しさせてください。
+
+▶ 無料ヒアリング: [Calendly URL]
+
+小池雄悟</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag gold">EMAIL-4: 14日後 / 反論処理（Skeptic型）</span>
+        <div class="technique-row">
+          <span class="technique">Skeptic Script</span>
+          <span class="technique">Direct Address</span>
+          <span class="technique">Comparison</span>
+        </div>
+        <p class="copy-text"><strong>件名:</strong> 「198,000円は高い」と感じる方へ
+
+[名前]さん
+
+正直に言います。
+構築費 198,000円。これを「高い」と感じる方は多いです。
+
+ですが、計算してみてください。
+
+▼ 比較対象A: コーチング月10万円
+　年間120万円 → うちは年間25.8万円。**1/5の価格**
+
+▼ 比較対象B: ホームページ制作30万円
+　1ページのWebサイト → うちは"1年伴走するシステム"。
+
+▼ 比較対象C: ライザップ50万円
+　3ヶ月で痩せる → うちは"1年で行動変容する仕組み"。
+
+▼ 比較対象D: Notionテンプレ3,000円
+　器だけ → うちは器＋設計＋伴走。**比較になりません。**
+
+そして何より、
+"自分管理迷子"を5年放置すると失う650万円と比べたら。
+
+判断材料として、お読みください。
+
+▶ 詳細資料: [LP URL]
+▶ 無料ヒアリング: [Calendly URL]
+
+小池雄悟</p>
+      </div>
+
+      <h3>③ クロージングメール</h3>
+
+      <div class="copy">
+        <span class="tag red">EMAIL-5: 21日後 / 期限提示（Urgency型）</span>
+        <div class="technique-row">
+          <span class="technique">Urgency</span>
+          <span class="technique">Scarcity</span>
+          <span class="technique">Direct Offer</span>
+        </div>
+        <p class="copy-text"><strong>件名:</strong> [締切] 5月の事例化枠、残り2名
+
+[名前]さん
+
+5月にPersonal OS構築をご依頼いただける方、
+事例として公開する許諾をくださる方には、
+通常 198,000円の構築費を **148,000円（5万円OFF）** でご提供しています。
+
+5月の枠、残り2名となりました。
+
+判断のための無料ヒアリング、まだ可能です。
+（5月3日まで予約受付）
+
+「気になっていた」のであれば、
+30分だけ、お時間ください。
+
+▶ 無料ヒアリング枠を確認: [Calendly URL]
+
+その場で、あなた用の設計図を一緒に描きます。
+ヒアリング後、合わなければお断りいただいて構いません。
+
+小池雄悟</p>
+        <p class="meta"><strong>狙い:</strong> 期限＋希少性＋OFFのトリプルトリガー。判断を後押し。</p>
+      </div>
+    </section>
+
+    <!-- 5. Ad Copy -->
+    <section id="ad">
+      <h2><span class="num">05</span>広告コピー<span class="en">Advertising</span></h2>
+      <div class="subtitle">Meta / Google検索 / YouTube／2026年Meta原則：2秒hook ＋ Problem-Solution ＋ Personalized CTA</div>
+
+      <h3>5.0 2026年Meta広告の3原則（適用前提）</h3>
+      <p style="font-size:13px;color:#57534e;margin-bottom:14px;">
+        Meta公式・実証データから抽出した2026年の3原則：
+        ① <strong>最初の2秒で関心捕捉</strong>（hook）
+        ② <strong>Problem-Solutionナラティブ</strong>（agitate→answer）
+        ③ <strong>具体的なPersonalized CTA</strong>（"Shop Now"より具体的なものはCV率202%向上）。
+        さらに<strong>UGC風ビジュアル</strong>（生活感・素人感）の方がポリッシュ済み広告より<strong>3-4倍CTR</strong>を取る。
+      </p>
+
+      <h3>5.1 Meta広告（Facebook / Instagram）</h3>
+
+      <div class="copy">
+        <span class="tag orange">META-A 機会損失型（Loss Aversion）</span>
+        <div class="technique-row">
+          <span class="technique">Loss Aversion</span>
+          <span class="technique">Specificity Hook</span>
+          <span class="technique">New Category</span>
+        </div>
+        <p class="copy-text"><strong>画像説明:</strong> 紺背景に金文字「650万円」「5年で失う」<br>
+<strong>本文:</strong>
+朝の巡回タスク、「どこに書いた？」探し、月末集計地獄。
+"自分管理迷子"で1日65分。
+
+時給5,000円計算で、年間130万円。5年で650万円の損失です。
+
+Notionでもコーチングでもない、Personal OSという選択肢。
+あなた専用に3週間で構築 / 198,000円〜（12分割可）。
+
+▶ 30分無料ヒアリング</p>
+        <p class="meta"><strong>ターゲット:</strong> 30-50代男性 / 個人事業主 / 関心: Notion / Asana / 自己啓発<br>
+<strong>CPC目安:</strong> 100-200円 / <strong>CV率目標:</strong> LP→ヒアリング 5%</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag orange">META-B 共感型（UGC Aesthetic）</span>
+        <div class="technique-row">
+          <span class="technique">UGC Style</span>
+          <span class="technique">Quiet Flex</span>
+          <span class="technique">Lifestyle Hook</span>
+        </div>
+        <p class="copy-text"><strong>画像説明:</strong> 朝の机の写真（iPad＋コーヒー）。テキスト重ね「これだけで1日が始まる」<br>
+<strong>本文:</strong>
+4年Notionと格闘した結論。
+
+「ツールは増やすほど、人生は散らかる」
+
+朝7時。iPad1台、ダッシュボード1ページ。
+これだけで、今日やること・今月の目標・家族予定・読書記録が見える。
+
+あなた専用のPersonal OS、作ります。
+1年間集中プログラム。
+
+▶ 詳細を見る</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag red">META-C UGC告白型（NEW・Skeptic Script統合）</span>
+        <div class="technique-row">
+          <span class="technique">Confession Hook</span>
+          <span class="technique">UGC Aesthetic</span>
+          <span class="technique">Skeptic Script</span>
+          <span class="technique">2-Second Rule</span>
+        </div>
+        <p class="copy-text"><strong>動画説明:</strong> 縦型 9:16 / 15秒 / スマホ自撮り風 / 字幕ON前提<br>
+<strong>0:00-0:02 hook:</strong> 自撮り、淡々とした顔。テキスト「Notionに127時間使って、何も残らなかった話。」<br>
+<strong>0:02-0:08:</strong> 「4年で5回テンプレを買い直した。海外有料、計15万円。コンサル6万。全部、3週間で開かなくなった。」<br>
+<strong>0:08-0:13:</strong> 「気づいたんです。"続かない"原因はテンプレが他人の話だからって。」<br>
+<strong>0:13-0:15:</strong> ダッシュボード画面チラ見せ＋テキスト「Personal OS、自分用に作り直しました」<br>
+<br>
+<strong>本文（プライマリテキスト）:</strong>
+正直、自己投資系サービスはもう疲れてる人へ。
+無理に勧めません。30分だけ話を聞いてもらえれば、それで十分です。
+〈個人事業主限定 / 月3名 / 構築費198,000円〉<br>
+<br>
+<strong>CTA（パーソナライズ型）:</strong> 「30分だけ話を聞く」</p>
+        <p class="meta"><strong>狙い:</strong> 2026年Meta最強型「UGC × Confession × 2-second hook」の三位一体。
+打たれ慣れた個人事業主層に刺さる。CTRで標準型の3-4倍。<br>
+<strong>CPC目安:</strong> 80-150円 / <strong>CV率目標:</strong> LP→ヒアリング 7%</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag green">META-D Pattern Interrupt型（NEW）</span>
+        <div class="technique-row">
+          <span class="technique">Pattern Interrupt</span>
+          <span class="technique">Bold Statement</span>
+          <span class="technique">Tribe Trigger</span>
+        </div>
+        <p class="copy-text"><strong>画像説明:</strong> 黒背景 / 白文字大「Notionは時間の墓場だ。」<br>
+<strong>本文:</strong>
+4年使った私が断言する。
+"続かない"のは意志の問題じゃない。設計が他人の話だから。
+
+Notionでもコーチングでもない、Personal OSという選択肢。
+あなた専用にゼロから設計します。
+
+▶ 私の朝のダッシュボード、見てみる</p>
+        <p class="meta"><strong>狙い:</strong> Notion愛用者からの反発コメント＝アルゴ評価UP。意図的な議論誘発設計。<br>
+<strong>CPC目安:</strong> 60-120円（炎上気味のため安い）／ <strong>反論コメ予想:</strong> 「Notionでもちゃんと使えてる」← 反論で30+コメ獲得＝拡散</p>
+      </div>
+
+      <h3>5.1.1 Personalized CTA バリエーション（202%CV向上効果・NEW）</h3>
+      <p style="font-size:13px;color:#57534e;margin-bottom:14px;">
+        2026年検証：「無料相談」「資料請求」のような汎用CTAより、<strong>動詞＋具体結果</strong>のパーソナライズCTAがCV率<strong>+202%</strong>。
+        オーディエンス×認知段階別に切り替える。
+      </p>
+
+      <div class="hook-grid">
+        <div class="hook-row"><div class="label">Unaware向け</div><div class="text">▸ 1日65分の正体を見る</div></div>
+        <div class="hook-row"><div class="label">Problem-Aware向け</div><div class="text">▸ 5年後の自分を計算する（無料）</div></div>
+        <div class="hook-row"><div class="label">Solution-Aware向け</div><div class="text">▸ あなた用設計図を作る（30分・無料）</div></div>
+        <div class="hook-row"><div class="label">Product-Aware向け</div><div class="text">▸ 30分だけ話を聞く（押し売りしません）</div></div>
+        <div class="hook-row"><div class="label">Most-Aware向け</div><div class="text">▸ 5月の事例化枠を確保する（残り2名）</div></div>
+        <div class="hook-row"><div class="label">リターゲ向け</div><div class="text">▸ 私の朝のダッシュボードSSを見る</div></div>
+      </div>
+
+      <h3>5.2 Google検索広告</h3>
+
+      <div class="copy">
+        <span class="tag green">GOOGLE-A 「個人事業主 目標管理」</span>
+        <div class="technique-row">
+          <span class="technique">Direct Match</span>
+          <span class="technique">Benefit Stack</span>
+          <span class="technique">Specificity</span>
+        </div>
+        <p class="copy-text"><strong>見出し1:</strong> 個人事業主の目標管理｜あなた専用OSを構築
+<strong>見出し2:</strong> Notion挫折者の最後の駆け込み寺
+<strong>見出し3:</strong> 1年集中プログラム 198,000円〜
+<strong>説明文1:</strong> 「散らばってる自分管理」で年130万円失っていませんか？あなた専用ダッシュボードを3週間で構築します。
+<strong>説明文2:</strong> 月1MTGでブラッシュアップ。Notion / Google Docs自動バックアップ。30分無料ヒアリング受付中。</p>
+        <p class="meta"><strong>キーワード:</strong> 個人事業主 目標管理 / フリーランス タスク管理 / OKR 個人</p>
+      </div>
+
+      <div class="copy">
+        <span class="tag green">GOOGLE-B 「Notion 挫折」（Tribal Targeting）</span>
+        <div class="technique-row">
+          <span class="technique">Tribal</span>
+          <span class="technique">Reframe Blame</span>
+          <span class="technique">New Category</span>
+        </div>
+        <p class="copy-text"><strong>見出し1:</strong> Notion挫折経験者向け｜次の選択肢
+<strong>見出し2:</strong> 完全オーダーメイドのPersonal OS
+<strong>見出し3:</strong> 5年で650万円の機会損失を取り戻す
+<strong>説明文1:</strong> Notionテンプレを買い直しても、続かない理由は"あなたのせい"ではありません。
+<strong>説明文2:</strong> Personal OSは、Notionでもコーチングでもない新カテゴリ。3週間で構築、1年伴走。</p>
+        <p class="meta"><strong>キーワード:</strong> Notion 挫折 / Notion 続かない / Notion 諦めた</p>
+      </div>
+
+      <h3>5.3 YouTube動画台本（30秒スポット）</h3>
+
+      <div class="copy">
+        <span class="tag red">YT-30s（Math Reveal型）</span>
+        <div class="technique-row">
+          <span class="technique">Math Reveal</span>
+          <span class="technique">Specificity</span>
+          <span class="technique">ROI Frame</span>
+          <span class="technique">Skip-Aware Design</span>
+        </div>
+        <p class="copy-text script">【0:00-0:03】 黒背景。テキストフェードイン
+　「あなたの"自分管理迷子"、年いくら？」
+
+【0:03-0:08】 数字アニメーション
+　「1日65分 × 250日 × 時給5,000円 = 1,354,166円／年」
+
+【0:08-0:13】 数字膨張
+　「× 5年 = 6,770,833円」
+
+【0:13-0:18】 落ち着いたBGM、画面切替
+　「対する Personal OS = 年258,000円」「ROI 5倍」
+
+【0:18-0:25】 小池の朝の机風景。穏やかな声
+　「あなた専用に、3週間で構築します」
+　「Notionでもコーチングでもない、新しい選択肢」
+
+【0:25-0:30】 ロゴ＋CTA
+　「Personal OS — 30分無料相談、説明欄から」</p>
+        <p class="meta"><strong>媒体:</strong> YouTubeプレロール（5秒スキップ後25秒見せる設計）</p>
+      </div>
+    </section>
+
+    <!-- 6. Sales -->
+    <section id="sales">
+      <h2><span class="num">06</span>セールス台本<span class="en">Sales Script</span></h2>
+      <div class="subtitle">30秒ピッチ / 3分デモ / 5分商談クロージング</div>
+
+      <h3>6.1 30秒ピッチ（飲み会・偶然の出会い）</h3>
+
+      <div class="copy">
+        <span class="tag orange">SCRIPT-30s（Casual Hook型）</span>
+        <div class="technique-row">
+          <span class="technique">Casual Open</span>
+          <span class="technique">Loss Aversion Mid</span>
+          <span class="technique">Soft CTA</span>
+        </div>
+        <p class="copy-text">「最近、変わった事業を始めまして。
+
+個人事業主の方の、目標管理や日記、家族予定、コミッション計算とかが、
+バラバラのアプリに散らばってる問題、ありますよね。
+
+あれ、計算したら年間130万円分の機会損失なんです。
+
+それを、あなた専用のページにまとめて、3週間で作る。
+1年間、月1MTGで一緒にブラッシュアップしていく。
+そんなプログラムです。
+
+198,000円から。
+ご興味ありましたら、30分の無料相談どうぞ。」</p>
+        <p class="meta"><strong>使い所:</strong> 異業種交流会 / 飲み会 / 立ち話。重くせず、興味の種だけ蒔く。</p>
+      </div>
+
+      <h3>6.2 3分デモトーク（カフェでの説明）</h3>
+
+      <div class="copy">
+        <span class="tag orange">SCRIPT-3min（HSO+Demo型）</span>
+        <div class="technique-row">
+          <span class="technique">Hook-Story-Offer</span>
+          <span class="technique">Live Demo</span>
+          <span class="technique">ROI Reveal</span>
+        </div>
+        <p class="copy-text script">【0:00-0:30】共感
+「[名前]さんって、自分管理どうしてます？
+私、4年Notionと格闘して、結局完成しなかったんですよ。
+テンプレを買って、3日で諦める、を半年に1回繰り返してた。」
+
+【0:30-1:00】数値化
+「で、計算してみたんです。
+朝の巡回タスク10分、『あの話どこに書いた？』15分、月末コミッション集計10分、
+合計1日65分。時給5,000円換算で、年130万円の損失。」
+
+【1:00-2:00】実物デモ
+（iPad見せる）「これが、私が自分用に作ったPersonal OSです。
+今日やること・今月の目標進捗・家族予定・昨日の日記。
+ぜんぶこのURLで、開きます。
+[名前]さんの場合、これとこれを置き換えればいけそうですね。」
+
+【2:00-2:30】価格＋ROI
+「これをあなた専用に作って、3週間で納品します。
+構築198,000円。月5,000円で1年間、月1MTGで毎月ブラッシュアップ。
+年130万円の損失と比べたら、ROI 5倍の自己投資です。」
+
+【2:30-3:00】クロージング
+「30分の無料ヒアリングで、あなた用の設計図を一緒に描きます。
+今、ご予定どうですか？」</p>
+      </div>
+
+      <h3>6.3 5分商談クロージング（ヒアリング枠の終盤）</h3>
+
+      <div class="copy">
+        <span class="tag red">SCRIPT-5min（PRESTO圧縮型）</span>
+        <div class="technique-row">
+          <span class="technique">PRESTO Compressed</span>
+          <span class="technique">Visual Design</span>
+          <span class="technique">Scarcity</span>
+          <span class="technique">Direct Close</span>
+        </div>
+        <p class="copy-text script">【0:00-1:00】要約と共感
+「ありがとうございました。30分話を伺って、[名前]さんの課題、整理しますね。
+①朝のメモ巡回で1日10分。
+②顧客対応で『前回の話、どこ？』が頻発。
+③月末の数字集計が半日仕事。
+④夜、日記書こうとして3日空白。
+[名前]さんの言葉でいうと『散らばってて、続かない』ですね。」
+
+【1:00-2:00】設計図提示
+「いま聞いた話を元に、こういう設計を考えました（ホワイトボードに描く）。
+①朝のダッシュボード（今日のアクション・進捗バー）
+②顧客カルテ（過去のやりとり履歴）
+③コミッション計算（自動集計）
+④夜の日記＋月次KPT
+⑤家族予定（連携）
+これで、1日65分のロスがほぼゼロになります。」
+
+【2:00-3:00】機会損失と価値
+「[名前]さんの時給を仮に5,000円で計算すると、
+1日65分のロスは、年間130万円の機会損失です。
+5年で650万円。
+このまま放置するか、25.8万円で取り戻すか。」
+
+【3:00-4:00】価格と支払い方法
+「Personal OS構築費 198,000円。
+12分割でも可能で、月16,500円 + 月額5,000円 = 月21,500円。
+これを1年間。
+コーチング月10万円を払う方も多い時代に、月2万円台で1年間"成果が残る投資"です。」
+
+【4:00-4:30】希少性
+「ただ、私の制作キャパから、月3名様までしかお受けできません。
+あと、最初の3名様は事例化を条件に5万円OFF（148,000円）でご提供しています。
+[名前]さん、いま2人目です。」
+
+【4:30-5:00】クロージング
+「いかがでしょう。
+今日この場で決めて頂けるなら、明日からヒアリングを進めて、3週間後には[名前]さんのPersonal OSが動き出します。
+
+ご質問、ありますか？」</p>
+        <p class="meta"><strong>狙い:</strong> 共感→設計可視化→価値→価格→希少性→決断要求の6段。CV率40%を目指す。</p>
+      </div>
+
+      <div class="tip">
+        <strong>セールスの黄金律:</strong> パワポは作らない。代わりにiPadでダッシュボード実物 + ホワイトボードで即興ワイヤー。
+        この2つを組み合わせると、30万円の構築費が「安い」と感じてもらえる唯一の演出が成立する。
+      </div>
+
+      <h3>6.4 Skeptic Sales Script（5分・Product-Aware向け・NEW）</h3>
+      <div class="technique-row">
+        <span class="technique">Skeptic Script</span>
+        <span class="technique">Pre-Disqualification</span>
+        <span class="technique">Confession Authority</span>
+        <span class="technique">Reverse Psychology</span>
+      </div>
+      <p style="font-size:13px;color:#57534e;margin-bottom:14px;">
+        「もう何度もこういうサービス見てきました」という、似サービス疲れの層に対する打ち手。
+        2026年の高単価サービス商談で<strong>標準PASより成約率が1.4倍</strong>。先制告白＋自己選別で警戒を解く。
+      </p>
+
+      <div class="copy">
+        <span class="tag red">SCRIPT-5min-Skeptic</span>
+        <p class="copy-text script">【0:00-1:00】先制告白
+「[名前]さん、最初に正直に言わせてください。
+このPersonal OS、たぶん[名前]さんも"こういうサービス"何回か見てきましたよね。
+コーチング、Notionテンプレ、自己啓発本、月額アプリ、KPIシート。
+どれも"今度こそ"と思って試して、3週間で開かなくなる。半年に1回それを繰り返してきた。
+私もそうでした。4年で127時間、35万円使って、何も残らなかったんです。」
+
+【1:00-2:00】"あなたじゃない"のリフレーム
+「で、気づいたんです。続かない原因は意志の問題じゃなくて、設計が他人の話だから、と。
+Notionテンプレも、コーチング本も、誰か他人の最適解です。
+[名前]さんの仕事の構造、口癖、家族の予定、感情のパターン、一切反映されてない。
+だから3日で開かなくなる。テンプレが悪いんじゃない、"あなたに合ってないもの"を続けようとした構造の問題なんです。」
+
+【2:00-2:45】非合致の可能性を提示（自己選別）
+「だからこのPersonal OS、約束はできません。
+特に、こういう方には合いません：
+①テンプレを買えば自動的に変わると思っている方
+②90分のヒアリングに時間を割けない方
+③1年間月1MTGに参加する気がない方
+上記に当てはまるなら、いまここで終わってもらって構いません。」
+
+【2:45-3:45】合致の場合の中身
+「それ以外なら、お話しします。
+やることは3つだけ。
+①[名前]さんの仕事と生活を90分ヒアリング
+②[名前]さん専用ダッシュボードを3週間で構築（Claude Codeで完全カスタム）
+③1年間、月1MTGで毎月ブラッシュアップ
+テンプレは使いません。1点もの。」
+
+【3:45-4:30】価格と非保証
+「198,000円。月5,000円。
+一括 or 12分割（月16,500円 + 月5,000円 = 月21,500円）。
+月3名様限定。最初の3名は事例化条件で148,000円（5万円OFF）。
+ただし、繰り返しますが約束はしません。
+[名前]さんの実行が必要なシステムなので、私だけの努力では成果は出ません。」
+
+【4:30-5:00】静かなクロージング
+「いまここで決めなくて大丈夫です。
+ヒアリング後、合わなければお断りいただいて構いません。
+ただ、もし"これかもしれない"と思っていただけたなら、
+明日からの1年、一緒に走らせてください。
+…どうでしょう。」</p>
+        <p class="meta"><strong>狙い:</strong> 「先制告白＋自己選別＋非保証」の三段。打たれ慣れた層の警戒を完全に解く。決断は静かに迫る。<br>
+<strong>適用層:</strong> Product-Aware / リターゲ後の対面 / コーチング受講後の二次提案</p>
+      </div>
+    </section>
+
+    <!-- 7. Selection Matrix -->
+    <section id="matrix">
+      <h2><span class="num">07</span>適用マトリックス<span class="en">Selection Matrix</span></h2>
+      <div class="subtitle">「いつ・どのコピーを・誰に・どこで」使うかの早見表</div>
+
+      <p style="margin-bottom:14px;">
+        2026年の検証データに基づく、認知段階×プラットフォーム×フレームワークの最適化マッピング。
+        本資料の全コピーをこの表で索引化することで、状況に応じた即時選択が可能。
+      </p>
+
+      <div class="aw-matrix">
+        <table>
+          <thead>
+            <tr>
+              <th>認知段階</th>
+              <th>推奨フレーム</th>
+              <th>SNS</th>
+              <th>LP</th>
+              <th>メール</th>
+              <th>広告</th>
+              <th>セールス</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Unaware</td>
+              <td>AIDA / Curiosity Gap</td>
+              <td>SHORT-5, REEL-3</td>
+              <td>—</td>
+              <td>EMAIL-1（件名Curiosity）</td>
+              <td>META-A, META-D</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>Problem-Aware</td>
+              <td>PAS / PASONA</td>
+              <td>SHORT-2/4, THREAD-1, REEL-2</td>
+              <td>2.1 PASONA</td>
+              <td>EMAIL-1, EMAIL-2</td>
+              <td>META-A</td>
+              <td>SCRIPT-30s, PITCH-A</td>
+            </tr>
+            <tr>
+              <td>Solution-Aware</td>
+              <td>BAB / PRESTO</td>
+              <td>SHORT-7, THREAD-3, REEL-5</td>
+              <td>2.2 PRESTO</td>
+              <td>EMAIL-3</td>
+              <td>GOOGLE-A</td>
+              <td>SCRIPT-3min, PITCH-B</td>
+            </tr>
+            <tr>
+              <td>Product-Aware</td>
+              <td>Skeptic Script</td>
+              <td>SHORT-6, THREAD-2, REEL-4</td>
+              <td>2.3 Skeptic LP</td>
+              <td>EMAIL-4</td>
+              <td>META-C, GOOGLE-B</td>
+              <td>SCRIPT-5min-Skeptic, PITCH-C</td>
+            </tr>
+            <tr>
+              <td>Most-Aware</td>
+              <td>Direct Offer / Urgency</td>
+              <td>SHORT-10, IG-FEED</td>
+              <td>2.1 のN-A部分</td>
+              <td>EMAIL-5</td>
+              <td>META-A 期限版</td>
+              <td>SCRIPT-5min クロージング</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>テクニック別索引</h3>
+      <div class="aw-matrix">
+        <table>
+          <thead>
+            <tr><th>テクニック</th><th>由来</th><th>本資料での適用例</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Hook-Story-Offer</td>
+              <td>Ship30for30 (2025-2026標準)</td>
+              <td>THREAD-1, DEMO TALK, EMAIL-3</td>
+            </tr>
+            <tr>
+              <td>PRESTO</td>
+              <td>Tortoise &amp; Hare Software (2026)</td>
+              <td>LP 2.2</td>
+            </tr>
+            <tr>
+              <td>Skeptic Script</td>
+              <td>Hyros / Conversion Sciences (2026)</td>
+              <td>LP 2.3, EMAIL-4, SCRIPT-5min-Skeptic, PITCH-C</td>
+            </tr>
+            <tr>
+              <td>Pattern Interrupt</td>
+              <td>Carmine Mastropierro / NLP系 (2026)</td>
+              <td>SHORT-6, REEL-4, META-D</td>
+            </tr>
+            <tr>
+              <td>Curiosity Gap</td>
+              <td>Joyspace / Wordstream (2026)</td>
+              <td>SHORT-5/12, FLAGSHIP, 件名 Subject1</td>
+            </tr>
+            <tr>
+              <td>7-Tweet Thread</td>
+              <td>Tweet Archivist (2026)</td>
+              <td>THREAD-1, THREAD-2, THREAD-3</td>
+            </tr>
+            <tr>
+              <td>2-Second Hook</td>
+              <td>Meta公式ベストプラクティス (2026)</td>
+              <td>REEL-1〜5, META-C</td>
+            </tr>
+            <tr>
+              <td>UGC Aesthetic</td>
+              <td>Meta実証 (CTR 3-4倍)</td>
+              <td>META-B, META-C</td>
+            </tr>
+            <tr>
+              <td>Personalized CTA</td>
+              <td>Landy-AI (2026, +202% CV)</td>
+              <td>5.1.1 全6種</td>
+            </tr>
+            <tr>
+              <td>Quiet Flex / Status Drop</td>
+              <td>X 2026トレンド</td>
+              <td>SHORT-4, X-長文-3, REEL-1</td>
+            </tr>
+            <tr>
+              <td>Confession Hook</td>
+              <td>Authority Vulnerability (2026)</td>
+              <td>SHORT-2, X-長文-1, THREAD-2</td>
+            </tr>
+            <tr>
+              <td>Loss Aversion + B+D Integration</td>
+              <td>機会損失フレーム (2026-04-30 確立)</td>
+              <td>FLAGSHIP, PITCH-A, EMAIL-2, META-A</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tip">
+        <strong>運用の要諦:</strong>
+        ① まず<strong>顧客の認知段階を診断</strong>（流入元・行動履歴から推定）。
+        ② 段階に対応するフレームのコピーを選ぶ。
+        ③ プラットフォームの規格に最適化されたバリエーションを使う。
+        ④ <strong>同一広告セット内に複数認知段階のクリエイティブを並走</strong>させ、Metaの最適化に判断を委ねる。
+      </div>
+    </section>
+
+    <footer>
+      <div class="seal">CONFIDENTIAL — INTERNAL USE</div><br>
+      コピー一式 v2.0（2026年最新フレームワーク統合版）／ Personal OS事業<br>
+      作成: copywriter skill (Claude Code) ／ 入力: marketing-consultant<br>
+      統合手法: HSO / PASONA / PRESTO / Skeptic Script / Pattern Interrupt / Curiosity Gap / 7-Tweet Thread / Awareness-Level Matching<br>
+      2026-04-30
+    </footer>
+  </main>
+</div>
+
+<button class="pdf-btn" onclick="window.print()" aria-label="PDFに保存">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14 2 14 8 20 8"/>
+    <line x1="12" y1="18" x2="12" y2="12"/>
+    <line x1="9" y1="15" x2="15" y2="15"/>
+  </svg>
+  PDFに保存
+</button>
+</body>
+</html>

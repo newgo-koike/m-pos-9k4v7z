@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>事業計画書｜一人一ホームページ — オーダーメイド・パーソナルダッシュボード事業</title>
+<style>
+  :root {
+    --navy: #1a2c4d;
+    --navy-light: #2d4373;
+    --gold: #c9a961;
+    --gold-light: #e8d59f;
+    --bg: #f7f6f2;
+    --paper: #ffffff;
+    --ink: #1f2937;
+    --ink-light: #4b5563;
+    --line: #e5e7eb;
+    --soft: #f3f4f6;
+    --accent-red: #b91c1c;
+    --accent-green: #047857;
+    --accent-blue: #1d4ed8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* Layout */
+  .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  nav.sidebar {
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    background: var(--navy); color: #fff; padding: 28px 20px;
+  }
+  nav.sidebar .brand {
+    font-size: 11px; letter-spacing: 0.3em; color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+  nav.sidebar h1.title {
+    font-size: 16px; font-weight: 700; line-height: 1.5; margin-bottom: 24px;
+    color: #fff; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 16px;
+  }
+  nav.sidebar ol { list-style: none; counter-reset: tocnum; }
+  nav.sidebar ol li { counter-increment: tocnum; margin-bottom: 4px; }
+  nav.sidebar ol li a {
+    display: block; padding: 8px 12px; color: #cbd5e1; text-decoration: none;
+    font-size: 13px; border-radius: 6px; transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+  nav.sidebar ol li a:hover {
+    background: rgba(255,255,255,0.08); color: var(--gold-light);
+    border-left-color: var(--gold);
+  }
+  nav.sidebar ol li a::before {
+    content: counter(tocnum, decimal-leading-zero) "  ";
+    color: var(--gold); font-weight: 600; margin-right: 6px;
+  }
+  nav.sidebar .meta {
+    margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.15);
+    font-size: 11px; color: #94a3b8; line-height: 1.6;
+  }
+
+  main { padding: 60px 80px; max-width: 1100px; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: #fff; padding: 56px 64px; border-radius: 12px; margin-bottom: 56px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ""; position: absolute; top: -40px; right: -40px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, var(--gold-light) 0%, transparent 70%);
+    opacity: 0.15;
+  }
+  .hero .label { font-size: 12px; letter-spacing: 0.3em; color: var(--gold-light); margin-bottom: 16px; }
+  .hero h1 {
+    font-size: 38px; font-weight: 700; line-height: 1.3; margin-bottom: 20px;
+    letter-spacing: 0.02em;
+  }
+  .hero .lead {
+    font-size: 17px; color: #cbd5e1; line-height: 1.8; max-width: 700px;
+  }
+  .hero .stamp {
+    margin-top: 32px; padding: 16px 20px; background: rgba(255,255,255,0.06);
+    border-left: 3px solid var(--gold); border-radius: 4px;
+    font-size: 14px; color: #e2e8f0;
+  }
+
+  /* Section */
+  section {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 10px;
+    padding: 48px 56px; margin-bottom: 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+  section h2 {
+    font-size: 24px; color: var(--navy); font-weight: 700; margin-bottom: 8px;
+    display: flex; align-items: baseline; gap: 16px;
+  }
+  section h2 .num {
+    font-size: 40px; color: var(--gold); font-weight: 300; font-family: Georgia, serif;
+    line-height: 1;
+  }
+  section h2 .en {
+    font-size: 11px; color: var(--ink-light); letter-spacing: 0.25em; margin-left: auto;
+    text-transform: uppercase; font-weight: 400;
+  }
+  section .subtitle {
+    color: var(--ink-light); font-size: 14px; margin-bottom: 32px;
+    padding-bottom: 16px; border-bottom: 2px solid var(--line);
+  }
+  section h3 {
+    font-size: 17px; color: var(--navy); font-weight: 700; margin: 28px 0 12px;
+    padding-left: 12px; border-left: 3px solid var(--gold);
+  }
+  section h4 {
+    font-size: 14px; color: var(--navy-light); font-weight: 700; margin: 20px 0 8px;
+  }
+  section p { margin-bottom: 14px; color: var(--ink); }
+  section ul, section ol { margin: 8px 0 14px 20px; }
+  section li { margin-bottom: 6px; }
+  section strong { color: var(--navy); font-weight: 700; }
+
+  /* Cards */
+  .card-grid { display: grid; gap: 16px; margin: 16px 0 24px; }
+  .card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .card-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .card-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .card {
+    background: var(--soft); border: 1px solid var(--line); border-radius: 8px;
+    padding: 20px; transition: all 0.15s;
+  }
+  .card.highlight { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-color: var(--gold-light); }
+  .card.danger { background: #fef2f2; border-color: #fecaca; }
+  .card.success { background: #f0fdf4; border-color: #bbf7d0; }
+  .card.info { background: #eff6ff; border-color: #bfdbfe; }
+  .card .num {
+    font-size: 28px; font-weight: 700; color: var(--navy); display: block; margin-bottom: 4px;
+  }
+  .card .num.gold { color: var(--gold); }
+  .card .num.red { color: var(--accent-red); }
+  .card .num.green { color: var(--accent-green); }
+  .card .label {
+    font-size: 11px; letter-spacing: 0.15em; color: var(--ink-light); text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .card .body { font-size: 13px; color: var(--ink); line-height: 1.6; }
+  .card h4 { font-size: 15px; margin: 0 0 8px; color: var(--navy); }
+
+  /* Tables */
+  table {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    font-size: 13px; background: var(--paper);
+  }
+  table th {
+    background: var(--navy); color: #fff; padding: 12px 14px;
+    text-align: left; font-weight: 600; font-size: 12px;
+    letter-spacing: 0.05em; border: 1px solid var(--navy);
+  }
+  table td {
+    padding: 12px 14px; border: 1px solid var(--line); vertical-align: top;
+  }
+  table tr:nth-child(even) td { background: var(--soft); }
+  table tr td.highlight { background: #fffbeb; font-weight: 600; }
+
+  /* Quote / Insight box */
+  .insight {
+    background: linear-gradient(90deg, #fffbeb 0%, transparent 100%);
+    border-left: 4px solid var(--gold); padding: 16px 20px; margin: 20px 0;
+    font-size: 14px; color: var(--ink);
+  }
+  .insight .label {
+    font-size: 11px; letter-spacing: 0.2em; color: var(--gold);
+    font-weight: 700; margin-bottom: 4px; text-transform: uppercase;
+  }
+
+  .warn {
+    background: #fef2f2; border-left: 4px solid var(--accent-red);
+    padding: 14px 18px; margin: 16px 0; border-radius: 0 6px 6px 0;
+    font-size: 14px;
+  }
+  .warn .label { font-weight: 700; color: var(--accent-red); margin-bottom: 4px; font-size: 12px; }
+
+  /* Roadmap */
+  .roadmap { position: relative; margin: 32px 0 16px; padding-left: 32px; }
+  .roadmap::before {
+    content: ""; position: absolute; left: 12px; top: 0; bottom: 0;
+    width: 2px; background: var(--gold); opacity: 0.3;
+  }
+  .roadmap-item { position: relative; margin-bottom: 28px; padding-left: 24px; }
+  .roadmap-item::before {
+    content: ""; position: absolute; left: -27px; top: 6px;
+    width: 14px; height: 14px; background: var(--gold); border-radius: 50%;
+    border: 3px solid var(--paper); box-shadow: 0 0 0 2px var(--gold);
+  }
+  .roadmap-item h4 {
+    font-size: 15px; color: var(--navy); margin-bottom: 4px;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  .roadmap-item h4 .date {
+    font-size: 12px; color: var(--gold); font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+  .roadmap-item .body { font-size: 13px; color: var(--ink-light); }
+
+  /* Funnel */
+  .funnel { display: flex; flex-direction: column; gap: 4px; margin: 16px 0; }
+  .funnel-stage {
+    padding: 14px 20px; background: var(--navy); color: #fff;
+    border-radius: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .funnel-stage:nth-child(1) { width: 100%; background: linear-gradient(90deg, var(--navy) 0%, var(--navy-light) 100%); }
+  .funnel-stage:nth-child(2) { width: 75%; background: var(--navy-light); margin: 0 auto; }
+  .funnel-stage:nth-child(3) { width: 55%; background: #4a6191; margin: 0 auto; }
+  .funnel-stage:nth-child(4) { width: 35%; background: var(--gold); color: var(--navy); margin: 0 auto; font-weight: 700; }
+  .funnel-stage .stage-name { font-weight: 600; font-size: 13px; }
+  .funnel-stage .stage-num { font-size: 14px; font-weight: 700; }
+
+  /* Action item list */
+  .actions { list-style: none; margin: 16px 0; }
+  .actions li {
+    padding: 14px 18px; background: var(--soft); border-left: 3px solid var(--gold);
+    margin-bottom: 8px; border-radius: 0 6px 6px 0; font-size: 14px;
+  }
+  .actions li strong { color: var(--navy); display: block; margin-bottom: 2px; font-size: 13px; }
+  .actions li .meta { font-size: 11px; color: var(--ink-light); letter-spacing: 0.1em; }
+
+  /* Tag */
+  .tag {
+    display: inline-block; padding: 2px 8px; background: var(--navy); color: #fff;
+    border-radius: 3px; font-size: 11px; letter-spacing: 0.05em; margin-right: 4px;
+  }
+  .tag.gold { background: var(--gold); color: var(--navy); }
+  .tag.red { background: var(--accent-red); }
+  .tag.green { background: var(--accent-green); }
+
+  /* Footer */
+  footer {
+    text-align: center; padding: 40px 20px; color: var(--ink-light);
+    font-size: 12px; line-height: 1.8;
+  }
+  footer .seal {
+    display: inline-block; padding: 12px 24px; border: 1px solid var(--gold);
+    color: var(--gold); letter-spacing: 0.3em; font-size: 11px; margin-bottom: 12px;
+  }
+
+  /* PDF Save Button */
+  .pdf-btn {
+    position: fixed; bottom: 28px; right: 28px; z-index: 200;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 24px; background: var(--gold); color: var(--navy);
+    border: none; border-radius: 32px;
+    font-family: inherit; font-weight: 700; font-size: 13px; letter-spacing: 0.1em;
+    cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+    transition: all 0.2s ease;
+  }
+  .pdf-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+    background: #d4b873;
+  }
+  .pdf-btn:active { transform: translateY(0); }
+  .pdf-btn svg { stroke: var(--navy); }
+
+  /* Print */
+  @media print {
+    .layout { grid-template-columns: 1fr; }
+    nav.sidebar { display: none; }
+    main { padding: 20px; }
+    section { page-break-inside: avoid; box-shadow: none; }
+    .hero { page-break-after: always; }
+    .pdf-btn { display: none !important; }
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.sidebar { position: relative; height: auto; }
+    main { padding: 32px 20px; }
+    .hero { padding: 32px 24px; }
+    .hero h1 { font-size: 26px; }
+    section { padding: 28px 20px; }
+    .card-grid.cols-3, .card-grid.cols-4 { grid-template-columns: 1fr 1fr; }
+    .card-grid.cols-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="brand">BUSINESS PLAN</div>
+    <h1 class="title">一人一ホームページ事業</h1>
+    <ol>
+      <li><a href="#summary">エグゼクティブサマリ</a></li>
+      <li><a href="#concept">事業コンセプト</a></li>
+      <li><a href="#market">市場分析</a></li>
+      <li><a href="#stp">STP分析</a></li>
+      <li><a href="#competitor">競合分析</a></li>
+      <li><a href="#bizmodel">ビジネスモデル</a></li>
+      <li><a href="#unit">ユニットエコノミクス</a></li>
+      <li><a href="#marketing">マーケティング戦略</a></li>
+      <li><a href="#product">プロダクト・技術戦略</a></li>
+      <li><a href="#roadmap">90日ロードマップ</a></li>
+      <li><a href="#kpi">KPI設計</a></li>
+      <li><a href="#risk">リスクと対策</a></li>
+      <li><a href="#action">推奨アクション</a></li>
+    </ol>
+    <div class="meta">
+      作成日: 2026-04-30<br>
+      策定: 小池雄悟<br>
+      協議: 兵頭・岩崎<br>
+      version 1.0
+    </div>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="label">PHARMA EIGHT∞ × NEW VENTURE  ／  v2.0</div>
+      <h1>1年間集中・行動管理プログラム<br>あなた専用の「自分管理OS」を、<br>198,000円から。</h1>
+      <p class="lead">
+        ジャーナリングも、目標管理も、家族のスケジュールも、夢リストも。バラバラのアプリを行き来する時代を終わらせる。
+        構築費 198,000円（12分割可）＋ 月1回MTGで継続改修する保守 月5,000円。
+        Claude Code × Supabase で構築する、個人事業主のための「1年集中の行動管理プログラム」。
+      </p>
+      <div class="stamp">
+        v1.0(2026-04-29) → v2.0(2026-04-30): 価格モデル「198,000円構築 + 月5,000円保守」に確定。
+        ターゲットを個人決済層に絞り込み、法人版は別パッケージとして後日設計。
+      </div>
+    </div>
+
+    <!-- 1. Executive Summary -->
+    <section id="summary">
+      <h2><span class="num">01</span>エグゼクティブサマリ<span class="en">Executive Summary</span></h2>
+      <div class="subtitle">この事業を一枚で理解するための要約</div>
+
+      <div class="card-grid cols-4">
+        <div class="card highlight">
+          <div class="label">商品名</div>
+          <div class="num gold" style="font-size:18px;">1年間集中<br>行動管理プログラム</div>
+          <div class="body">あなた専用の「自分管理OS」を構築＋1年伴走。コーチング月10万との比較対象。</div>
+        </div>
+        <div class="card">
+          <div class="label">技術スタック</div>
+          <div class="num" style="font-size:18px;">Claude Code<br>+ Supabase + Vercel</div>
+          <div class="body">UIカスタマイズ自由・権限管理・短納期。Notion保管庫として併用。</div>
+        </div>
+        <div class="card">
+          <div class="label">価格</div>
+          <div class="num" style="font-size:18px;">198,000円<br>+ 月5,000円</div>
+          <div class="body">構築費 198,000円（12分割可）＋ 保守サブスク月5,000円。LTV 276,000円。</div>
+        </div>
+        <div class="card success">
+          <div class="label">タイムライン</div>
+          <div class="num green" style="font-size:18px;">6月テストマーケ<br>7月本格受注</div>
+          <div class="body">3名のドッグフーディング → 6月テスト → 7月から月3-5件ペース受注</div>
+        </div>
+      </div>
+
+      <h3>3行サマリ</h3>
+      <ol>
+        <li><strong>市場機会</strong>: フリーランス1,303万人・個人事業主218万社のうち、Notion挫折経験者9割というアンメットニーズが顕在化。「テンプレ販売(3千円)」と「ノーコード代行(数十万)」の中間ゾーン＝<strong>198,000円の "1年集中プログラム"</strong>が空白地帯。</li>
+        <li><strong>勝ち筋</strong>: 3名（小池・岩崎・兵頭）の自分用ダッシュボードがそのままセールス資料。「Notion毎日開く習慣 → ダッシュボードに置換」でドッグフーディング保証も成立。月1MTGがコーチング要素を兼ね、月5,000円保守の継続を支える。</li>
+        <li><strong>勝てない場合のリスク</strong>: ①岩崎くんのキャパ崩壊、②サブスクのチャーン高（1年後継続率30%想定）、③法人案件の複雑化。これらを「コアモジュール標準化」「月1MTG運用」「法人は別パッケージ化」で回避する。</li>
+      </ol>
+
+      <div class="insight">
+        <div class="label">KEY INSIGHT</div>
+        <strong>「Notionで自分管理を完璧にしようとして9割が挫折する」という事実を逆手に取る。</strong>
+        商品の本質は「1年間、あなたの行動と数字に伴走する集中プログラム」。
+        コーチング月10万円との比較で「年間27万円なら安い」と相対化される価格設計が、この事業最大の戦略的勝ち筋。
+        最優先タスクは3名の自分用ダッシュボードを5月中に「日常使いレベル」で完成させること。
+      </div>
+    </section>
+
+    <!-- 2. Concept -->
+    <section id="concept">
+      <h2><span class="num">02</span>事業コンセプト<span class="en">Concept</span></h2>
+      <div class="subtitle">何を、誰に、なぜ売るのか</div>
+
+      <h3>提供価値（バリュープロポジション）</h3>
+      <p>
+        現代人の自己管理は、目標管理は<strong>Asana</strong>、日記は<strong>Day One</strong>、家計簿は<strong>Money Forward</strong>、家族予定は<strong>TimeTree</strong>、知識は<strong>Notion</strong>、というように<strong>5〜10個のアプリに分散</strong>している。
+        この分散コストは想像以上に大きい — 入力の二度手間、横断分析の不可能、データ所有権の希薄化、月額費用の累積、そして「全体像が見えない」という認知負荷。
+      </p>
+      <p>
+        我々が提供するのは <strong>"あなた専用の1ページ"</strong>。
+        ジャーナリング・目標カスケード・家族スケジュール・夢リスト・収支・読書・健康記録 — 必要なものだけを、必要な配置で、ひとつのURLに集約する。
+        テンプレートを「自分で組み立てる」のではなく、ヒアリングを経て<strong>こちらが組み上げる</strong>。
+      </p>
+
+      <h3>3つのコンセプト柱</h3>
+      <div class="card-grid cols-3">
+        <div class="card">
+          <h4>① 集約 (Consolidation)</h4>
+          <p class="body">複数アプリを1ページに。SaaSスタックを断捨離して、ひとつのURLに自分のすべてを置く。</p>
+        </div>
+        <div class="card">
+          <h4>② オーダーメイド (Tailored)</h4>
+          <p class="body">テンプレでなく、各人の生活と仕事に合わせて構築。コーチングのアウトプットを実装する。</p>
+        </div>
+        <div class="card">
+          <h4>③ 進化する (Evolving)</h4>
+          <p class="body">納品して終わりではなく、3ヶ月の伴走で機能を足し引きしながら自分仕様に育てる。</p>
+        </div>
+      </div>
+
+      <h3>兵頭式・行動管理カスケードがコアIP</h3>
+      <p>
+        ビジネスマン層向けの中核機能は、兵頭式の問いカスケード <strong>「ゴール → 要素 → マイルストーン → ギャップ → コミットメント → アクション → 数字」</strong> をUIに落としたもの。
+        これは既存OKRツール（Resily, Asana Goals, 15Five）が提供できていない「コーチングプロセスの可視化」であり、本事業のコアIP（知的財産）として位置づける。
+      </p>
+      <div class="insight">
+        <div class="label">DIFFERENTIATION</div>
+        Notionで作っても、Asanaで作っても再現できないのは「カスケード階層を上から下に降ろす"問い"が組み込まれていること」。
+        汎用ツールは器を提供するが、我々は<strong>器＋問い＋伴走</strong>を提供する。これがコーチング事業との結節点になる。
+      </div>
+    </section>
+
+    <!-- 3. Market -->
+    <section id="market">
+      <h2><span class="num">03</span>市場分析<span class="en">Market</span></h2>
+      <div class="subtitle">どれだけの市場があり、どこへ向かっているか</div>
+
+      <h3>市場規模（隣接市場の合算で推計）</h3>
+      <div class="card-grid cols-4">
+        <div class="card">
+          <div class="label">グローバルSaaS</div>
+          <div class="num">$315B</div>
+          <div class="body">2026年。前年比+20%。生産性ツール領域は29%を占める。</div>
+        </div>
+        <div class="card">
+          <div class="label">ジャーナリングアプリ</div>
+          <div class="num gold">$5.69B</div>
+          <div class="body">2025年。CAGR 11.2%で2029年$8.69B予測。</div>
+        </div>
+        <div class="card">
+          <div class="label">日本SaaS市場</div>
+          <div class="num">1.7兆円</div>
+          <div class="body">2026年予測。2021年9,300億円から1.8倍成長。</div>
+        </div>
+        <div class="card">
+          <div class="label">Notionテンプレ単体</div>
+          <div class="num green">$500K+</div>
+          <div class="body">トップクリエイター(Easlo)の累計売上。月$20Kの個人事業主が複数存在。</div>
+        </div>
+      </div>
+
+      <h3>追い風となる4つのトレンド</h3>
+      <ol>
+        <li><strong>"個人OS"概念の浸透</strong>: Tana・Capacities・Reflectなど月$10〜18のPKMツールが普及。「自分の人生をデータベース化する」志向の生活者が拡大。</li>
+        <li><strong>AIエージェントによる入力ハードル低下</strong>: 2026年末までにエンタープライズSaaSの40%がAIエージェントを内蔵。個人向けも同流れ。「日記をAIに口頭で話す→ダッシュボード更新」が現実的に。</li>
+        <li><strong>Notion飽和への反動</strong>: テンプレ販売市場（30,000+テンプレ）が成熟しコモディティ化。「もう自分でカスタマイズしたくない」「誰かに作ってほしい」という顕在ニーズが立ち上がる。</li>
+        <li><strong>コーチング市場の拡大</strong>: ライフコーチ・キャリアコーチ需要は北米で年率15%成長。日本でも法人向けコーチング市場が立ち上がり中。「コーチング＋オーダーメイドツール」のバンドル販売が成立する素地。</li>
+      </ol>
+
+      <h3>SAM (狙える市場)</h3>
+      <p>
+        日本国内、年商500万〜5,000万円の個人事業主・フリーランス・中小企業経営者は約<strong>500万人</strong>。
+        このうち、生産性ツールに月3,000円以上を支払う層を仮に5%とすると<strong>25万人</strong>。
+        うち1%（=2,500人）の獲得で年商1.5億円規模（オーダーメイド30万 × 500件相当）。
+        まずはここの<strong>0.001%</strong>（=25人）を6ヶ月で取りに行く。
+      </p>
+    </section>
+
+    <!-- 4. STP -->
+    <section id="stp">
+      <h2><span class="num">04</span>STP分析<span class="en">Segmentation · Targeting · Positioning</span></h2>
+      <div class="subtitle">誰に売るのか、自分たちはどこに立つのか</div>
+
+      <h3>セグメンテーション</h3>
+      <table>
+        <thead>
+          <tr><th>セグメント</th><th>主要ペイン</th><th>支払意思</th><th>到達難易度</th><th>推奨</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>A. 主婦・ワーキングマザー</strong></td>
+            <td>家族予定・夢リスト・育児記録の散在</td>
+            <td>低〜中（月500-1,000円）</td>
+            <td>高（マスマーケット）</td>
+            <td><span class="tag">後</span></td>
+          </tr>
+          <tr class="highlight">
+            <td><strong>B. 個人事業主・フリーランス・営業職</strong></td>
+            <td>目標と行動と数字が結びつかない</td>
+            <td>高（月2,000-5,000円・買い切り数十万）</td>
+            <td>中（小池の組合員ネットワーク有）</td>
+            <td><span class="tag gold">優先</span></td>
+          </tr>
+          <tr>
+            <td><strong>C. 中小企業経営者</strong></td>
+            <td>経営数字の見える化・社員管理</td>
+            <td>高（月数万円）</td>
+            <td>低（既存はなひらく案件で経験）</td>
+            <td><span class="tag">第二波</span></td>
+          </tr>
+          <tr>
+            <td><strong>D. コーチング受講者</strong></td>
+            <td>コーチングの成果を可視化したい</td>
+            <td>高（コーチ料金にバンドル可）</td>
+            <td>中（兵頭・小池のコーチング事業と直結）</td>
+            <td><span class="tag gold">優先</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>ターゲット選定（推奨）</h3>
+      <div class="insight">
+        <div class="label">RECOMMENDATION</div>
+        <strong>第一波: B + D（個人事業主 × コーチング受講者）に集中。</strong>
+        理由は3つ —
+        ①小池・岩崎・兵頭自身がそのターゲットど真ん中なので「自分のダッシュボード = 完全なるデモ」になる、
+        ②支払意思が高くLTVが取れる、
+        ③コーチングとのバンドルで継続収益化（月額）が成立する。<br>
+        主婦層（A）はUIが完全に別物になり、デモも自分たちで作れない。第二波（2026年Q4以降）に回す。
+      </div>
+
+      <h3>ポジショニング</h3>
+      <p>競合空間を2軸（汎用度 × 構築サポート度）で切ると、空白地帯は明確である。</p>
+      <table>
+        <thead>
+          <tr><th>象限</th><th>例</th><th>提供価値</th><th>限界</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>汎用 × セルフ</td>
+            <td>Notion / Asana / Tana</td>
+            <td>機能の幅</td>
+            <td>カスタマイズ負担が個人に重くのしかかる</td>
+          </tr>
+          <tr>
+            <td>汎用 × ハイサポート</td>
+            <td>Notionコンサル ($5K-25K)</td>
+            <td>導入支援</td>
+            <td>結局Notionの制約内に閉じる</td>
+          </tr>
+          <tr>
+            <td>専用 × セルフ</td>
+            <td>Day One / TimeTree (単機能特化)</td>
+            <td>使いやすさ</td>
+            <td>機能を超えると手詰まり</td>
+          </tr>
+          <tr class="highlight">
+            <td><strong>専用 × ハイサポート</strong></td>
+            <td><strong>本事業</strong></td>
+            <td><strong>"あなた専用の自分管理OS"</strong></td>
+            <td>スケールしにくい → 半標準化で解決</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>ポジショニングステートメント</h3>
+      <div class="insight">
+        <strong>「Notionを卒業したい個人事業主・コーチング受講者に対して、</strong>
+        <strong>あなた専用にデザインされた自分管理ダッシュボードを構築する</strong>サービス。
+        汎用SaaSのカスタマイズ負担を肩代わりし、ヒアリングからUI実装・3ヶ月の改善伴走までを一気通貫で提供する。」
+      </div>
+    </section>
+
+    <!-- 5. Competitor -->
+    <section id="competitor">
+      <h2><span class="num">05</span>競合分析<span class="en">Competitor</span></h2>
+      <div class="subtitle">誰と戦い、誰と戦わないのか</div>
+
+      <table>
+        <thead>
+          <tr><th>競合カテゴリ</th><th>代表プレイヤー</th><th>価格帯</th><th>強み</th><th>弱み</th><th>我々の優位</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>汎用PKM/タスク</strong></td>
+            <td>Notion / Tana / Capacities / Asana</td>
+            <td>$0〜$25/月</td>
+            <td>機能網羅性、エコシステム</td>
+            <td>セットアップ負担、AI質、UI画一</td>
+            <td>オーダーメイド・伴走</td>
+          </tr>
+          <tr>
+            <td>Notionテンプレ販売</td>
+            <td>Easlo / Marie Poulin / 国内クリエイター多数</td>
+            <td>$49〜$199 (買い切り)</td>
+            <td>低価格・即時提供</td>
+            <td>結局Notionの制約、カスタマイズはセルフ</td>
+            <td>「テンプレ卒業者」を取りに行ける</td>
+          </tr>
+          <tr>
+            <td>デイリープランナー</td>
+            <td>Sunsama / Motion / Akiflow</td>
+            <td>$20〜$50/月</td>
+            <td>UX洗練、AI統合</td>
+            <td>機能特化、人生丸ごとは扱えない</td>
+            <td>集約性</td>
+          </tr>
+          <tr>
+            <td>OKR/目標管理</td>
+            <td>Resily / Goalous / 15Five</td>
+            <td>月数千円/人〜</td>
+            <td>組織運用に最適</td>
+            <td>個人事業主には過剰、UIが業務的</td>
+            <td>個人スケール、コーチング統合</td>
+          </tr>
+          <tr>
+            <td>ジャーナリング</td>
+            <td>Day One / muute / Journey</td>
+            <td>$0〜$5/月</td>
+            <td>習慣化UX、AI解析</td>
+            <td>日記単体、行動管理と分断</td>
+            <td>日記＋行動＋目標を統合</td>
+          </tr>
+          <tr>
+            <td>Notionコンサル</td>
+            <td>個人/小規模代行業者</td>
+            <td>$1K〜$25K</td>
+            <td>導入支援、カスタマイズ</td>
+            <td>Notion縛り、UI制約</td>
+            <td>UI完全自由</td>
+          </tr>
+          <tr>
+            <td>ノーコード代行</td>
+            <td>Bubble/Glide エージェンシー</td>
+            <td>$10K〜$40K</td>
+            <td>独自アプリ構築</td>
+            <td>個人ツール領域は実績薄、価格高</td>
+            <td>個人特化、AI活用で短納期低価格</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>真の競合は誰か</h3>
+      <div class="insight">
+        <div class="label">CRITICAL VIEW</div>
+        最も警戒すべきは <strong>「Notion + テンプレ + 自分のがんばり」</strong> という見えない競合。
+        ターゲットの多くは「いつかNotionで完璧な自分管理を作ろう」と思いながら3年経っても作れていない人々である。
+        我々はNotion競合ではなく <strong>"Notionで挫折した人の最後の駆け込み寺"</strong> として立つのが最も刺さる。
+      </div>
+    </section>
+
+    <!-- 6. Business Model -->
+    <section id="bizmodel">
+      <h2><span class="num">06</span>ビジネスモデル<span class="en">Business Model</span></h2>
+      <div class="subtitle">どう稼ぐのか、何を積み上げるのか</div>
+
+      <h3>商品設計：「1年間集中・行動管理プログラム」</h3>
+      <div class="card-grid cols-2">
+        <div class="card highlight">
+          <h4>個人版（メイン商品）</h4>
+          <div class="num gold" style="font-size:22px;">構築 198,000円<br>+ 保守 月5,000円</div>
+          <p class="body" style="margin-top:8px;">
+            <strong>支払いオプション:</strong><br>
+            ・一括: 198,000円 + 月5,000円<br>
+            ・12分割: 月16,500円 × 12ヶ月 + 月5,000円 = <strong>月21,500円 × 12ヶ月</strong><br>
+            <strong>保守内容:</strong> 月1回30分MTGでブラッシュアップ項目をヒアリング → 改修対応<br>
+            <strong>解約後:</strong> 修正単価 1万円/件<br>
+            <strong>ターゲット:</strong> 個人事業主・フリーランス・中小企業経営者の個人決済層
+          </p>
+        </div>
+        <div class="card info">
+          <h4>法人版（後日設計）</h4>
+          <div class="num" style="font-size:22px;">構築 50万円〜<br>+ 保守 月10,000円〜</div>
+          <p class="body" style="margin-top:8px;">
+            <strong>方針:</strong> 別パッケージとして個人版とは独立して設計。<br>
+            <strong>理由:</strong> 法人案件は決裁プロセス・社員教育・複数アカウント・SLA等が個人とまったく異なる。同じ商品で売り分けると複雑化する。<br>
+            <strong>スコープ:</strong> v2.0時点では <strong>個人版のみに集中</strong>。法人版は最初の3-5件を個人版で受注した後、ニーズが見えてから設計する。
+          </p>
+        </div>
+      </div>
+
+      <h3>サブスク継続インセンティブの設計</h3>
+      <p>月5,000円の保守サブスクは、以下の<strong>"継続するほど得する"構造</strong>で離脱を防ぐ。</p>
+      <div class="card-grid cols-2">
+        <div class="card success">
+          <h4>サブスク継続中</h4>
+          <p class="body">月1回MTG（30分）でブラッシュアップ項目を聞き出し、その範囲を <strong>無料で改修</strong>。継続的にダッシュボードが進化する。</p>
+        </div>
+        <div class="card danger">
+          <h4>サブスク解約後</h4>
+          <p class="body">改修依頼ごとに <strong>1万円/件</strong>。月1回でも頼めば、サブスク（月5,000円）の方が圧倒的にお得。</p>
+        </div>
+      </div>
+
+      <h3>「1年間集中」というネーミング戦略</h3>
+      <div class="insight">
+        <div class="label">NAMING INSIGHT</div>
+        商品名を <strong>「1年間集中・行動管理プログラム」</strong> とすることで、価値の比較対象が変わる:
+        <ul style="margin-top:8px;">
+          <li>「Notionテンプレ 3,000円」との比較 → ❌ 60倍の価格差で売れない</li>
+          <li>「コーチング月10万円(年120万円)」との比較 → ✅ <strong>4分の1の価格で似た価値</strong></li>
+        </ul>
+        商品ではなく <strong>"1年間の伴走プログラム"</strong> として位置づけることで、「ツール買い切り」から「成果コミット型サービス」へ価値が立ち上がる。
+      </div>
+
+      <h3>"作りすぎない"ための原則</h3>
+      <div class="warn">
+        <div class="label">⚠ 重要原則</div>
+        全顧客に対して個別実装すると岩崎くんが破綻する。<strong>最初の3名（小池・岩崎・兵頭）の自分用ダッシュボードから「共通モジュール」を抽出</strong>し、それ以降は <strong>「コア機能 = 共通、装飾 = 個別」</strong> の半標準化モデルで生産性を上げる。
+      </div>
+    </section>
+
+    <!-- 7. Unit Economics -->
+    <section id="unit">
+      <h2><span class="num">07</span>ユニットエコノミクス<span class="en">Unit Economics</span></h2>
+      <div class="subtitle">1人の顧客でいくら稼げ、どれだけかけられるか</div>
+
+      <h3>顧客生涯価値（LTV）試算 — v2.0</h3>
+      <table>
+        <thead>
+          <tr><th>項目</th><th>個人版</th><th>法人版（参考）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>構築費</td><td>198,000円</td><td>500,000円〜</td></tr>
+          <tr><td>月額保守</td><td>5,000円</td><td>10,000円〜</td></tr>
+          <tr><td>1年契約完了率</td><td>100%（12分割支払で確定）</td><td>同左</td></tr>
+          <tr><td>1年経過後の継続率</td><td>30%</td><td>50%(法人は予算化されやすく高め)</td></tr>
+          <tr><td>平均継続月数</td><td>12 + (12×0.3) = <strong>15.6ヶ月</strong></td><td>12 + (12×0.5) = 18ヶ月</td></tr>
+          <tr class="highlight">
+            <td><strong>LTV</strong></td>
+            <td><strong>198,000 + 5,000×15.6 = 276,000円</strong></td>
+            <td><strong>500,000 + 10,000×18 = 680,000円</strong></td>
+          </tr>
+          <tr>
+            <td>許容CAC（LTV/3）</td>
+            <td><strong>92,000円</strong></td>
+            <td>約 226,000円</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:12px;color:var(--ink-light);">
+        ※ 1年経過後の継続率30%は保守的見積もり（小池さん想定値）。月1MTGでブラッシュアップ項目を聞き出す運用のため、1年内の解約はほぼゼロを想定。
+      </p>
+
+      <h3>許容CAC 92,000円が意味すること</h3>
+      <div class="card-grid cols-3">
+        <div class="card success">
+          <h4>広告投資が射程内に</h4>
+          <p class="body">広告経由CAC 20,000-50,000円なら余裕で黒字。Meta広告・リスティング広告の検討余地が大きい。</p>
+        </div>
+        <div class="card success">
+          <h4>無料施策ならCACほぼ0</h4>
+          <p class="body">SNS自分晒し・組合員紹介・コーチング受講者バンドルは実質CAC 5,000円以下。利益率超高。</p>
+        </div>
+        <div class="card highlight">
+          <h4>紹介プログラムの価値</h4>
+          <p class="body">紹介経由CAC 10,000円程度。LTV 276,000円の3.6%しか食わず、最強チャネル。</p>
+        </div>
+      </div>
+
+      <h3>1年間の損益シナリオ（個人版・3ケース）</h3>
+      <table>
+        <thead>
+          <tr><th>項目</th><th>低位</th><th>中央値</th><th>高位</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>初年度受注件数</td><td>10件</td><td><strong>20件</strong></td><td>40件</td></tr>
+          <tr><td>構築売上累計</td><td>198万円</td><td><strong>396万円</strong></td><td>792万円</td></tr>
+          <tr><td>月額保守MRR(1年後)</td><td>5万円</td><td><strong>10万円</strong></td><td>20万円</td></tr>
+          <tr><td>初年度総売上</td><td>約230万円</td><td class="highlight"><strong>約460万円</strong></td><td>約920万円</td></tr>
+          <tr><td>2年目見込み(継続30%)</td><td>+18万円</td><td>+36万円</td><td>+72万円</td></tr>
+          <tr><td>岩崎くんへの支払目安</td><td>30-40万/月</td><td>50-60万/月</td><td>外注体制必須</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">FINANCIAL INSIGHT</div>
+        中央値ケースで初年度約460万円。<strong>構築費が事業の主柱（86%）、保守は離脱防止の燃料（14%）</strong>。
+        つまり「SaaSサブスク事業」ではなく「<strong>1年集中型のサービス事業 + 保守契約</strong>」のハイブリッドビジネス。
+        高位ケース（月3-4件受注）に到達すると、岩崎くん1人では破綻するため、外注 or 採用の体制設計を6ヶ月時点でレビューする。
+      </div>
+    </section>
+
+    <!-- 8. Marketing -->
+    <section id="marketing">
+      <h2><span class="num">08</span>マーケティング戦略<span class="en">Marketing</span></h2>
+      <div class="subtitle">どう知ってもらい、どう信頼を勝ち取り、どう買ってもらうか — 本書の心臓部</div>
+
+      <h3>8.1 マーケティング設計の基本原則</h3>
+      <p>
+        本事業のマーケティングは <strong>「製品を売る」のではなく「自分の人生が変わった証拠を見せる」</strong> 構造で設計する。
+        理由は単純で、3〜50万円のオーダーメイドサービスは <strong>「機能比較」で売れない</strong>からである。
+        買い手の意思決定要因は「機能」ではなく <strong>「この人たちなら任せられる」「これがあれば自分も変われる」という信頼と憧憬</strong>。
+        したがって全マーケ活動は、機能訴求ではなく <strong>「実物の生活を晒す」</strong> という1点に収束させる。
+      </p>
+      <div class="insight">
+        <div class="label">MARKETING NORTH STAR</div>
+        <strong>"自分のダッシュボードを毎日使い倒し、その結果を可視化して見せる"</strong> — これが唯一の真のマーケ活動である。
+        広告に投資しない。Webinarで売らない（B2B高単価は2026年現在Webinar効率半減）。
+        代わりに、1on1の "オーダーメイド・ヒアリング体験" を主役にする。
+      </div>
+
+      <h3>8.2 顧客ペルソナ（生々しい解像度で）</h3>
+      <p>STPで選定した「個人事業主／フリーランス × コーチング志向層」をさらに3つの実在型に分解する。</p>
+
+      <div class="card-grid cols-3">
+        <div class="card info">
+          <h4>ペルソナA：佐藤さん（38歳・男性）</h4>
+          <p class="body">
+            <strong>属性:</strong> 保険・FP系個人代理店、年商800万。組合員。<br>
+            <strong>ペイン:</strong> コミッション計算・顧客管理・自己目標がエクセルとスマホメモに分散。月末になると「今月どれだけやったか」を整理するのに半日かかる。<br>
+            <strong>キーワード:</strong> "稼ぎたいけど数字が見えない"<br>
+            <strong>支払上限:</strong> 30万＋月3,000円ならYES
+          </p>
+        </div>
+        <div class="card info">
+          <h4>ペルソナB：岡田さん（42歳・女性）</h4>
+          <p class="body">
+            <strong>属性:</strong> 個人コーチ＋セッション提供業、年商600万。兵頭のコーチング受講者。<br>
+            <strong>ペイン:</strong> クライアントの目標進捗を毎月追えていない。自分自身の事業目標もNotionで挫折済。<br>
+            <strong>キーワード:</strong> "クライアントに見せたいダッシュボードがない"<br>
+            <strong>支払上限:</strong> 50万＋月2,000円もOK（コーチ料金が月10万なので相対的に安く感じる）
+          </p>
+        </div>
+        <div class="card info">
+          <h4>ペルソナC：山田さん（35歳・男性）</h4>
+          <p class="body">
+            <strong>属性:</strong> 不動産仲介・営業マネージャー候補、年収700万。SNS情報感度高。<br>
+            <strong>ペイン:</strong> 部下5名のKPIを把握できない。自分も目標管理が出来ていない。<br>
+            <strong>キーワード:</strong> "部下と自分のKPIをまとめて見たい"<br>
+            <strong>支払上限:</strong> 個人で30万はやや渋るが、会社経費なら問題なし
+          </p>
+        </div>
+      </div>
+
+      <p>3者に共通するのは <strong>「生産性ツールの遍歴がある／既に何かで挫折している／お金で時間を買えるなら買いたい」</strong>。
+      この3条件を満たす人だけがターゲット。「無料アプリで十分」と言う人は意図的に外す。</p>
+
+      <h3>8.3 メッセージング戦略（言葉の設計）</h3>
+
+      <h4>① コアメッセージ（10秒で伝わる一行）</h4>
+      <div class="insight">
+        <strong>「あなた専用の"自分管理OS"を、ヒアリングから3週間で作ります。」</strong>
+      </div>
+
+      <h4>② サブメッセージ（30秒）</h4>
+      <p style="background:var(--soft); padding:14px 18px; border-radius:6px; font-size:14px;">
+        Notion、Asana、Day One、エクセル、スマホメモ — 5個10個に散らばった生産性ツールを、ひとつのURLに集約します。
+        テンプレートではありません。あなたのゴール、家族構成、仕事の流儀をヒアリングし、UIから個別に設計するオーダーメイド型。
+        我々自身が同じ仕組みで毎日生きています。実物をお見せします。
+      </p>
+
+      <h4>③ 詳細メッセージ（3分のデモトーク骨子）</h4>
+      <ol>
+        <li><strong>共感（30秒）:</strong> 「こういう経験ありませんか？目標を決めても3週間で見なくなる。日記アプリと予定アプリと家計簿が別々で、結局Excelでまとめてる。」</li>
+        <li><strong>実物（90秒）:</strong> iPadで自分のダッシュボードを開く。「これは私の今朝の画面です。今日のアクション、今月の目標進捗、家族予定、昨日書いた日記、ぜんぶこの1ページに。」</li>
+        <li><strong>仕組み（45秒）:</strong> 「兵頭式の問いカスケード（ゴール→要素→マイルストーン→…→数字）が組み込まれていて、毎週コーチングの質問に答えるだけで進捗が積み上がります。」</li>
+        <li><strong>提案（15秒）:</strong> 「これをあなた用に、来月までに作ります。30分のヒアリングだけ予約しませんか？」</li>
+      </ol>
+
+      <h4>④ Before / Bridge / After（PASTORフレーム）</h4>
+      <div class="card-grid cols-3">
+        <div class="card">
+          <h4>Before（痛み）</h4>
+          <p class="body">朝、5つのアプリを巡回する。月末、エクセルで集計する。「今月、何ができた？」と聞かれて答えられない。気がつけば、目標を立てたことすら忘れている。</p>
+        </div>
+        <div class="card highlight">
+          <h4>Bridge（橋）</h4>
+          <p class="body">ヒアリング1回。あなたの仕事と生活を聞き取り、必要な5機能を選定。3週間後、あなた専用のURLが発行される。</p>
+        </div>
+        <div class="card success">
+          <h4>After（理想）</h4>
+          <p class="body">朝、URLを開けば、今日の3アクション・進捗バー・昨日の日記・家族予定がそこにある。月末の振り返りが3分で済む。「今月、これができた」と言葉にできる。</p>
+        </div>
+      </div>
+
+      <h3>8.4 想定3大オブジェクションと回答</h3>
+      <table>
+        <thead>
+          <tr><th width="22%">反論</th><th width="38%">回答（要約）</th><th width="40%">回答（実際の言い回し）</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>「Notionで自分で作ればいい」</strong></td>
+            <td>Notion挫折者を引き合いに出し、「時間 vs お金」のフレームに置き換える</td>
+            <td>「ですよね。私もそう思って3年Notionと格闘して、結局完成しませんでした。あなたも、Notionで完璧な自分管理を作るのに、本気でいくら時間使ってますか？仮に20時間使ってまだ未完成だとして、その時間の価値が時給5,000円なら、すでに10万円。それを我々がやり切ります。」</td>
+          </tr>
+          <tr>
+            <td><strong>「30万は高い」</strong></td>
+            <td>比較対象を「Notionテンプレ3千円」ではなく「コーチング1ヶ月分10万円」に置き換える</td>
+            <td>「コーチングを月10万円で受ける方が珍しくない時代です。これは"コーチングの成果が常に手元に残る投資"。3年使えば月8千円、1日280円。サブスクのSlack並の感覚です。」</td>
+          </tr>
+          <tr>
+            <td><strong>「AIですぐ作れる時代では？」</strong></td>
+            <td>"作れる"と"使い続けられる"を分離。デザイン＋伴走が肝</td>
+            <td>「ChatGPTでHTMLは書けます。でも、毎日開きたくなるUIにすること、3ヶ月後も使い続けてもらえる仕組みにすること、データを安全にバックアップすること — ここは"作るスキル"とは別の能力なんです。我々はそこをやります。」</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>8.5 チャネル戦略（5チャネルの役割分担）</h3>
+      <table>
+        <thead>
+          <tr><th>チャネル</th><th>役割</th><th>主担当</th><th>頻度</th><th>KPI</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td><strong>① ダイレクト・組合員ネット</strong></td>
+            <td>初期受注の主力。CAC≒0</td>
+            <td>小池</td>
+            <td>個別声がけ 週5名</td>
+            <td>無料ヒアリング 月10件</td>
+          </tr>
+          <tr class="highlight">
+            <td><strong>② コーチング受講者バンドル</strong></td>
+            <td>LTV最大化＋自然な追加販売</td>
+            <td>兵頭・小池</td>
+            <td>セッション内提案</td>
+            <td>受講者の30%受注</td>
+          </tr>
+          <tr>
+            <td><strong>③ X（旧Twitter）</strong></td>
+            <td>認知拡大＋情報感度高い層獲得</td>
+            <td>3名で分担</td>
+            <td>3人で週12本</td>
+            <td>フォロワー +500/月、リプ 30/月</td>
+          </tr>
+          <tr>
+            <td><strong>④ Instagram Reels</strong></td>
+            <td>ダッシュボード"見せびらかし"動画でビジュアル訴求</td>
+            <td>小池</td>
+            <td>週2本</td>
+            <td>30秒以内のReel × 4種</td>
+          </tr>
+          <tr>
+            <td><strong>⑤ 紹介プログラム</strong></td>
+            <td>第二波以降の主力。CAC最低化</td>
+            <td>納品済顧客</td>
+            <td>納品時に依頼</td>
+            <td>顧客あたり0.5件の紹介</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">CHANNEL INSIGHT</div>
+        2026年現在、<strong>BtoB高単価の主戦場はX（旧Twitter）とLinkedIn</strong>。
+        Webinarは2023年比でCV率が半減している。一方で <strong>Instagram Reels / TikTokの "POV"・"quiet flex" フォーマット</strong> は2026年最重要。
+        「私の朝のダッシュボード」を15秒の縦動画で淡々と見せる、これが最も拡散する型。投稿後30分の反応速度がアルゴリズムを決める時代なので、<strong>投稿時間は朝7時台 / 夜21時台</strong>を厳守。
+      </div>
+
+      <h3>8.6 コンテンツ戦略（90日カレンダー）</h3>
+      <p>
+        ローンチ前30日、ローンチ期30日、拡大期30日の3フェーズで投稿テーマを設計。
+        <strong>3名（小池・岩崎・兵頭）が自分のキャラを使い分けて発信</strong>することで、3倍速の認知拡大を狙う。
+      </p>
+
+      <table>
+        <thead>
+          <tr><th width="20%">フェーズ</th><th width="20%">期間</th><th>主要コンテンツ型</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>第1期: 仕込み</strong></td>
+            <td>5/1〜5/31</td>
+            <td>
+              ・「Notion 3年使って気づいた限界」シリーズ（X、note）<br>
+              ・「自分のダッシュボードができていく過程」開発ログ（X、Reels）<br>
+              ・「兵頭式・行動カスケードとは何か」解説（YouTube 1本）
+            </td>
+          </tr>
+          <tr>
+            <td><strong>第2期: ローンチ</strong></td>
+            <td>6/1〜6/30</td>
+            <td>
+              ・「私の朝のダッシュボード」Reels（毎週）<br>
+              ・初期顧客の許諾済デモケース紹介（X長文）<br>
+              ・「30分の無料ヒアリング募集」固定ポスト＋週次再投稿
+            </td>
+          </tr>
+          <tr>
+            <td><strong>第3期: 拡大</strong></td>
+            <td>7/1〜7/31</td>
+            <td>
+              ・顧客の声・Before/Afterスクショ（許諾要）<br>
+              ・「Notionでは作れなかった機能5選」note記事<br>
+              ・紹介プログラム告知（既存顧客にDM）
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>投稿ネタ・ストック10本（即使える）</h4>
+      <ol style="font-size:13px; line-height:1.8;">
+        <li>「私のダッシュボードの今朝のスクショ」+ 「ここに書いたことが、今日のすべて」(Reels 15秒)</li>
+        <li>「Notionで3年やっても完成しなかったので、自分でWeb化することにした話」(X長文)</li>
+        <li>「ゴール → 要素 → マイルストーン → ギャップ → コミット → アクション → 数字。これが行動が積み上がる唯一のカスケード」(X図解)</li>
+        <li>「日記と目標と家族予定を別々のアプリで管理してる人、損してます」(X短文)</li>
+        <li>「コーチング月10万を払う前に、可視化のインフラだけ整えませんか」(LP導線)</li>
+        <li>「3週間で1人ぶんを作るので、毎月3名限定です」(希少性訴求)</li>
+        <li>「岩崎パターン／小池パターン／兵頭パターン、3者3様のダッシュボード比較」(IG カルーセル)</li>
+        <li>「お客様（佐藤さん仮名）のダッシュボードができるまで」(連載4回)</li>
+        <li>「Notionテンプレ卒業者のための、次の選択肢」(note記事)</li>
+        <li>「2026年版・自分管理OSの作り方（無料ヒアリング募集）」(月1本のフラグシップ)</li>
+      </ol>
+
+      <h3>8.7 セールスファネル（数値設計）</h3>
+      <p>
+        中央値ケース（6ヶ月で20件受注）を達成するために必要な"漏斗の数字"を逆算する。
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>段階</th><th>必要数（6ヶ月累計）</th><th>CV率</th><th>主担当チャネル</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>① 認知（インプレッション）</td>
+            <td>30万</td>
+            <td>—</td>
+            <td>X / Instagram</td>
+          </tr>
+          <tr>
+            <td>② 関心（フォロー / 滞在）</td>
+            <td>3,000〜5,000</td>
+            <td>1〜1.6%</td>
+            <td>SNS</td>
+          </tr>
+          <tr>
+            <td>③ 興味（プロフィール訪問・LP閲覧）</td>
+            <td>500</td>
+            <td>10%</td>
+            <td>SNS → LP</td>
+          </tr>
+          <tr class="highlight">
+            <td><strong>④ 検討（無料ヒアリング申込）</strong></td>
+            <td><strong>50</strong></td>
+            <td>10%</td>
+            <td>LP / 直接DM</td>
+          </tr>
+          <tr class="highlight">
+            <td><strong>⑤ 購入（受注）</strong></td>
+            <td><strong>20</strong></td>
+            <td>40%</td>
+            <td>1on1ヒアリング</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="font-size:12px; color:var(--ink-light); margin-top:8px;">
+        ※ ヒアリング → 受注のCV率 40%は、「自分のダッシュボードの実物を見せる」高単価1on1セールスでは現実的水準（業界平均10-20%、属性絞込で40%は到達可）。
+      </p>
+
+      <h4>"オーダーメイド・ヒアリング" 30分セッションの台本骨子</h4>
+      <div style="background:var(--soft); padding:18px 22px; border-radius:8px; font-size:13px; line-height:1.8;">
+        <strong>0-3分:</strong> アイスブレイク。最近の生産性ツール遍歴を聞く（「Notion使ってます？」）。<br>
+        <strong>3-10分:</strong> 課題ヒアリング。"何を見える化したいか"を5つ挙げてもらう。生活と仕事の両側を聞く。<br>
+        <strong>10-15分:</strong> 自分のダッシュボードを実演。「私はこの5つを見えるようにしてます。あなたの場合これとこれを置き換えればいけますね」と即興で見せる。<br>
+        <strong>15-22分:</strong> 仮設計セッション。ホワイトボード（or 紙）にあなた専用ダッシュボードのワイヤーを描く。"あなたのページ"の存在を視覚化させる。<br>
+        <strong>22-27分:</strong> 価格・納期提示。Tier 2をアンカーに、必要に応じてTier 3。「3週間で形になります」<br>
+        <strong>27-30分:</strong> クロージング or 24時間以内の検討依頼。決済リンクをDMで送る。<br>
+        <strong>翌日:</strong> 必ず "セッションで描いたワイヤーをきれいに清書したPDF" を送る。これが最強のFollow-up資料。
+      </div>
+
+      <h3>8.8 価格コミュニケーション（心理設計）</h3>
+      <div class="card-grid cols-2">
+        <div class="card">
+          <h4>① "1年集中"フレーミング</h4>
+          <p class="body">「198,000円のツール」ではなく <strong>「1年間の集中行動管理プログラム」</strong>として提示。コーチング月10万(年120万)の比較対象に置き、「年27万円なら格安」と感じさせる。</p>
+        </div>
+        <div class="card">
+          <h4>② 比較対象の置き換え</h4>
+          <p class="body">「Notionテンプレ3千円」と比較されないよう、文脈を <strong>「コーチング月10万」「ライザップ年30-50万」「業務SaaS年契約30万」</strong> に切り替える。</p>
+        </div>
+        <div class="card">
+          <h4>③ 12分割支払いで心理障壁低減</h4>
+          <p class="body">「198,000円一括」と「月21,500円 × 12ヶ月」では支払体感が4倍違う。<strong>分割払いを標準提示</strong>し、コミット感も同時に上げる。</p>
+        </div>
+        <div class="card">
+          <h4>④ 社会的証明の蓄積</h4>
+          <p class="body">最初の3名は事例化を条件に <strong>5万円OFF（148,000円）</strong>。許諾を得てBefore/Afterスクショ・ヒアリング動画を公開素材として使い続ける。</p>
+        </div>
+      </div>
+
+      <h3>8.9 紹介プログラム（"Refer & Earn"の設計）</h3>
+      <p>
+        2026年のSaaS業界ベンチマーク：<strong>非現金インセンティブは現金より24%効果的</strong>。
+        報酬コストはCACの20%以内が黄金比（業界推奨10-25%）。本事業では以下の双方向設計を採用する。
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>対象</th><th>報酬</th><th>形式</th><th>コスト試算</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>紹介してくれた既存顧客</strong></td>
+            <td>月額3ヶ月無料 OR 機能追加（読書記録モジュールなど）</td>
+            <td>非現金（運用コスト < 5,000円）</td>
+            <td>CACの3%</td>
+          </tr>
+          <tr>
+            <td><strong>紹介された新規顧客</strong></td>
+            <td>構築費から1万円OFF</td>
+            <td>現金値引き（明確）</td>
+            <td>CACの10%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>紹介トリガー（声がけタイミング）</h4>
+      <ol>
+        <li><strong>納品から30日後</strong>: 「使ってみてどうですか」のフォローと同時に。</li>
+        <li><strong>NPS高評価時（9〜10点）</strong>: アンケートで高評価を付けた瞬間が黄金タイミング。</li>
+        <li><strong>機能追加リクエスト時</strong>: 「機能追加無料の代わりに、お知り合いをお一人ご紹介いただけませんか？」</li>
+      </ol>
+
+      <h3>8.10 ローンチプラン（最初の30日）</h3>
+      <div class="roadmap" style="margin-top:24px;">
+        <div class="roadmap-item">
+          <h4><span class="date">Day 1-3</span> 基盤整備</h4>
+          <p class="body">
+            ・3名のSNS（X、Instagram）プロフィール統一（共通の固定ポスト・LP導線）<br>
+            ・LP（1ページ）公開: ヒアリング予約フォーム＋3人のダッシュボード写真＋FAQ<br>
+            ・「30分無料ヒアリング」のCalendly設定
+          </p>
+        </div>
+        <div class="roadmap-item">
+          <h4><span class="date">Day 4-10</span> 仕込み投稿</h4>
+          <p class="body">
+            ・X: 3人で計15本投稿（うち5本は同時刻に同じテーマで連投して可視化を上げる）<br>
+            ・Reels 3本（自分のダッシュボードの朝・昼・夜）<br>
+            ・組合員ネットワークから個別DMで「無料ヒアリングできます」と20名声がけ
+          </p>
+        </div>
+        <div class="roadmap-item">
+          <h4><span class="date">Day 11-20</span> 初回ヒアリング実施</h4>
+          <p class="body">
+            ・ヒアリング枠5〜10件埋まる想定<br>
+            ・各セッション後24時間以内に台本通りのフォローアップ送付<br>
+            ・SNSでは「ヒアリング受付中」固定 + 投稿継続
+          </p>
+        </div>
+        <div class="roadmap-item">
+          <h4><span class="date">Day 21-30</span> 受注クロージング</h4>
+          <p class="body">
+            ・初期目標: Tier 2 を <strong>3件</strong>、Tier 3 を <strong>1件</strong> 受注（合計約60万）<br>
+            ・受注した顧客の「制作プロセスログ」を毎日X投稿（透明性の演出）<br>
+            ・無料ヒアリング枠を月10件 → 月15件に拡張
+          </p>
+        </div>
+      </div>
+
+      <h3>8.11 マーケティングKPIダッシュボード</h3>
+      <table>
+        <thead>
+          <tr><th>KPI</th><th>1ヶ月目</th><th>3ヶ月目</th><th>6ヶ月目</th><th>計測方法</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SNS総フォロワー（3名合算）</td><td>+500</td><td>+2,500</td><td>+5,000</td><td>X / IG analytics</td></tr>
+          <tr><td>月間インプレッション</td><td>20,000</td><td>100,000</td><td>300,000</td><td>SNS analytics</td></tr>
+          <tr><td>LP訪問者</td><td>200</td><td>800</td><td>2,000</td><td>Vercel Analytics or GA</td></tr>
+          <tr><td>無料ヒアリング申込</td><td>5</td><td>15</td><td>50（累計）</td><td>Calendly</td></tr>
+          <tr class="highlight"><td><strong>有料受注</strong></td><td><strong>1</strong></td><td><strong>5</strong></td><td><strong>20（累計）</strong></td><td>受注台帳</td></tr>
+          <tr><td>紹介経由の比率</td><td>0%</td><td>10%</td><td>30%</td><td>受注時アンケート</td></tr>
+          <tr><td>CAC（目安）</td><td>—</td><td>5,000円</td><td>3,000円</td><td>(マーケ費 + 工数換算) ÷ 受注</td></tr>
+          <tr><td>ヒアリング → 受注 CV率</td><td>20%</td><td>33%</td><td>40%</td><td>受注/ヒアリング</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight" style="margin-top:24px;">
+        <div class="label">FINAL TACTICS</div>
+        マーケティングを成功させる秘訣は <strong>「3人が自分の人生を毎日SNSで透明化する」</strong> こと。
+        広告は不要。Webinarも不要。代わりに、<strong>"自分の朝のダッシュボード"を毎週投稿する習慣だけを死守</strong>する。
+        これが3ヶ月続くと、フォロワーの中に「私もそれが欲しい」と言う人が必ず現れ始める。
+        全マーケKPIの中で、最も大切なのは <strong>「3人の継続投稿率」</strong>（週12本のうち何本投稿できたか）。これが80%を切ったら、何より優先して立て直す。
+      </div>
+    </section>
+
+    <!-- 9. Product -->
+    <section id="product">
+      <h2><span class="num">09</span>プロダクト・技術戦略<span class="en">Product & Tech</span></h2>
+      <div class="subtitle">何で作り、どう保守するか</div>
+
+      <h3>技術スタック</h3>
+      <div class="card-grid cols-4">
+        <div class="card">
+          <h4>フロントエンド</h4>
+          <p class="body">HTML/CSS/JavaScript ベース<br>Claude Codeで生成<br>必要に応じてNext.js</p>
+        </div>
+        <div class="card">
+          <h4>バックエンド</h4>
+          <p class="body">Supabase<br>(認証・DB・Storage一体)</p>
+        </div>
+        <div class="card">
+          <h4>デプロイ</h4>
+          <p class="body">Vercel<br>カスタムドメイン対応</p>
+        </div>
+        <div class="card">
+          <h4>バックアップ</h4>
+          <p class="body">Notion (重要データ複製)<br>Google Docs (バックアップ)</p>
+        </div>
+      </div>
+
+      <h3>コアモジュール（共通仕様）</h3>
+      <p>3名のドッグフーディングを通じて、以下のモジュールをコア機能として標準化する：</p>
+      <ol>
+        <li><strong>ジャーナリング</strong> — 日次入力、週次/月次振り返り、AI解析</li>
+        <li><strong>カスケード行動管理</strong> — ゴール→要素→マイルストーン→ギャップ→コミット→アクション→数字</li>
+        <li><strong>夢/Wishリスト</strong> — DB化、月次レビューで活性化</li>
+        <li><strong>家族・パーソナルスケジュール</strong> — 月/週/日ビュー、家族共有可</li>
+        <li><strong>振り返りKPT</strong> — 月次でKeep/Problem/Try、学び、次月テーマ</li>
+      </ol>
+      <p style="font-size:13px;color:var(--ink-light);">
+        オプション（顧客別）: 読書記録 / 健康記録 / 顧客CRM / コミッション計算 / 就業規則Q&A / アポイント自動化 / 議事録ツール
+      </p>
+
+      <h3>データ・セキュリティ戦略</h3>
+      <div class="warn">
+        <div class="label">⚠ MUST DO</div>
+        最初のビルドで <strong>「Supabase → Notion DB / Google Docs に毎日自動コピー」</strong> 機能を必ず組み込む。
+        これはバグ・データ消失リスクの最終防衛線であり、同時に <strong>営業トーク</strong>（"データはNotionにも残るので安心です"）として強い武器になる。
+      </div>
+      <ul>
+        <li>ログイン認証はSupabase Authを利用（メール+パスワード または Magic Link）</li>
+        <li>Row Level Security (RLS) でユーザー間のデータ分離</li>
+        <li>顧客ごとに独立したサブドメイン（例: koike.dashboard.example.com）でブランディング</li>
+        <li>iframe埋め込み or サブドメインで顧客のNotionワークスペースに見せかける統合も検討</li>
+      </ul>
+    </section>
+
+    <!-- 10. Roadmap -->
+    <section id="roadmap">
+      <h2><span class="num">10</span>90日ロードマップ<span class="en">Roadmap</span></h2>
+      <div class="subtitle">ここから3ヶ月で何を実現するか</div>
+
+      <div class="roadmap">
+        <div class="roadmap-item">
+          <h4><span class="date">Week 1 (5/1-5/6)</span> 自分用ダッシュボード設計フェーズ</h4>
+          <p class="body">
+            小池・岩崎・兵頭がそれぞれ自分用ダッシュボードの「最低限の5機能」をワイヤーフレームで決める。
+            5月6日のMTGで3案を持ち寄りレビュー。共通モジュールの初期定義を決定。
+            ドッグフーディング保証: <strong>「Notion毎日開く習慣 → ダッシュボードに置換」</strong>を全員が宣言。
+          </p>
+        </div>
+        <div class="roadmap-item">
+          <h4><span class="date">Week 2-3 (5/7-5/19)</span> 自分用ダッシュボード仮構築</h4>
+          <p class="body">
+            岩崎くん主導で3パターンを並行実装。Supabase + Vercel基盤を確立。
+            Notion/Google Docsバックアップ機構を最初から組み込む。各自が日常使い開始。
+            <strong>bot機能（起動率監視・週次コミット・3日通知）</strong>もこの段階で組み込み。
+          </p>
+        </div>
+        <div class="roadmap-item">
+          <h4><span class="date">Week 4-8 (5/20-6/23) / 6月</span> テストマーケティング期</h4>
+          <p class="body">
+            <strong>受注はせず、テストマーケに集中</strong>。組合員・コーチング受講者から5-10名にデモを見せて反応を観察。
+            「198,000円 + 月5,000円」の価格モデルへの反応を測定。SNS発信開始（3名で週12本）。
+            自分のダッシュボードを毎日使い続け、改善点を蓄積。商品名「1年間集中行動管理プログラム」のメッセージング検証。
+          </p>
+        </div>
+        <div class="roadmap-item">
+          <h4><span class="date">Week 9-12 (6/24-7/21)</span> 最終調整 & 受注準備</h4>
+          <p class="body">
+            テストマーケから得た声を反映してダッシュボードを磨き込み。LP・FAQ・契約書ドラフト整備。
+            紹介プログラム設計（紹介者: 月3ヶ月無料 / 被紹介者: 1万円OFF）。
+            7月の本格受注に向けて、無料ヒアリング枠の事前予約を開始。
+          </p>
+        </div>
+        <div class="roadmap-item">
+          <h4><span class="date">7月以降</span> 本格受注フェーズ</h4>
+          <p class="body">
+            月3-5件のペースで受注開始。最初の3名は事例化を条件に <strong>5万円OFF（148,000円）</strong>。
+            12月末（半年）目標: <strong>有料顧客10-15名 / 構築売上累計約200万円 / 月額MRR 5-7.5万円</strong>。
+          </p>
+        </div>
+        <div class="roadmap-item">
+          <h4><span class="date">12月末 (検証ポイント)</span> Go / No-go 判断</h4>
+          <p class="body">
+            <strong>合格基準: 有料顧客10名以上 / 累計売上200万円以上 / NPS 40以上 / 岩崎くん稼働月160時間以下。</strong>
+            合格なら法人版（構築50万〜）の本格設計に着手。下回る場合は、ターゲット絞り込みかプロダクト形態の見直しを検討。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. KPI -->
+    <section id="kpi">
+      <h2><span class="num">11</span>KPI設計<span class="en">KPI</span></h2>
+      <div class="subtitle">何を測れば「うまくいっている」と言えるか</div>
+
+      <table>
+        <thead>
+          <tr><th>レイヤー</th><th>KPI</th><th>5月末</th><th>6月末(テスト)</th><th>7月末(初受注)</th><th>10月末(半年)</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="2">顧客獲得</td>
+            <td>無料デモ・ヒアリング件数</td>
+            <td>—</td>
+            <td>5-10</td>
+            <td>15-20</td>
+            <td>30-50</td>
+          </tr>
+          <tr>
+            <td>有料顧客数(累計)</td>
+            <td>0</td>
+            <td>0(テスト期)</td>
+            <td>3-5</td>
+            <td><strong>10-15</strong></td>
+          </tr>
+          <tr>
+            <td rowspan="2">収益</td>
+            <td>構築売上累計</td>
+            <td>—</td>
+            <td>—</td>
+            <td>50-100万</td>
+            <td><strong>200万円</strong></td>
+          </tr>
+          <tr>
+            <td>月額保守MRR</td>
+            <td>—</td>
+            <td>—</td>
+            <td>1.5-2.5万</td>
+            <td><strong>5-7.5万</strong></td>
+          </tr>
+          <tr>
+            <td rowspan="2">プロダクト</td>
+            <td>顧客あたり平均構築工数</td>
+            <td>—</td>
+            <td>40h</td>
+            <td>30h</td>
+            <td>20h</td>
+          </tr>
+          <tr>
+            <td>コアモジュール再利用率</td>
+            <td>30%</td>
+            <td>50%</td>
+            <td>70%</td>
+            <td><strong>80%+</strong></td>
+          </tr>
+          <tr>
+            <td rowspan="3">ヘルス</td>
+            <td>3名の継続投稿率(SNS)</td>
+            <td>80%</td>
+            <td>85%</td>
+            <td>85%</td>
+            <td><strong>90%+</strong></td>
+          </tr>
+          <tr>
+            <td>NPS(顧客推奨度)</td>
+            <td>—</td>
+            <td>—</td>
+            <td>30</td>
+            <td><strong>40+</strong></td>
+          </tr>
+          <tr>
+            <td>1年契約完了率</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>100%(全員1年は確定)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">最重要KPI（North Star）</div>
+        <strong>「顧客あたり平均構築工数」と「コアモジュール再利用率」</strong>。
+        この2つが改善しないと、案件が増えるほど岩崎くんが消耗する地獄構造になる。
+        毎月のMTGで必ずこの2指標をレビューする。
+      </div>
+    </section>
+
+    <!-- 12. Risk -->
+    <section id="risk">
+      <h2><span class="num">12</span>リスクと対策<span class="en">Risk</span></h2>
+      <div class="subtitle">何が事業を壊すか、どう備えるか</div>
+
+      <div class="card-grid cols-2">
+        <div class="card danger">
+          <h4>R1. 岩崎くんのキャパシティ崩壊</h4>
+          <p class="body">最大リスク。1人の手で全顧客を作る構造。<br>
+          <strong>対策:</strong> ①コアモジュール標準化を最優先 ②週次工数レビュー ③7月末に2人目の開発者候補リサーチ ④Tier 3案件は月2件まで上限設定</p>
+        </div>
+        <div class="card danger">
+          <h4>R2. データ消失・サーバー障害</h4>
+          <p class="body">顧客の信頼を根本から失う。<br>
+          <strong>対策:</strong> 初日からNotion+Google Docsへの自動バックアップ。Supabaseのproプラン（自動バックアップ付）を最初から契約。</p>
+        </div>
+        <div class="card danger">
+          <h4>R3. ターゲット2層の中途半端</h4>
+          <p class="body">主婦層もビジネス層も中途半端で誰にも刺さらない。<br>
+          <strong>対策:</strong> 6ヶ月はビジネス層+コーチング受講者のみに集中。主婦層は「観察・テスト段階」で実装はしない。</p>
+        </div>
+        <div class="card danger">
+          <h4>R4. Notion/AIエージェントの追い上げ</h4>
+          <p class="body">NotionがAI機能を強化、UI改善で巻き返してくる可能性。<br>
+          <strong>対策:</strong> 我々の差別化は「ツール」でなく「人による伴走」。コーチング・ヒアリング部分はNotionが追いつけない領域として深堀り。</p>
+        </div>
+        <div class="card danger">
+          <h4>R5. 価格認知の逆風</h4>
+          <p class="body">「Notionテンプレなら3千円なのに30万は高い」と判断される。<br>
+          <strong>対策:</strong> 「テンプレ卒業者」「Notionで挫折した人」をターゲットに絞り、比較対象をコーチング料金（月数万）に置く言い換え。</p>
+        </div>
+        <div class="card danger">
+          <h4>R6. 法務・セキュリティ事故</h4>
+          <p class="body">個人情報を預かることによるリスク。<br>
+          <strong>対策:</strong> プライバシーポリシー整備、利用規約のひな形作成、SLA明記、診療情報など機微データは取り扱わない方針。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13. Action -->
+    <section id="action">
+      <h2><span class="num">13</span>推奨アクション<span class="en">Action Plan</span></h2>
+      <div class="subtitle">小池さんが今週・今月、何をやるか</div>
+
+      <h3>今週（〜5/6 次回MTGまで）</h3>
+      <ul class="actions">
+        <li>
+          <strong>① 自分用ダッシュボードの「5機能」決定</strong>
+          <span class="meta">推奨機能: ジャーナリング / カスケード行動管理 / コミッション計算 / Wishリスト / 月次KPT</span>
+        </li>
+        <li>
+          <strong>② 商品名・価格モデルの最終確定</strong>
+          <span class="meta">「1年間集中行動管理プログラム」/ 198,000円 + 月5,000円 / 12分割可</span>
+        </li>
+        <li>
+          <strong>③ 岩崎くんへの支払い方法の合意</strong>
+          <span class="meta">月固定 / 案件ごと / レベニューシェア — 兵頭と相談</span>
+        </li>
+        <li>
+          <strong>④ 法人版の処理方針確認</strong>
+          <span class="meta">v2.0では個人版に集中、法人版は最初の3-5件を見てから設計。商談で法人案件が来た場合の対応を決める</span>
+        </li>
+      </ul>
+
+      <h3>5月中</h3>
+      <ul class="actions">
+        <li>
+          <strong>⑤ 3名の自分用ダッシュボード仮リリース</strong>
+          <span class="meta">5月中旬まで。実際に毎日使う。バグ・改善点をログ。bot機能も組み込み</span>
+        </li>
+        <li>
+          <strong>⑥ ドッグフーディング保証の設計</strong>
+          <span class="meta">「Notion毎日開く習慣 → ダッシュボードに置換」を3名で宣言。週次で相互確認</span>
+        </li>
+        <li>
+          <strong>⑦ 利用規約・契約書のドラフト作成</strong>
+          <span class="meta">テンプレートからスタート。12分割支払の条項、解約時の処理、修正単価1万円を明記</span>
+        </li>
+      </ul>
+
+      <h3>6月（テストマーケティング期）</h3>
+      <ul class="actions">
+        <li>
+          <strong>⑧ 5-10名にデモ実施 → 反応観察</strong>
+          <span class="meta">組合員・コーチング受講者から選抜。「198,000円 + 月5,000円」への反応を観察</span>
+        </li>
+        <li>
+          <strong>⑨ SNS発信本格化</strong>
+          <span class="meta">3名で週12本。「私の朝のダッシュボード」「Notion卒業の理由」シリーズ</span>
+        </li>
+        <li>
+          <strong>⑩ LP・FAQ・紹介プログラム設計</strong>
+          <span class="meta">7月の本格受注に向けて、ヒアリング予約フォーム・FAQ・紹介報酬体系を整備</span>
+        </li>
+      </ul>
+
+      <h3>7月以降（本格受注期）</h3>
+      <ul class="actions">
+        <li>
+          <strong>⑪ 月3-5件ペースで受注</strong>
+          <span class="meta">最初の3名は事例化条件で148,000円(5万円OFF)。許諾を得てBefore/Afterを公開</span>
+        </li>
+        <li>
+          <strong>⑫ コアモジュールのv1完成 → 半標準化</strong>
+          <span class="meta">3-5件の構築から共通パターンを抽出。次の案件で工数を50%削減できる状態に</span>
+        </li>
+        <li>
+          <strong>⑬ 月1MTGの運用開始</strong>
+          <span class="meta">納品済顧客全員に月1回30分MTG。ブラッシュアップ項目を聞き出して翌月までに改修</span>
+        </li>
+      </ul>
+
+      <div class="insight" style="margin-top:32px;">
+        <div class="label">FINAL WORD</div>
+        この事業の最大の幸運は、<strong>"自分たち自身が完璧なターゲット顧客である"</strong> こと。
+        作るべきプロダクトは、まず自分が日々喜んで使えるものでなければならない。
+        逆に言えば、自分が使い続けないものを他人に売っても、半年で全員チャーンする。
+        <br><br>
+        <strong>「自分のダッシュボードに毎日触れているか？」</strong>
+        — これが今後の3ヶ月、最も大切な問いになる。
+      </div>
+    </section>
+
+    <footer>
+      <div class="seal">CONFIDENTIAL — INTERNAL USE</div><br>
+      事業計画書 v1.0 ／ 一人一ホームページ事業<br>
+      作成: business-consultant skill (Claude Code) ／ 策定者: 小池雄悟<br>
+      2026-04-30
+    </footer>
+  </main>
+</div>
+
+<button class="pdf-btn" onclick="window.print()" aria-label="PDFに保存">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14 2 14 8 20 8"/>
+    <line x1="12" y1="18" x2="12" y2="12"/>
+    <line x1="9" y1="15" x2="15" y2="15"/>
+  </svg>
+  PDFに保存
+</button>
+</body>
+</html>

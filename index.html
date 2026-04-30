@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal OS事業｜事業計画 × マーケ戦略 × コピー一式</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --bg: #f5f0e6;
+    --paper: #fffaf3;
+    --navy: #0f172a;
+    --navy-light: #1e293b;
+    --orange: #d97706;
+    --orange-light: #fef3c7;
+    --green: #21a649;
+    --gold: #c9a961;
+    --line: #e7e5e4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.7; min-height: 100vh;
+  }
+  .container { max-width: 980px; margin: 0 auto; padding: 56px 32px; }
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: #fff; padding: 56px 56px; border-radius: 16px;
+    position: relative; overflow: hidden;
+    margin-bottom: 40px;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.18);
+  }
+  .hero::before {
+    content: ""; position: absolute; top: -80px; right: -80px;
+    width: 360px; height: 360px;
+    background: radial-gradient(circle, var(--orange) 0%, transparent 70%);
+    opacity: 0.28;
+  }
+  .hero .label { font-size: 11px; letter-spacing: 0.35em; color: var(--orange-light); margin-bottom: 16px; position: relative; z-index: 1; }
+  .hero h1 {
+    font-size: 36px; font-weight: 800; line-height: 1.35; margin-bottom: 20px;
+    position: relative; z-index: 1;
+  }
+  .hero h1 .accent { color: var(--gold); }
+  .hero p {
+    font-size: 16px; color: #d6dde6; line-height: 1.85; max-width: 700px;
+    position: relative; z-index: 1;
+  }
+  .hero .meta-row {
+    display: flex; gap: 24px; margin-top: 24px;
+    font-size: 12px; color: #94a3b8; position: relative; z-index: 1;
+    flex-wrap: wrap;
+  }
+  .hero .meta-row b { color: var(--orange-light); margin-right: 6px; }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
+    margin-bottom: 40px;
+  }
+  .card {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 14px; padding: 32px 28px;
+    transition: all 0.2s ease;
+    text-decoration: none; color: inherit;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.12);
+    border-color: var(--orange);
+  }
+  .card .num {
+    font-size: 12px; font-weight: 800; letter-spacing: 0.3em;
+    color: var(--orange); margin-bottom: 12px;
+  }
+  .card h2 {
+    font-size: 20px; font-weight: 800; color: var(--navy); margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .card .en {
+    font-size: 11px; letter-spacing: 0.2em; color: #78716c;
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .card p {
+    font-size: 13px; color: #44403c; line-height: 1.75;
+    flex: 1; margin-bottom: 16px;
+  }
+  .card .open {
+    align-self: flex-start;
+    background: var(--orange); color: #fff;
+    padding: 9px 18px; border-radius: 22px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+    box-shadow: 0 4px 12px rgba(217,119,6,0.3);
+  }
+  .card.biz .num, .card.biz .en, .card.biz h2 { color: var(--navy); }
+  .card.biz .num { color: var(--gold); }
+  .card.biz .open { background: var(--gold); box-shadow: 0 4px 12px rgba(201,169,97,0.4); }
+  .card.mkt .num { color: var(--green); }
+  .card.mkt .open { background: var(--green); box-shadow: 0 4px 12px rgba(33,166,73,0.3); }
+  .card.copy .num { color: var(--orange); }
+
+  .summary {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 14px; padding: 36px 40px;
+    margin-bottom: 24px;
+  }
+  .summary h2 {
+    font-size: 18px; color: var(--navy); font-weight: 800;
+    margin-bottom: 16px;
+    padding-left: 12px; border-left: 4px solid var(--orange);
+  }
+  .summary table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .summary table td {
+    padding: 10px 12px; border-bottom: 1px solid var(--line);
+    line-height: 1.6; vertical-align: top;
+  }
+  .summary table td:first-child {
+    font-weight: 700; color: var(--navy); width: 30%; white-space: nowrap;
+  }
+  footer {
+    text-align: center; color: #78716c; font-size: 11px;
+    margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line);
+    line-height: 1.8;
+  }
+  @media (max-width: 760px) {
+    .container { padding: 32px 18px; }
+    .hero { padding: 32px 26px; }
+    .hero h1 { font-size: 24px; }
+    .grid { grid-template-columns: 1fr; }
+    .summary { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+    <div class="label">PERSONAL OS · STRATEGY DECK</div>
+    <h1>あなた専用のオーダーメイド・<br>ダッシュボード事業<span class="accent">「Personal OS」</span></h1>
+    <p>
+      個人事業主向けの「1年間集中・自分管理プログラム」。<br>
+      事業計画 × マーケティング戦略 × コピーライティング を<br>
+      Claude Code 上で一気通貫で構築。本ページは3資料へのハブ。
+    </p>
+    <div class="meta-row">
+      <span><b>v2.0</b>2026-04-30</span>
+      <span><b>価格</b>198,000円 ＋ 月5,000円</span>
+      <span><b>ROI</b>5倍（年130万損失 vs 年25.8万投資）</span>
+      <span><b>担当</b>小池 / 岩崎 / 兵頭</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <a class="card biz" href="business-plan.html">
+      <div class="num">01 / BUSINESS PLAN</div>
+      <h2>事業計画書</h2>
+      <div class="en">Business Plan v2.0</div>
+      <p>
+        Executive Summary／市場分析／STP／競合／ビジネスモデル／ユニットエコノミクス／90日ロードマップ／KPI／リスク／推奨アクションを13章で網羅。
+        Notion実装からClaude Code自作への大転換、新カテゴリ「Personal OS」確立まで反映。
+      </p>
+      <span class="open">▶ 事業計画書を開く</span>
+    </a>
+
+    <a class="card mkt" href="marketing.html">
+      <div class="num">02 / MARKETING</div>
+      <h2>マーケティング戦略提案書</h2>
+      <div class="en">Marketing Proposal v2.0</div>
+      <p>
+        ターゲットデモグラ／検索キーワード／3円インサイト／カスタマージャーニー／ファネル施策／KPI設計まで。
+        機会損失フレーム（5年650万円 vs ROI 5倍）と新カテゴリ宣言を訴求の核に据えた版。
+      </p>
+      <span class="open">▶ マーケ提案書を開く</span>
+    </a>
+
+    <a class="card copy" href="copywriter.html">
+      <div class="num">03 / COPYWRITING</div>
+      <h2>コピー一式（2026年版）</h2>
+      <div class="en">Copy Suite v2.0 — 2026 Frameworks</div>
+      <p>
+        コアメッセージ／LP（PASONA・PRESTO・Skeptic 3構造）／SNS（7-tweet thread含む）／メール／広告／セールス台本。
+        Hook-Story-Offer・Skeptic Script・Pattern Interrupt等の2026年最新フレームを統合。LPビジュアルモックアップ3点付き。
+      </p>
+      <span class="open">▶ コピー一式を開く</span>
+    </a>
+  </div>
+
+  <div class="summary">
+    <h2>事業サマリ</h2>
+    <table>
+      <tr><td>商品名</td><td>「1年間集中・Personal OS」（新カテゴリ宣言）</td></tr>
+      <tr><td>価格</td><td>構築費 198,000円（12分割可：月16,500円×12）＋ 保守 月5,000円</td></tr>
+      <tr><td>LTV / 許容CAC</td><td>276,000円 / 92,000円</td></tr>
+      <tr><td>ターゲット</td><td>個人事業主・フリーランス・中小企業経営者の "個人決済層"（30-50代）</td></tr>
+      <tr><td>ポジショニング</td><td>Notionでもコーチングでもない、Personal OSという新カテゴリ</td></tr>
+      <tr><td>主訴求フレーム</td><td>機会損失：1日65分 → 年130万円 → 5年650万円 vs 投資25.8万円 = ROI 5倍</td></tr>
+      <tr><td>核コピー（B+D統合）</td><td>「このまま5年で失う650万円。それは本来、営業・スキルアップ・家族と過ごせた時間。」</td></tr>
+      <tr><td>ドッグフーディング</td><td>3名（小池・岩崎・兵頭）が「Notion毎日開く習慣 → ダッシュボードに置換」を運用中</td></tr>
+      <tr><td>タイムライン</td><td>5月: 自分用構築 → 6月: テストマーケ → 7月: 本格受注 → 12月: 検証（顧客10名・売上200万）</td></tr>
+    </table>
+  </div>
+
+  <footer>
+    Personal OS Strategy Deck v2.0 — Generated by Claude Code skills (business-consultant / marketing-consultant / copywriter)<br>
+    PharmaEight∞ · 2026-04-30
+  </footer>
+
+</div>
+</body>
+</html>
