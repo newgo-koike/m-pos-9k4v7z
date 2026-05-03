@@ -1,0 +1,2081 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goal Tracker — Personal OS</title>
+<style>
+  /* ========== Theme system ========== */
+  :root, body[data-theme="default"] {
+    --ink: #1a1a1a;
+    --bg: #f5f0e6;
+    --paper: #fffaf3;
+    --card: #ffffff;
+    --card-hover: rgba(0,0,0,0.03);
+    --navy: #0f172a;
+    --navy-light: #1e293b;
+    --header-text: #d6dde6;
+    --header-text-mute: #94a3b8;
+    --header-input-bg: rgba(255,255,255,0.08);
+    --header-input-bd: rgba(255,255,255,0.18);
+    --orange: #d97706;
+    --orange-soft: #fef3c7;
+    --orange-soft-strong: #fef3c7;
+    --orange-deep: #c2410c;
+    --accent-fg: #ffffff;
+    --green: #21a649;
+    --green-soft: #d1fae5;
+    --green-text: #21a649;
+    --red: #b91c1c;
+    --red-soft: #fee2e2;
+    --red-deep: #991b1b;
+    --red-text: #b91c1c;
+    --gold: #c9a961;
+    --gold-bright: #d4af6a;
+    --line: #e7e5e4;
+    --line-2: #d6d3d1;
+    --muted: #78716c;
+    --total-bg: #fdfbf7;
+    --legend-bg: #fafaf9;
+    --legend-bd: var(--orange);
+    --kpt-keep-bg: var(--green-soft);
+    --kpt-prob-bg: var(--red-soft);
+    --kpt-try-bg: #dbeafe;
+    --kpt-try-text: #1d4ed8;
+    --action-stuck-bd: #fca5a5;
+    --action-stuck-bg: #fef2f2;
+    --shadow: rgba(0,0,0,0.06);
+    --shadow-strong: rgba(0,0,0,0.18);
+    --tabs-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    --header-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    --hero-glow: rgba(217,119,6,0.22);
+    --bg-noise: none;
+    --lv-goal: #b91c1c;
+    --lv-element: #d97706;
+    --lv-milestone: #ca8a04;
+    --lv-gap: #6b7280;
+    --lv-commit: #2563eb;
+    --lv-action: #16a34a;
+    --lv-goal-soft: #fee2e2;
+    --lv-element-soft: #fef3c7;
+    --lv-milestone-soft: #fef3c7;
+    --lv-gap-soft: #f3f4f6;
+    --lv-commit-soft: #dbeafe;
+    --lv-action-soft: #d1fae5;
+    --expected-text: #ca8a04;
+    --expected-placeholder: #d1cdc6;
+    --separator: #9ca3af;
+    --font: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", sans-serif;
+    --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+
+  /* ===== ⚔ Cockpit (Gold on Black) ===== */
+  body[data-theme="cockpit"] {
+    --ink: #f5ede0;
+    --bg: #0a0805;
+    --paper: #14110a;
+    --card: rgba(212,175,106,0.05);
+    --card-hover: rgba(212,175,106,0.1);
+    --navy: #0a0805;
+    --navy-light: #14110a;
+    --header-text: #d4c5a8;
+    --header-text-mute: #a89580;
+    --header-input-bg: rgba(212,175,106,0.08);
+    --header-input-bd: rgba(212,175,106,0.3);
+    --orange: #d4af6a;
+    --orange-soft: rgba(212,175,106,0.18);
+    --orange-soft-strong: rgba(212,175,106,0.28);
+    --orange-deep: #f5d27a;
+    --accent-fg: #0a0805;
+    --green: #10b981;
+    --green-soft: rgba(16,185,129,0.18);
+    --green-text: #34d399;
+    --red: #ef4444;
+    --red-soft: rgba(239,68,68,0.18);
+    --red-deep: #f87171;
+    --red-text: #f87171;
+    --gold: #f5d27a;
+    --gold-bright: #fbbf24;
+    --line: rgba(212,175,106,0.18);
+    --line-2: rgba(212,175,106,0.4);
+    --muted: #a89580;
+    --total-bg: rgba(212,175,106,0.06);
+    --legend-bg: rgba(212,175,106,0.05);
+    --legend-bd: var(--gold);
+    --kpt-keep-bg: rgba(16,185,129,0.12);
+    --kpt-prob-bg: rgba(239,68,68,0.12);
+    --kpt-try-bg: rgba(212,175,106,0.12);
+    --kpt-try-text: var(--gold);
+    --action-stuck-bd: #ef4444;
+    --action-stuck-bg: rgba(239,68,68,0.08);
+    --shadow: rgba(0,0,0,0.4);
+    --shadow-strong: rgba(212,175,106,0.18);
+    --tabs-shadow: 0 0 0 1px var(--line) inset;
+    --header-shadow: 0 0 60px rgba(212,175,106,0.18), 0 0 0 1px var(--line) inset;
+    --hero-glow: rgba(245,210,122,0.45);
+    --bg-noise: repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(212,175,106,0.018) 2px, rgba(212,175,106,0.018) 4px);
+    --lv-goal: #ef4444;
+    --lv-element: #f5d27a;
+    --lv-milestone: #fbbf24;
+    --lv-gap: #a89580;
+    --lv-commit: #67e8f9;
+    --lv-action: #10b981;
+    --lv-goal-soft: rgba(239,68,68,0.18);
+    --lv-element-soft: rgba(245,210,122,0.18);
+    --lv-milestone-soft: rgba(251,191,36,0.18);
+    --lv-gap-soft: rgba(168,149,128,0.15);
+    --lv-commit-soft: rgba(103,232,249,0.18);
+    --lv-action-soft: rgba(16,185,129,0.18);
+    --expected-text: #f5d27a;
+    --expected-placeholder: #5e5142;
+    --separator: #5e5142;
+  }
+
+  /* ===== ◆ Cyan Observatory (Sci-Fi) ===== */
+  body[data-theme="cyan"] {
+    --ink: #e0f2fe;
+    --bg: #050714;
+    --paper: #0a0e22;
+    --card: rgba(34,211,238,0.05);
+    --card-hover: rgba(34,211,238,0.1);
+    --navy: #050714;
+    --navy-light: #11183a;
+    --header-text: #a8c5dc;
+    --header-text-mute: #7891b8;
+    --header-input-bg: rgba(34,211,238,0.08);
+    --header-input-bd: rgba(34,211,238,0.3);
+    --orange: #22d3ee;
+    --orange-soft: rgba(34,211,238,0.15);
+    --orange-soft-strong: rgba(34,211,238,0.28);
+    --orange-deep: #67e8f9;
+    --accent-fg: #001121;
+    --green: #34d399;
+    --green-soft: rgba(52,211,153,0.18);
+    --green-text: #34d399;
+    --red: #f87171;
+    --red-soft: rgba(248,113,113,0.18);
+    --red-deep: #ef4444;
+    --red-text: #f87171;
+    --gold: #fbbf24;
+    --gold-bright: #fcd34d;
+    --line: rgba(34,211,238,0.18);
+    --line-2: rgba(34,211,238,0.4);
+    --muted: #7891b8;
+    --total-bg: rgba(34,211,238,0.06);
+    --legend-bg: rgba(34,211,238,0.05);
+    --legend-bd: var(--orange);
+    --kpt-keep-bg: rgba(52,211,153,0.12);
+    --kpt-prob-bg: rgba(248,113,113,0.12);
+    --kpt-try-bg: rgba(167,139,250,0.18);
+    --kpt-try-text: #c4b5fd;
+    --action-stuck-bd: #f87171;
+    --action-stuck-bg: rgba(248,113,113,0.08);
+    --shadow: rgba(0,0,0,0.5);
+    --shadow-strong: rgba(34,211,238,0.25);
+    --tabs-shadow: 0 0 0 1px var(--line) inset, 0 0 24px rgba(34,211,238,0.05);
+    --header-shadow: 0 0 60px rgba(34,211,238,0.2), 0 0 0 1px var(--line) inset;
+    --hero-glow: rgba(34,211,238,0.5);
+    --bg-noise: radial-gradient(circle at 20% 30%, rgba(167,139,250,0.05), transparent 50%), radial-gradient(circle at 80% 70%, rgba(34,211,238,0.05), transparent 50%);
+    --lv-goal: #f472b6;
+    --lv-element: #fbbf24;
+    --lv-milestone: #67e8f9;
+    --lv-gap: #7891b8;
+    --lv-commit: #a78bfa;
+    --lv-action: #34d399;
+    --lv-goal-soft: rgba(244,114,182,0.18);
+    --lv-element-soft: rgba(251,191,36,0.18);
+    --lv-milestone-soft: rgba(103,232,249,0.18);
+    --lv-gap-soft: rgba(120,145,184,0.15);
+    --lv-commit-soft: rgba(167,139,250,0.18);
+    --lv-action-soft: rgba(52,211,153,0.18);
+    --expected-text: #fbbf24;
+    --expected-placeholder: #4a5d7e;
+    --separator: #4a5d7e;
+  }
+
+  /* ===== ○ Studio Elegant (Dark Neutral) ===== */
+  body[data-theme="studio"] {
+    --ink: #f5f5f5;
+    --bg: #0a0a0c;
+    --paper: #131316;
+    --card: #1a1a1f;
+    --card-hover: rgba(255,255,255,0.04);
+    --navy: #131316;
+    --navy-light: #1a1a1f;
+    --header-text: #d4d4d8;
+    --header-text-mute: #a1a1aa;
+    --header-input-bg: rgba(255,255,255,0.05);
+    --header-input-bd: rgba(255,255,255,0.14);
+    --orange: #c9a961;
+    --orange-soft: rgba(201,169,97,0.15);
+    --orange-soft-strong: rgba(201,169,97,0.28);
+    --orange-deep: #e3c485;
+    --accent-fg: #0a0a0c;
+    --green: #22c55e;
+    --green-soft: rgba(34,197,94,0.18);
+    --green-text: #4ade80;
+    --red: #ef4444;
+    --red-soft: rgba(239,68,68,0.18);
+    --red-deep: #f87171;
+    --red-text: #f87171;
+    --gold: #c9a961;
+    --gold-bright: #e3c485;
+    --line: rgba(255,255,255,0.08);
+    --line-2: rgba(255,255,255,0.16);
+    --muted: #a1a1aa;
+    --total-bg: rgba(255,255,255,0.03);
+    --legend-bg: rgba(255,255,255,0.025);
+    --legend-bd: var(--gold);
+    --kpt-keep-bg: rgba(34,197,94,0.12);
+    --kpt-prob-bg: rgba(239,68,68,0.12);
+    --kpt-try-bg: rgba(59,130,246,0.18);
+    --kpt-try-text: #93c5fd;
+    --action-stuck-bd: #ef4444;
+    --action-stuck-bg: rgba(239,68,68,0.08);
+    --shadow: rgba(0,0,0,0.4);
+    --shadow-strong: rgba(201,169,97,0.18);
+    --tabs-shadow: 0 0 0 1px var(--line) inset;
+    --header-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px var(--line) inset;
+    --hero-glow: rgba(201,169,97,0.35);
+    --bg-noise: none;
+    --lv-goal: #ef4444;
+    --lv-element: #c9a961;
+    --lv-milestone: #e3c485;
+    --lv-gap: #a1a1aa;
+    --lv-commit: #3b82f6;
+    --lv-action: #22c55e;
+    --lv-goal-soft: rgba(239,68,68,0.18);
+    --lv-element-soft: rgba(201,169,97,0.18);
+    --lv-milestone-soft: rgba(227,196,133,0.18);
+    --lv-gap-soft: rgba(161,161,170,0.15);
+    --lv-commit-soft: rgba(59,130,246,0.18);
+    --lv-action-soft: rgba(34,197,94,0.18);
+    --expected-text: #e3c485;
+    --expected-placeholder: #52525b;
+    --separator: #52525b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    font-size: 14px;
+    min-height: 100vh;
+    background-image: var(--bg-noise);
+    transition: background-color 0.25s, color 0.25s;
+  }
+  .app {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 24px 24px 64px;
+  }
+
+  /* ========== Header ========== */
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: var(--ink);
+    padding: 28px 32px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--header-shadow);
+  }
+  body[data-theme="default"] header { color: #fff; }
+  header::before {
+    content: "";
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, var(--hero-glow) 0%, transparent 70%);
+    opacity: 1;
+  }
+  .h-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+  .h-title {
+    font-size: 11px; letter-spacing: 0.32em; color: var(--orange-soft);
+    margin-bottom: 6px;
+  }
+  .h-goal {
+    font-size: 22px; font-weight: 800; line-height: 1.4;
+    cursor: pointer; padding: 2px 6px; margin: -2px -6px;
+    border-radius: 6px;
+  }
+  .h-goal:hover { background: var(--header-input-bg); }
+  .h-goal[contenteditable="true"]:focus { outline: 2px solid var(--gold); background: var(--header-input-bg); }
+  .h-meta {
+    display: flex; gap: 16px; margin-top: 10px;
+    font-size: 12px; color: var(--header-text);
+    flex-wrap: wrap;
+  }
+  body[data-theme="default"] .h-meta b { color: var(--orange-soft); }
+  .h-meta b { color: var(--gold-bright); margin-right: 6px; font-weight: 700; }
+  .h-meta input[type="date"] {
+    background: var(--header-input-bg); border: 1px solid var(--header-input-bd);
+    color: inherit; padding: 3px 8px; border-radius: 5px; font-size: 12px;
+  }
+  .h-progress {
+    min-width: 240px;
+    text-align: right;
+    position: relative; z-index: 1;
+  }
+  .h-progress-label { font-size: 11px; letter-spacing: 0.18em; color: var(--gold-bright); margin-bottom: 6px; }
+  body[data-theme="default"] .h-progress-label { color: var(--orange-soft); }
+  .h-progress-pct { font-size: 36px; font-weight: 800; color: var(--gold-bright); line-height: 1; text-shadow: 0 0 18px var(--hero-glow); }
+  body[data-theme="default"] .h-progress-pct { color: var(--gold); text-shadow: none; }
+  .h-progress-bar {
+    width: 240px; height: 8px; background: var(--header-input-bg); border-radius: 4px;
+    margin-top: 10px; overflow: hidden; margin-left: auto;
+  }
+  .h-progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold-bright), var(--orange)); border-radius: 4px; transition: width 0.4s ease; box-shadow: 0 0 12px var(--hero-glow); }
+
+  /* ========== Tabs ========== */
+  .tabs {
+    display: flex; gap: 6px;
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 12px; padding: 6px;
+    margin-bottom: 18px;
+    box-shadow: var(--tabs-shadow);
+    overflow-x: auto;
+  }
+  .tab {
+    flex: 1; min-width: 96px;
+    padding: 10px 14px;
+    border: none; background: transparent;
+    font-size: 13px; font-weight: 600;
+    color: var(--muted); cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .tab:hover { background: var(--orange-soft); color: var(--orange); }
+  .tab.active { background: var(--orange); color: var(--accent-fg); box-shadow: 0 0 18px var(--shadow-strong); }
+  body[data-theme="default"] .tab.active { background: var(--navy); color: #fff; box-shadow: none; }
+
+  /* ========== Panels ========== */
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .panel-head {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 12px; padding: 18px 22px;
+    margin-bottom: 16px;
+  }
+  .panel-head h2 {
+    font-size: 18px; font-weight: 800; color: var(--ink);
+    padding-left: 10px; border-left: 4px solid var(--orange);
+    margin-bottom: 4px;
+  }
+  .panel-head p { font-size: 12px; color: var(--muted); padding-left: 14px; }
+
+  /* ========== Cascade Flow Chip Row ========== */
+  .cascade-flow {
+    display: flex; gap: 8px;
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 10px; padding: 12px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+  }
+  .flow-chip {
+    flex: 1; min-width: 84px;
+    text-align: center;
+    padding: 10px 8px;
+    border-radius: 8px;
+    background: var(--card);
+    border: 1px solid var(--line);
+  }
+  .flow-chip .ic { font-size: 20px; margin-bottom: 4px; }
+  .flow-chip .lbl { font-size: 10px; letter-spacing: 0.1em; color: var(--muted); font-weight: 700; }
+  .flow-chip .num { font-size: 18px; font-weight: 800; color: var(--orange); margin-top: 2px; }
+  .flow-arrow { font-size: 18px; color: var(--muted); align-self: center; }
+
+  /* ========== Tree ========== */
+  .tree { display: flex; flex-direction: column; gap: 10px; }
+  .node {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--lv-goal);
+    border-radius: 10px;
+    padding: 14px 16px;
+    transition: box-shadow 0.15s;
+    position: relative;
+  }
+  .node:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.06); }
+  .node.lv-element { border-left-color: var(--lv-element); }
+  .node.lv-milestone { border-left-color: var(--lv-milestone); }
+  .node.lv-gap { border-left-color: var(--lv-gap); }
+  .node.lv-commit { border-left-color: var(--lv-commit); }
+  .node.lv-action { border-left-color: var(--lv-action); padding: 10px 14px; }
+
+  .node-head {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .lv-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    background: var(--orange-soft); color: var(--orange);
+  }
+  .lv-tag.goal { background: var(--lv-goal-soft); color: var(--lv-goal); }
+  .lv-tag.element { background: var(--lv-element-soft); color: var(--lv-element); }
+  .lv-tag.milestone { background: var(--lv-milestone-soft); color: var(--lv-milestone); }
+  .lv-tag.gap { background: var(--lv-gap-soft); color: var(--lv-gap); }
+  .lv-tag.commit { background: var(--lv-commit-soft); color: var(--lv-commit); }
+  .lv-tag.action { background: var(--lv-action-soft); color: var(--lv-action); }
+
+  .node-title {
+    font-size: 15px; font-weight: 700; color: var(--ink);
+    flex: 1;
+    padding: 2px 6px; margin: -2px -6px;
+    border-radius: 4px;
+    cursor: text;
+    min-width: 200px;
+  }
+  .node-title:hover { background: var(--card-hover); }
+  .node-title[contenteditable="true"]:focus { outline: 2px solid var(--orange); background: var(--orange-soft); }
+  .node.lv-action .node-title { font-size: 13.5px; font-weight: 500; }
+
+  .node-meta {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    font-size: 11px; color: var(--muted);
+    align-items: center;
+  }
+  .node-meta input[type="date"], .node-meta input[type="text"], .node-meta input[type="number"] {
+    border: 1px solid var(--line); padding: 2px 6px; border-radius: 4px;
+    font-size: 11px; background: var(--card); color: var(--ink);
+    font-family: inherit;
+  }
+  .node-meta input[type="number"] { width: 70px; }
+  .node-meta input[type="text"] { width: 80px; }
+  .node-meta .badge {
+    background: var(--card); border: 1px solid var(--line);
+    padding: 2px 6px; border-radius: 4px;
+    font-weight: 600;
+  }
+  .node-meta .badge.warn { background: var(--red-soft); color: var(--red-text); border-color: var(--red); }
+
+  .node-actions {
+    display: flex; gap: 4px;
+  }
+  .btn-mini {
+    border: none; background: transparent;
+    color: var(--muted);
+    width: 26px; height: 26px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .btn-mini:hover { background: var(--line); color: var(--ink); }
+  .btn-mini.danger:hover { background: var(--red-soft); color: var(--red-text); }
+
+  .roll-up {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 8px;
+  }
+  .roll-up-bar { flex: 1; height: 7px; background: var(--line); border-radius: 4px; overflow: hidden; }
+  .roll-up-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--orange)); border-radius: 4px; transition: width 0.3s; }
+  .roll-up-fill.bad { background: linear-gradient(90deg, var(--red), var(--red-deep)); }
+  .roll-up-fill.mid { background: linear-gradient(90deg, var(--orange), var(--orange-deep)); }
+  .roll-up-fill.good { background: linear-gradient(90deg, var(--green), var(--green-text)); }
+  .roll-up-pct { font-size: 12px; font-weight: 700; color: var(--ink); min-width: 44px; text-align: right; }
+
+  .children {
+    margin-top: 12px;
+    margin-left: 22px;
+    padding-left: 14px;
+    border-left: 2px dashed var(--line);
+    display: flex; flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Action item */
+  .action-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    transition: all 0.15s;
+  }
+  .action-row:hover { border-color: var(--lv-action); background: var(--card-hover); }
+  .action-row.stuck { border-color: var(--action-stuck-bd); background: var(--action-stuck-bg); }
+  .action-row.done { opacity: 0.6; }
+  .action-row.done .action-title-edit { text-decoration: line-through; }
+
+  .action-check {
+    width: 18px; height: 18px;
+    border: 2px solid var(--line);
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    background: var(--card);
+  }
+  .action-check.checked { background: var(--lv-action); border-color: var(--lv-action); color: var(--accent-fg); }
+  .action-check.doing { background: var(--orange-soft); border-color: var(--orange); }
+  .action-status-pill {
+    font-size: 10px; padding: 2px 6px; border-radius: 3px;
+    font-weight: 700;
+    background: var(--lv-gap-soft); color: var(--muted);
+  }
+  .action-status-pill.todo { background: var(--lv-gap-soft); color: var(--muted); }
+  .action-status-pill.doing { background: var(--orange-soft); color: var(--orange); }
+  .action-status-pill.done { background: var(--green-soft); color: var(--green-text); }
+  .action-status-pill.stuck { background: var(--red-soft); color: var(--red-text); }
+
+  .action-title-edit {
+    flex: 1; font-size: 13.5px;
+    padding: 2px 6px; margin: -2px -6px;
+    border-radius: 4px;
+    cursor: text;
+  }
+  .action-title-edit:hover { background: var(--card-hover); }
+  .action-title-edit[contenteditable="true"]:focus { outline: 2px solid var(--orange); background: var(--orange-soft); }
+
+  .add-btn {
+    border: 1.5px dashed var(--line);
+    background: transparent;
+    color: var(--muted);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    align-self: flex-start;
+    margin-top: 4px;
+  }
+  .add-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-soft); }
+
+  /* ========== Today / Week panel ========== */
+  .week-tabs {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    background: var(--paper); border: 1px solid var(--line);
+    padding: 6px; border-radius: 10px;
+    margin-bottom: 14px;
+  }
+  .wt {
+    flex: 1; min-width: 90px;
+    padding: 8px 10px;
+    border: none; background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .wt.active { background: var(--orange); color: #fff; font-weight: 700; }
+  .wt .meta { display: block; font-size: 10px; opacity: 0.75; margin-top: 2px; }
+  .wt:hover:not(.active) { background: var(--orange-soft); color: var(--orange); }
+
+  .week-block {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 12px; padding: 18px 20px;
+    margin-bottom: 12px;
+  }
+  .week-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .week-head h3 { font-size: 15px; color: var(--ink); }
+  .week-pill { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 12px; background: var(--orange-soft); color: var(--orange); }
+
+  .empty {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* ========== KPI panel ========== */
+  .kpi-controls {
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    background: var(--paper); border: 1px solid var(--line);
+    padding: 12px 16px; border-radius: 10px;
+    margin-bottom: 14px;
+  }
+  .kpi-controls label { font-size: 12px; color: var(--muted); }
+  .kpi-controls input, .kpi-controls select {
+    border: 1px solid var(--line); padding: 5px 9px; border-radius: 5px;
+    font-size: 13px; background: var(--card); color: var(--ink); font-family: inherit;
+  }
+  .kpi-section {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 12px; padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .kpi-section h3 {
+    font-size: 14px; color: var(--ink); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .section-label {
+    padding: 2px 6px; margin: -2px -6px;
+    border-radius: 4px; cursor: text;
+  }
+  .section-label:hover { background: var(--card-hover); }
+  .section-label[contenteditable="true"]:focus { outline: 2px solid var(--orange); background: var(--orange-soft); }
+  .section-hint { font-size: 11px; color: var(--muted); font-weight: 400; letter-spacing: 0; }
+  table.kpi {
+    width: 100%; border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  table.kpi th, table.kpi td {
+    border: 1px solid var(--line);
+    padding: 6px 8px;
+    text-align: right;
+  }
+  table.kpi th {
+    background: var(--legend-bg); font-weight: 700; color: var(--ink);
+    font-size: 11px; letter-spacing: 0.04em;
+  }
+  table.kpi td:first-child, table.kpi th:first-child { text-align: left; }
+  table.kpi td input {
+    border: none; background: transparent;
+    width: 100%; text-align: right;
+    font-size: 12.5px;
+    font-family: inherit;
+    color: var(--ink);
+  }
+  table.kpi td input:focus { outline: 1px solid var(--orange); background: var(--orange-soft); }
+  table.kpi td.total { font-weight: 800; background: var(--total-bg); color: var(--ink); }
+  table.kpi td.total.expected { color: var(--expected-text); font-weight: 700; }
+  table.kpi td.pct {
+    font-weight: 700;
+    text-align: center;
+    font-size: 11.5px;
+  }
+  /* 2-row cell: 決定（上） / 見込（下） */
+  table.kpi td.cell-dual { padding: 2px 4px; }
+  table.kpi td.cell-dual input {
+    display: block;
+    font-size: 11.5px;
+    padding: 1px 4px;
+    line-height: 1.4;
+  }
+  table.kpi td.cell-dual input.confirmed { color: var(--ink); font-weight: 600; }
+  table.kpi td.cell-dual input.expected {
+    color: var(--expected-text);
+    font-style: italic;
+    border-top: 1px dotted var(--line);
+    margin-top: 1px;
+    padding-top: 1px;
+  }
+  table.kpi td.cell-dual input.expected::placeholder { color: var(--expected-placeholder); font-style: normal; }
+  .kpi-legend {
+    font-size: 11px; color: var(--muted);
+    margin-bottom: 8px; padding: 6px 10px;
+    background: var(--legend-bg); border-radius: 6px;
+    border-left: 3px solid var(--legend-bd);
+  }
+  .kpi-legend b { color: var(--ink); margin-right: 4px; }
+  .kpi-legend i { color: var(--expected-text); font-style: italic; }
+  .pct-good { background: var(--green-soft); color: var(--green); }
+  .pct-mid { background: var(--orange-soft); color: var(--orange); }
+  .pct-bad { background: var(--red-soft); color: var(--red); }
+
+  .row-actions { display: flex; gap: 4px; align-items: center; justify-content: flex-end; }
+  .row-name input { font-weight: 600; }
+
+  /* ========== Reflection panel ========== */
+  .ref-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+  .ref-tab {
+    padding: 6px 14px; border-radius: 6px; border: 1px solid var(--line);
+    background: var(--card); cursor: pointer; font-size: 12px; color: var(--ink); font-family: inherit;
+  }
+  .ref-tab.active { background: var(--orange); color: var(--accent-fg); border-color: var(--orange); }
+  body[data-theme="default"] .ref-tab.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .ref-card {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 12px; padding: 18px;
+    margin-bottom: 12px;
+  }
+  .ref-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px; flex-wrap: wrap; gap: 10px;
+  }
+  .ref-head h3 { font-size: 14px; color: var(--ink); }
+  .ref-eval {
+    border: 1px solid var(--line); padding: 4px 10px; border-radius: 5px;
+    font-size: 12px; background: var(--card); color: var(--ink); font-family: inherit;
+  }
+  .kpt {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+  }
+  @media (max-width: 720px) { .kpt { grid-template-columns: 1fr; } }
+  .kpt-col { padding: 12px; border-radius: 8px; min-height: 100px; }
+  .kpt-col h4 { font-size: 11px; letter-spacing: 0.12em; margin-bottom: 6px; }
+  .kpt-keep { background: var(--kpt-keep-bg); }
+  .kpt-keep h4 { color: var(--green-text); }
+  .kpt-prob { background: var(--kpt-prob-bg); }
+  .kpt-prob h4 { color: var(--red-text); }
+  .kpt-try { background: var(--kpt-try-bg); }
+  .kpt-try h4 { color: var(--kpt-try-text); }
+  .kpt-col textarea {
+    width: 100%; border: none; background: transparent;
+    font-family: inherit; font-size: 13px;
+    resize: vertical;
+    min-height: 70px;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  .kpt-col textarea:focus { outline: 1px solid var(--orange); background: var(--card-hover); }
+
+  .ref-add {
+    background: var(--orange); color: var(--accent-fg);
+    padding: 10px 18px; border-radius: 8px;
+    border: none; cursor: pointer;
+    font-size: 13px; font-weight: 700;
+  }
+  .ref-add:hover { background: var(--orange-deep); }
+  body[data-theme="default"] .ref-add { background: var(--navy); color: #fff; }
+  body[data-theme="default"] .ref-add:hover { background: var(--navy-light); }
+
+  /* ========== Settings ========== */
+  .settings-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  @media (max-width: 720px) { .settings-grid { grid-template-columns: 1fr; } }
+  .setting-card {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 10px; padding: 18px 20px;
+  }
+  .setting-card h3 { font-size: 14px; color: var(--ink); margin-bottom: 8px; }
+  .setting-card p { font-size: 12px; color: var(--muted); line-height: 1.7; margin-bottom: 12px; }
+  .btn {
+    background: var(--orange); color: var(--accent-fg);
+    border: none; padding: 8px 16px; border-radius: 6px;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    margin-right: 8px;
+    font-family: inherit;
+  }
+  .btn:hover { background: var(--orange-deep); }
+  .btn.secondary { background: var(--navy); color: #fff; }
+  body[data-theme="default"] .btn.secondary { background: var(--navy); color: #fff; }
+  .btn.secondary:hover { background: var(--navy-light); }
+  .btn.danger { background: var(--red); color: #fff; }
+  .btn.danger:hover { background: var(--red-deep); }
+  .btn.outline {
+    background: transparent; color: var(--ink);
+    border: 1.5px solid var(--line);
+  }
+  .btn.outline:hover { border-color: var(--orange); color: var(--orange); }
+
+  /* ========== Toast ========== */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--navy); color: #fff;
+    padding: 12px 22px; border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    box-shadow: 0 8px 24px var(--shadow-strong);
+    transition: transform 0.25s ease, opacity 0.2s;
+    opacity: 0;
+    z-index: 999;
+    border: 1px solid var(--line-2);
+  }
+  body[data-theme="default"] .toast { border: none; }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  /* ========== Theme switcher ========== */
+  .theme-switcher {
+    display: flex; gap: 4px;
+    background: var(--header-input-bg);
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid var(--header-input-bd);
+  }
+  .theme-chip {
+    width: 32px; height: 32px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    color: var(--header-text);
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    font-family: var(--font-mono);
+  }
+  .theme-chip:hover { background: var(--header-input-bg); color: var(--gold-bright); }
+  .theme-chip.active {
+    background: var(--gold-bright);
+    color: var(--accent-fg);
+    box-shadow: 0 0 12px var(--hero-glow);
+  }
+  body[data-theme="default"] .theme-chip.active { background: var(--gold); color: #1a1208; }
+
+  /* ========== Footer ========== */
+  footer {
+    text-align: center; color: var(--muted); font-size: 11px;
+    margin-top: 40px; padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+  footer a { color: var(--orange); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="h-row">
+      <div>
+        <div class="h-title">🎯 GOAL TRACKER · Personal OS</div>
+        <div class="h-goal" data-edit="goal.title" contenteditable="true">あなたのゴールをここに（クリックで編集）</div>
+        <div class="h-meta">
+          <span><b>期日</b><input type="date" data-edit="goal.deadline" value="2026-12-31"></span>
+          <span><b>残り</b><span id="days-left">—</span></span>
+          <span><b>更新</b><span id="last-updated">—</span></span>
+        </div>
+      </div>
+      <div class="h-progress">
+        <div class="h-progress-label">TOTAL ROLL-UP</div>
+        <div class="h-progress-pct" id="goal-pct">0%</div>
+        <div class="h-progress-bar"><div class="h-progress-fill" id="goal-fill" style="width:0%"></div></div>
+        <div class="theme-switcher" id="theme-switcher" style="margin-top:14px; margin-left:auto; width:fit-content;">
+          <button class="theme-chip" data-theme-set="default" title="⌂ Default — Light Notion-ish">⌂</button>
+          <button class="theme-chip" data-theme-set="cockpit" title="⚔ Gold Cockpit">⚔</button>
+          <button class="theme-chip" data-theme-set="cyan" title="◆ Cyan Observatory (Sci-Fi)">◆</button>
+          <button class="theme-chip" data-theme-set="studio" title="○ Studio Elegant">○</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-panel="tree">🌳 ツリー</button>
+    <button class="tab" data-panel="week">⚡ 今週</button>
+    <button class="tab" data-panel="kpi">📊 KPI</button>
+    <button class="tab" data-panel="reflect">🔄 振り返り</button>
+    <button class="tab" data-panel="settings">⚙ 設定</button>
+  </nav>
+
+  <!-- ============== TREE PANEL ============== -->
+  <section class="panel active" id="panel-tree">
+    <div class="cascade-flow" id="flow-counts"></div>
+    <div class="panel-head">
+      <h2>🌳 ゴール俯瞰ツリー</h2>
+      <p>下の数字を入れると、上のコミット・マイルストーン・ゴールまで進捗が伝わります。タイトルをクリックして編集。</p>
+    </div>
+    <div class="tree" id="tree-root"></div>
+  </section>
+
+  <!-- ============== WEEK PANEL ============== -->
+  <section class="panel" id="panel-week">
+    <div class="panel-head">
+      <h2>⚡ 今週のアクション</h2>
+      <p>「今週これとこれをやる」を週単位で管理。ツリーから自動的に集まります。</p>
+    </div>
+    <div class="week-tabs" id="week-tabs"></div>
+    <div id="week-content"></div>
+  </section>
+
+  <!-- ============== KPI PANEL ============== -->
+  <section class="panel" id="panel-kpi">
+    <div class="panel-head">
+      <h2>📊 月のKPI数字</h2>
+      <p>3層×週次で「成果（Outcome）」と「行動量（Process）」を見える化。各セクション名はクリックで自由に書き換え可能。</p>
+    </div>
+
+    <div class="kpi-controls">
+      <label>対象月：</label>
+      <input type="month" id="kpi-month">
+      <button class="btn outline" onclick="copyPrevMonthKpi()">前月の項目をコピー</button>
+    </div>
+
+    <div class="kpi-section">
+      <h3>📈 <span class="section-label" data-label="main">主要指標 (Outcome)</span> <button class="btn-mini" title="行を追加" onclick="addKpiRow('main')">＋</button> <span class="section-hint">— 売上・成果・到達点など、最終的に追う数字</span></h3>
+      <div class="kpi-legend">各セル：上段 <b>決定</b>（確定済み） / 下段 <i>見込</i>（パイプライン・予定）。<b>決定計</b>＝確定累計、<b>見込計</b>＝予定累計、<b>着地%</b>＝(決定+見込)÷目標。</div>
+      <table class="kpi" id="kpi-main"><thead><tr>
+        <th>項目</th><th>単位</th><th>目標</th>
+        <th>1週</th><th>2週</th><th>3週</th><th>4週</th><th>5週</th>
+        <th>決定計</th><th>見込計</th><th>着地%</th><th></th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+
+    <div class="kpi-section">
+      <h3>📦 <span class="section-label" data-label="breakdown">内訳・カテゴリ別</span> <button class="btn-mini" title="行を追加" onclick="addKpiRow('breakdown')">＋</button> <span class="section-hint">— 主要指標のカテゴリ分解（商品別・サービス別・領域別）</span></h3>
+      <table class="kpi" id="kpi-breakdown"><thead><tr>
+        <th>項目</th><th>単位</th><th>目標</th>
+        <th>1週</th><th>2週</th><th>3週</th><th>4週</th><th>5週</th>
+        <th>決定計</th><th>見込計</th><th>着地%</th><th></th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+
+    <div class="kpi-section">
+      <h3>🛠 <span class="section-label" data-label="activity">行動量 (Process)</span> <button class="btn-mini" title="行を追加" onclick="addKpiRow('activity')">＋</button> <span class="section-hint">— 自分でコントロールできるアクション量（先行指標）</span></h3>
+      <table class="kpi" id="kpi-activity"><thead><tr>
+        <th>項目</th><th>単位</th><th>目標</th>
+        <th>1週</th><th>2週</th><th>3週</th><th>4週</th><th>5週</th>
+        <th>決定計</th><th>見込計</th><th>着地%</th><th></th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+  </section>
+
+  <!-- ============== REFLECT PANEL ============== -->
+  <section class="panel" id="panel-reflect">
+    <div class="panel-head">
+      <h2>🔄 振り返り（KPT）</h2>
+      <p>週末15分・月末60分。続けやすさを支えるリチュアル。</p>
+    </div>
+    <div class="ref-tabs">
+      <button class="ref-tab active" data-ref="weekly">週次KPT</button>
+      <button class="ref-tab" data-ref="monthly">月次KPT</button>
+    </div>
+    <div id="reflect-list"></div>
+    <button class="ref-add" onclick="addReflection()">＋ 新しい振り返りを追加</button>
+  </section>
+
+  <!-- ============== SETTINGS PANEL ============== -->
+  <section class="panel" id="panel-settings">
+    <div class="panel-head">
+      <h2>⚙ 設定 / データ管理</h2>
+      <p>localStorage に自動保存されます。バックアップは JSON で出力可能。</p>
+    </div>
+    <div class="settings-grid">
+      <div class="setting-card">
+        <h3>📤 エクスポート</h3>
+        <p>全データを JSON ファイルとしてダウンロードします。バックアップや別端末への移行に。</p>
+        <button class="btn" onclick="exportJson()">JSON ダウンロード</button>
+      </div>
+      <div class="setting-card">
+        <h3>📥 インポート</h3>
+        <p>JSON ファイルから復元します。<b>現在のデータは上書きされます</b>。</p>
+        <input type="file" id="import-file" accept="application/json" style="display:none">
+        <button class="btn secondary" onclick="document.getElementById('import-file').click()">JSON 読み込み</button>
+      </div>
+      <div class="setting-card">
+        <h3>🌱 サンプルテンプレートを読み込む</h3>
+        <p>業種・用途別のテンプレートからスタート。<b>現在のデータは上書きされます</b>。</p>
+        <select id="preset-select" style="border:1px solid var(--line); padding:6px 9px; border-radius:5px; margin-bottom:8px; width:100%; font-size:13px;">
+          <option value="sales">💼 営業／フルコミッション</option>
+          <option value="creator">🎨 クリエイター／フリーランス</option>
+          <option value="owner">🏢 経営者／中小企業オーナー</option>
+          <option value="personal">🌱 個人目標（健康・学び・家族）</option>
+          <option value="blank">📝 白紙から作る</option>
+        </select>
+        <button class="btn outline" onclick="loadPreset()">テンプレートを読込</button>
+      </div>
+      <div class="setting-card">
+        <h3>🔥 全データリセット</h3>
+        <p>localStorage を完全に消去します。<b>戻せません</b>。</p>
+        <button class="btn danger" onclick="if(confirm('本当に全データを削除しますか？この操作は取り消せません。')){resetAll();}">完全リセット</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Goal Tracker for Personal OS · v1.0.0 ·
+    データはこの端末の localStorage にのみ保存されます ·
+    <a href="../">← Personal OS Strategy Deck</a>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// State
+// ============================================================
+const STORAGE_KEY = 'personal-os-goal-tracker-v1';
+
+let state = null;
+let activeWeek = null;        // ISO week key for week panel
+let kpiMonth = null;          // 'YYYY-MM'
+let activeRefMode = 'weekly'; // 'weekly' | 'monthly'
+
+// ============================================================
+// Presets — universal sample data for various users
+// ============================================================
+const DEFAULT_KPI_LABELS = {
+  main: '主要指標 (Outcome)',
+  breakdown: '内訳・カテゴリ別',
+  activity: '行動量 (Process)'
+};
+
+function shellState(goal, kpi, kpiLabels = DEFAULT_KPI_LABELS, reflections = []) {
+  return {
+    goal,
+    kpi: kpi || { [monthKeyToday()]: { main: [], breakdown: [], activity: [] } },
+    kpiLabels: { ...DEFAULT_KPI_LABELS, ...(kpiLabels || {}) },
+    reflections,
+    meta: { lastUpdated: Date.now(), version: 1 }
+  };
+}
+
+// ---------- preset: sales (フルコミ営業マン)
+function presetSales() {
+  const m = monthKeyToday();
+  const goal = {
+    title: '2026年12月までに月商300万を3ヶ月連続で達成する',
+    deadline: '2026-12-31',
+    elements: [
+      { id: uid(), title: '見込み客10名で30件の商談導線', current: '3名', target: '10名',
+        milestones: [
+          { id: uid(), title: '見込み客7名・商談15件', deadline: '2026-06-30',
+            gaps: [
+              { id: uid(), title: '見込み客 +4名 必要', deltaText: '+4名',
+                commitments: [
+                  { id: uid(), title: '毎月10件の紹介依頼面談を実施', actions: [
+                    { id: uid(), title: '既存顧客リストから紹介候補をリストアップ', status: 'done', due: addDays(-12), week: thisWeekKey(-1) },
+                    { id: uid(), title: '紹介依頼トーク台本のロープレ', status: 'doing', due: addDays(2), week: thisWeekKey() },
+                    { id: uid(), title: '月10件の紹介依頼面談を実施', status: 'todo', due: addDays(14), week: thisWeekKey(1), targetNum: 10, actualNum: 6 }
+                  ]}
+                ]},
+              { id: uid(), title: '商談 +7件 必要', deltaText: '+7件',
+                commitments: [
+                  { id: uid(), title: '月3件の商談クローズ実施', actions: [
+                    { id: uid(), title: '商談フローのテンプレ整備', status: 'done', due: addDays(-20), week: thisWeekKey(-3) },
+                    { id: uid(), title: '提案資料を最新版に更新', status: 'doing', due: addDays(5), week: thisWeekKey() }
+                  ]}
+                ]}
+            ]}
+        ]},
+      { id: uid(), title: '成約率 50%', current: '0%', target: '50%', milestones: [] },
+      { id: uid(), title: '紹介ルート構築（月6名）', current: '0名', target: '6名/月', milestones: [] }
+    ]
+  };
+  const w = (c, e=0) => ({ c, e });
+  const kpi = { [m]: {
+    main: [
+      { id: uid(), name: '売上', unit: '円', target: 3000000, weeks: [w(620000), w(580000), w(720000,300000), w(480000,500000), w(0,400000)] },
+      { id: uid(), name: '成約数', unit: '件', target: 8, weeks: [w(2), w(1), w(3,1), w(1,2), w(0,1)] },
+      { id: uid(), name: '紹介獲得', unit: '件', target: 10, weeks: [w(2), w(1), w(2), w(1,1), w(0,2)] }
+    ],
+    breakdown: [
+      { id: uid(), name: '主力商品A', unit: '円', target: 1800000, weeks: [w(400000), w(350000), w(480000,200000), w(280000,300000), w(0,200000)] },
+      { id: uid(), name: '商品B', unit: '円', target: 800000, weeks: [w(180000), w(160000), w(200000), w(150000,100000), w(0,150000)] },
+      { id: uid(), name: 'クロスセル', unit: '円', target: 400000, weeks: [w(40000), w(70000), w(40000,100000), w(50000,100000), w(0,50000)] }
+    ],
+    activity: [
+      { id: uid(), name: 'アポ取り', unit: '件', target: 30, weeks: [w(7), w(6), w(8,2), w(4,3), w(0,4)] },
+      { id: uid(), name: '初回面談', unit: '件', target: 20, weeks: [w(5), w(4), w(6,1), w(3,2), w(0,3)] },
+      { id: uid(), name: '提案・クロージング', unit: '件', target: 10, weeks: [w(2), w(2), w(3,1), w(1,2), w(0,2)] },
+      { id: uid(), name: '紹介依頼', unit: '件', target: 10, weeks: [w(2), w(1), w(2), w(1,1), w(0,2)] }
+    ]
+  }};
+  return shellState(goal, kpi, DEFAULT_KPI_LABELS, [
+    { id: uid(), mode: 'weekly', period: thisWeekKey(-1), eval: '○',
+      keep: '紹介依頼トークのロープレを継続。テンプレが固まってきた。',
+      problem: '商談の実施タイミングを逃した日が2日。月10件面談アクションが滞留。',
+      try: '滞留アクションを翌週月曜にブロック。来週は同席ロープレを2回入れる。',
+      createdAt: Date.now() }
+  ]);
+}
+
+// ---------- preset: creator (フリーランス・クリエイター)
+function presetCreator() {
+  const m = monthKeyToday();
+  const goal = {
+    title: '2026年中に「指名で受ける」状態になり、月収80万を安定化する',
+    deadline: '2026-12-31',
+    elements: [
+      { id: uid(), title: 'ポートフォリオの更新と発信', current: '更新止まり', target: '月2作品 + 週3投稿',
+        milestones: [
+          { id: uid(), title: '夏までに代表作3つ完成', deadline: '2026-08-31',
+            gaps: [
+              { id: uid(), title: '代表作 +2件', deltaText: '+2件',
+                commitments: [
+                  { id: uid(), title: '隔週で1作品をリリース', actions: [
+                    { id: uid(), title: '次作のコンセプト3案出し', status: 'doing', due: addDays(3), week: thisWeekKey() },
+                    { id: uid(), title: '取材・素材集め', status: 'todo', due: addDays(10), week: thisWeekKey(1) }
+                  ]}
+                ]}
+            ]}
+        ]},
+      { id: uid(), title: 'リピート率を上げる', current: '40%', target: '70%', milestones: [] },
+      { id: uid(), title: '単価アップ（10万→18万）', current: '10万', target: '18万', milestones: [] }
+    ]
+  };
+  const kpi = { [m]: {
+    main: [
+      { id: uid(), name: '売上', unit: '円', target: 800000, weeks: [180000, 220000, 200000, 0, 0] },
+      { id: uid(), name: '受注件数', unit: '件', target: 4, weeks: [1, 1, 1, 0, 0] },
+      { id: uid(), name: 'リピート率', unit: '%', target: 70, weeks: [50, 60, 60, 0, 0] }
+    ],
+    breakdown: [
+      { id: uid(), name: '新規案件', unit: '円', target: 400000, weeks: [80000, 100000, 100000, 0, 0] },
+      { id: uid(), name: 'リピート案件', unit: '円', target: 300000, weeks: [80000, 100000, 80000, 0, 0] },
+      { id: uid(), name: '物販・コンテンツ', unit: '円', target: 100000, weeks: [20000, 20000, 20000, 0, 0] }
+    ],
+    activity: [
+      { id: uid(), name: '制作時間', unit: 'h', target: 80, weeks: [18, 22, 20, 0, 0] },
+      { id: uid(), name: '発信投稿', unit: '本', target: 12, weeks: [3, 4, 3, 0, 0] },
+      { id: uid(), name: '営業・問合せ対応', unit: '件', target: 10, weeks: [3, 2, 3, 0, 0] }
+    ]
+  }};
+  return shellState(goal, kpi);
+}
+
+// ---------- preset: business owner (経営者・中小企業オーナー)
+function presetOwner() {
+  const m = monthKeyToday();
+  const goal = {
+    title: '2027年3月までに営業利益率15%を達成し、社員一人当たり生産性を1.5倍にする',
+    deadline: '2027-03-31',
+    elements: [
+      { id: uid(), title: '主力事業の粗利改善', current: '粗利率28%', target: '粗利率35%',
+        milestones: [
+          { id: uid(), title: '原価構造の可視化', deadline: '2026-07-31',
+            gaps: [
+              { id: uid(), title: '高原価案件の比率を半減', deltaText: '20%→10%',
+                commitments: [
+                  { id: uid(), title: '案件採算を毎週レビュー', actions: [
+                    { id: uid(), title: '案件別PLレポートを作成', status: 'doing', due: addDays(5), week: thisWeekKey() },
+                    { id: uid(), title: '受注基準（最低粗利率）を定義', status: 'todo', due: addDays(12), week: thisWeekKey(1) }
+                  ]}
+                ]}
+            ]}
+        ]},
+      { id: uid(), title: '採用と育成（1名/四半期）', current: '空き2席', target: '採用4名/年', milestones: [] },
+      { id: uid(), title: '新規事業の柱（年商3000万）', current: '構想段階', target: 'PoC→ローンチ', milestones: [] }
+    ]
+  };
+  const kpi = { [m]: {
+    main: [
+      { id: uid(), name: '売上', unit: '万円', target: 1200, weeks: [260, 290, 310, 240, 0] },
+      { id: uid(), name: '営業利益', unit: '万円', target: 180, weeks: [38, 45, 50, 30, 0] },
+      { id: uid(), name: '受注件数', unit: '件', target: 25, weeks: [5, 7, 8, 4, 0] }
+    ],
+    breakdown: [
+      { id: uid(), name: '事業A', unit: '万円', target: 700, weeks: [150, 170, 180, 140, 0] },
+      { id: uid(), name: '事業B', unit: '万円', target: 350, weeks: [80, 90, 100, 70, 0] },
+      { id: uid(), name: '事業C（新規）', unit: '万円', target: 150, weeks: [30, 30, 30, 30, 0] }
+    ],
+    activity: [
+      { id: uid(), name: '商談数', unit: '件', target: 40, weeks: [9, 10, 12, 8, 0] },
+      { id: uid(), name: '1on1実施', unit: '回', target: 8, weeks: [2, 2, 2, 2, 0] },
+      { id: uid(), name: '採用面談', unit: '件', target: 6, weeks: [1, 2, 2, 1, 0] }
+    ]
+  }};
+  return shellState(goal, kpi);
+}
+
+// ---------- preset: personal (個人目標：健康・学び・家族)
+function presetPersonal() {
+  const m = monthKeyToday();
+  const goal = {
+    title: '2026年内に体重65kg・本30冊・家族との対話時間を週5h確保する',
+    deadline: '2026-12-31',
+    elements: [
+      { id: uid(), title: '健康（体重 -7kg）', current: '72kg', target: '65kg',
+        milestones: [
+          { id: uid(), title: '夏までに -4kg（68kg）', deadline: '2026-07-31',
+            gaps: [
+              { id: uid(), title: '週次で -300g ペース', deltaText: '-300g/週',
+                commitments: [
+                  { id: uid(), title: '夜の炭水化物を半量にする', actions: [
+                    { id: uid(), title: '夜炭水化物の量を写真記録（毎日）', status: 'doing', due: addDays(7), week: thisWeekKey(), targetNum: 7, actualNum: 4 },
+                    { id: uid(), title: '週3回 30分ウォーキング', status: 'todo', due: addDays(7), week: thisWeekKey(), targetNum: 3, actualNum: 1 }
+                  ]}
+                ]}
+            ]}
+        ]},
+      { id: uid(), title: '学び（読書30冊）', current: '5冊', target: '30冊',
+        milestones: [
+          { id: uid(), title: '上半期15冊', deadline: '2026-06-30', gaps: [
+            { id: uid(), title: '残り 10冊', deltaText: '+10冊',
+              commitments: [
+                { id: uid(), title: '毎朝30分の読書時間を確保', actions: [
+                  { id: uid(), title: '次の課題図書を3冊選定', status: 'todo', due: addDays(3), week: thisWeekKey() }
+                ]}
+              ]}
+          ]}
+        ]},
+      { id: uid(), title: '家族時間（週5h）', current: '週2h', target: '週5h', milestones: [] }
+    ]
+  };
+  const kpi = { [m]: {
+    main: [
+      { id: uid(), name: '体重', unit: 'kg', target: 70, weeks: [71.8, 71.5, 71.0, 0, 0] },
+      { id: uid(), name: '読書冊数', unit: '冊', target: 3, weeks: [1, 1, 0, 0, 0] },
+      { id: uid(), name: '家族時間', unit: 'h', target: 20, weeks: [3, 4, 5, 0, 0] }
+    ],
+    breakdown: [
+      { id: uid(), name: 'ビジネス書', unit: '冊', target: 1, weeks: [1, 0, 0, 0, 0] },
+      { id: uid(), name: '小説', unit: '冊', target: 1, weeks: [0, 1, 0, 0, 0] },
+      { id: uid(), name: '実用書', unit: '冊', target: 1, weeks: [0, 0, 0, 0, 0] }
+    ],
+    activity: [
+      { id: uid(), name: '運動', unit: '回', target: 12, weeks: [2, 3, 3, 0, 0] },
+      { id: uid(), name: '夜炭水化物半量', unit: '日', target: 20, weeks: [4, 5, 4, 0, 0] },
+      { id: uid(), name: '朝読書（分）', unit: '分', target: 600, weeks: [120, 150, 130, 0, 0] }
+    ]
+  }};
+  return shellState(goal, kpi, {
+    main: '習慣・成果指標',
+    breakdown: 'カテゴリ',
+    activity: '行動量'
+  });
+}
+
+// ---------- preset: blank
+function presetBlank() {
+  return shellState({
+    title: 'あなたのゴールをここに（クリックで編集）',
+    deadline: '',
+    elements: []
+  }, { [monthKeyToday()]: { main: [], breakdown: [], activity: [] } });
+}
+
+const PRESETS = {
+  sales: presetSales,
+  creator: presetCreator,
+  owner: presetOwner,
+  personal: presetPersonal,
+  blank: presetBlank
+};
+
+function sampleData() { return presetSales(); }
+function emptyData() { return presetBlank(); }
+
+function addDays(n) {
+  const d = new Date(); d.setDate(d.getDate() + n);
+  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+}
+
+// ============================================================
+// Utils
+// ============================================================
+function uid() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); }
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+function monthKeyToday() {
+  const d = new Date();
+  return d.getFullYear() + '-' + pad(d.getMonth() + 1);
+}
+
+function isoWeekKey(d) {
+  // Returns 'YYYY-Www'
+  const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const dayNum = date.getUTCDay() || 7;
+  date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+  const weekNum = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+  return date.getUTCFullYear() + '-W' + pad(weekNum);
+}
+function thisWeekKey(offset = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset * 7);
+  return isoWeekKey(d);
+}
+function weekRangeFromKey(key) {
+  // 'YYYY-Www' -> [Mon, Sun] in local
+  const [y, w] = key.split('-W').map(Number);
+  const simple = new Date(Date.UTC(y, 0, 1 + (w - 1) * 7));
+  const dow = simple.getUTCDay();
+  const ISOweekStart = new Date(simple);
+  if (dow <= 4) ISOweekStart.setUTCDate(simple.getUTCDate() - simple.getUTCDay() + 1);
+  else ISOweekStart.setUTCDate(simple.getUTCDate() + 8 - simple.getUTCDay());
+  const start = new Date(ISOweekStart);
+  const end = new Date(ISOweekStart); end.setUTCDate(end.getUTCDate() + 6);
+  return [start, end];
+}
+function fmtDateMD(d) { return (d.getMonth()+1) + '/' + d.getDate(); }
+
+function daysLeft(deadlineStr) {
+  if (!deadlineStr) return null;
+  const d = new Date(deadlineStr + 'T23:59:59');
+  const now = new Date();
+  return Math.ceil((d - now) / 86400000);
+}
+
+function clamp01(x) { return Math.max(0, Math.min(1, x)); }
+function pctClass(pct) {
+  if (pct >= 90) return 'good';
+  if (pct >= 60) return 'mid';
+  return 'bad';
+}
+
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+}
+
+function isOverdue(due) {
+  if (!due) return false;
+  return new Date(due + 'T23:59:59') < new Date();
+}
+
+// ============================================================
+// Persistence
+// ============================================================
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      state = JSON.parse(raw);
+      // Migration: ensure structure
+      if (!state.kpi) state.kpi = {};
+      if (!state.reflections) state.reflections = [];
+      if (!state.meta) state.meta = { version: 1 };
+      if (!state.kpiLabels) state.kpiLabels = { ...DEFAULT_KPI_LABELS };
+      migrateKpiWeeks();
+    } else {
+      state = sampleData();
+    }
+  } catch (e) {
+    console.error('Load failed', e);
+    state = sampleData();
+  }
+}
+function save() {
+  state.meta.lastUpdated = Date.now();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  document.getElementById('last-updated').textContent = new Date(state.meta.lastUpdated).toLocaleString('ja-JP', { hour: '2-digit', minute: '2-digit', month: 'numeric', day: 'numeric' });
+}
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ============================================================
+// Roll-up math
+// ============================================================
+// Action: status-based + optional numerical override
+function actionPct(a) {
+  if (typeof a.targetNum === 'number' && a.targetNum > 0 && typeof a.actualNum === 'number') {
+    return clamp01(a.actualNum / a.targetNum) * 100;
+  }
+  if (a.status === 'done') return 100;
+  if (a.status === 'doing') return 50;
+  if (a.status === 'stuck') return 10;
+  return 0;
+}
+function avg(arr) {
+  if (!arr || arr.length === 0) return 0;
+  return arr.reduce((a, b) => a + b, 0) / arr.length;
+}
+function commitPct(c) {
+  if (!c.actions || c.actions.length === 0) return 0;
+  return avg(c.actions.map(actionPct));
+}
+function gapPct(g) {
+  if (!g.commitments || g.commitments.length === 0) return 0;
+  return avg(g.commitments.map(commitPct));
+}
+function milestonePct(m) {
+  if (!m.gaps || m.gaps.length === 0) return 0;
+  return avg(m.gaps.map(gapPct));
+}
+function elementPct(e) {
+  if (!e.milestones || e.milestones.length === 0) return 0;
+  return avg(e.milestones.map(milestonePct));
+}
+function goalPct() {
+  if (!state.goal.elements || state.goal.elements.length === 0) return 0;
+  return avg(state.goal.elements.map(elementPct));
+}
+
+function counts() {
+  let c = { goal: 1, element: 0, milestone: 0, gap: 0, commit: 0, action: 0 };
+  state.goal.elements.forEach(e => {
+    c.element++;
+    (e.milestones || []).forEach(m => {
+      c.milestone++;
+      (m.gaps || []).forEach(g => {
+        c.gap++;
+        (g.commitments || []).forEach(cm => {
+          c.commit++;
+          c.action += (cm.actions || []).length;
+        });
+      });
+    });
+  });
+  return c;
+}
+
+// ============================================================
+// Render: header + flow chips
+// ============================================================
+function renderHeader() {
+  const goalEl = document.querySelector('[data-edit="goal.title"]');
+  if (document.activeElement !== goalEl) goalEl.textContent = state.goal.title || '';
+  const dlEl = document.querySelector('[data-edit="goal.deadline"]');
+  if (document.activeElement !== dlEl) dlEl.value = state.goal.deadline || '';
+
+  const dl = daysLeft(state.goal.deadline);
+  document.getElementById('days-left').textContent = dl === null ? '—' : (dl >= 0 ? '残り ' + dl + '日' : Math.abs(dl) + '日 経過');
+
+  const pct = goalPct();
+  document.getElementById('goal-pct').textContent = Math.round(pct) + '%';
+  document.getElementById('goal-fill').style.width = pct + '%';
+  document.getElementById('last-updated').textContent = state.meta.lastUpdated ? new Date(state.meta.lastUpdated).toLocaleString('ja-JP', { hour: '2-digit', minute: '2-digit', month: 'numeric', day: 'numeric' }) : '—';
+}
+
+function renderFlowCounts() {
+  const c = counts();
+  const items = [
+    { ic: '🎯', lbl: 'GOAL', n: c.goal },
+    { ic: '🧩', lbl: '要素', n: c.element },
+    { ic: '📍', lbl: 'マイルストーン', n: c.milestone },
+    { ic: '📐', lbl: 'ギャップ', n: c.gap },
+    { ic: '🤝', lbl: 'コミット', n: c.commit },
+    { ic: '⚡', lbl: 'アクション', n: c.action }
+  ];
+  const el = document.getElementById('flow-counts');
+  el.innerHTML = items.map((it, i) =>
+    `<div class="flow-chip"><div class="ic">${it.ic}</div><div class="lbl">${it.lbl}</div><div class="num">${it.n}</div></div>` +
+    (i < items.length - 1 ? '<div class="flow-arrow">›</div>' : '')
+  ).join('');
+}
+
+// ============================================================
+// Render: tree
+// ============================================================
+function rollUpHtml(pct) {
+  const cls = pctClass(pct);
+  return `<div class="roll-up">
+    <div class="roll-up-bar"><div class="roll-up-fill ${cls}" style="width:${pct}%"></div></div>
+    <div class="roll-up-pct">${Math.round(pct)}%</div>
+  </div>`;
+}
+
+function renderTree() {
+  const root = document.getElementById('tree-root');
+  let html = '';
+  state.goal.elements.forEach((el, ei) => {
+    const ePct = elementPct(el);
+    html += `<div class="node lv-element" data-path="${ei}">
+      <div class="node-head">
+        <span class="lv-tag element">🧩 要素</span>
+        <span class="node-title" contenteditable="true" data-field="title">${escapeHtml(el.title)}</span>
+        <div class="node-meta">
+          現状 <input type="text" data-field="current" value="${escapeHtml(el.current || '')}" placeholder="例: 3名">
+          目標 <input type="text" data-field="target" value="${escapeHtml(el.target || '')}" placeholder="例: 10名">
+        </div>
+        <div class="node-actions">
+          <button class="btn-mini" title="マイルストーン追加" onclick="addChild('${ei}','milestone')">＋📍</button>
+          <button class="btn-mini danger" title="削除" onclick="removeNode('${ei}')">🗑</button>
+        </div>
+      </div>
+      ${rollUpHtml(ePct)}
+      <div class="children">
+        ${(el.milestones || []).map((m, mi) => milestoneHtml(m, ei, mi)).join('')}
+        <button class="add-btn" onclick="addChild('${ei}','milestone')">＋ マイルストーン</button>
+      </div>
+    </div>`;
+  });
+  html += `<button class="add-btn" onclick="addChild('','element')" style="align-self:flex-start; margin-top:8px;">＋ 要素を追加</button>`;
+  root.innerHTML = html;
+  bindTreeEvents();
+}
+
+function milestoneHtml(m, ei, mi) {
+  const pct = milestonePct(m);
+  const dl = daysLeft(m.deadline);
+  return `<div class="node lv-milestone" data-path="${ei}.${mi}">
+    <div class="node-head">
+      <span class="lv-tag milestone">📍 マイルストーン</span>
+      <span class="node-title" contenteditable="true" data-field="title">${escapeHtml(m.title)}</span>
+      <div class="node-meta">
+        期日 <input type="date" data-field="deadline" value="${m.deadline || ''}">
+        ${dl !== null ? `<span class="badge ${dl < 0 ? 'warn' : ''}">${dl >= 0 ? '残'+dl+'日' : Math.abs(dl)+'日経過'}</span>` : ''}
+      </div>
+      <div class="node-actions">
+        <button class="btn-mini" title="ギャップ追加" onclick="addChild('${ei}.${mi}','gap')">＋📐</button>
+        <button class="btn-mini danger" onclick="removeNode('${ei}.${mi}')">🗑</button>
+      </div>
+    </div>
+    ${rollUpHtml(pct)}
+    <div class="children">
+      ${(m.gaps || []).map((g, gi) => gapHtml(g, ei, mi, gi)).join('')}
+      <button class="add-btn" onclick="addChild('${ei}.${mi}','gap')">＋ ギャップ</button>
+    </div>
+  </div>`;
+}
+
+function gapHtml(g, ei, mi, gi) {
+  const pct = gapPct(g);
+  return `<div class="node lv-gap" data-path="${ei}.${mi}.${gi}">
+    <div class="node-head">
+      <span class="lv-tag gap">📐 ギャップ</span>
+      <span class="node-title" contenteditable="true" data-field="title">${escapeHtml(g.title)}</span>
+      <div class="node-meta">
+        差分 <input type="text" data-field="deltaText" value="${escapeHtml(g.deltaText || '')}" placeholder="例: +4名">
+      </div>
+      <div class="node-actions">
+        <button class="btn-mini" title="コミット追加" onclick="addChild('${ei}.${mi}.${gi}','commit')">＋🤝</button>
+        <button class="btn-mini danger" onclick="removeNode('${ei}.${mi}.${gi}')">🗑</button>
+      </div>
+    </div>
+    ${rollUpHtml(pct)}
+    <div class="children">
+      ${(g.commitments || []).map((c, ci) => commitHtml(c, ei, mi, gi, ci)).join('')}
+      <button class="add-btn" onclick="addChild('${ei}.${mi}.${gi}','commit')">＋ コミットメント</button>
+    </div>
+  </div>`;
+}
+
+function commitHtml(c, ei, mi, gi, ci) {
+  const pct = commitPct(c);
+  return `<div class="node lv-commit" data-path="${ei}.${mi}.${gi}.${ci}">
+    <div class="node-head">
+      <span class="lv-tag commit">🤝 コミット</span>
+      <span class="node-title" contenteditable="true" data-field="title">${escapeHtml(c.title)}</span>
+      <div class="node-actions">
+        <button class="btn-mini" title="アクション追加" onclick="addChild('${ei}.${mi}.${gi}.${ci}','action')">＋⚡</button>
+        <button class="btn-mini danger" onclick="removeNode('${ei}.${mi}.${gi}.${ci}')">🗑</button>
+      </div>
+    </div>
+    ${rollUpHtml(pct)}
+    <div class="children">
+      ${(c.actions || []).map((a, ai) => actionHtml(a, ei, mi, gi, ci, ai)).join('')}
+      <button class="add-btn" onclick="addChild('${ei}.${mi}.${gi}.${ci}','action')">＋ アクション</button>
+    </div>
+  </div>`;
+}
+
+function actionHtml(a, ei, mi, gi, ci, ai) {
+  const overdue = isOverdue(a.due) && a.status !== 'done';
+  const computedStatus = overdue && a.status !== 'done' ? 'stuck' : (a.status || 'todo');
+  return `<div class="action-row ${computedStatus}" data-path="${ei}.${mi}.${gi}.${ci}.${ai}">
+    <span class="action-check ${a.status === 'done' ? 'checked' : (a.status === 'doing' ? 'doing' : '')}" onclick="cycleStatus('${ei}.${mi}.${gi}.${ci}.${ai}')">${a.status === 'done' ? '✓' : (a.status === 'doing' ? '◐' : '')}</span>
+    <span class="action-title-edit" contenteditable="true" data-field="title">${escapeHtml(a.title)}</span>
+    <span class="action-status-pill ${computedStatus}">${statusLabel(computedStatus)}</span>
+    <input type="date" data-field="due" value="${a.due || ''}" title="期日">
+    <input type="text" data-field="week" value="${a.week || ''}" title="週(YYYY-Www)" placeholder="${thisWeekKey()}" style="width:90px;">
+    <input type="number" data-field="actualNum" value="${a.actualNum ?? ''}" placeholder="実績" title="実績数">
+    <span style="color:#9ca3af;">/</span>
+    <input type="number" data-field="targetNum" value="${a.targetNum ?? ''}" placeholder="目標" title="目標数">
+    <button class="btn-mini danger" onclick="removeNode('${ei}.${mi}.${gi}.${ci}.${ai}')">🗑</button>
+  </div>`;
+}
+
+function statusLabel(s) {
+  return { todo: '未着手', doing: '進行中', done: '完了', stuck: '⚠ 滞留' }[s] || s;
+}
+function escapeHtml(s) {
+  return (s == null ? '' : String(s)).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// Path utilities: 'ei' / 'ei.mi' / 'ei.mi.gi' / 'ei.mi.gi.ci' / 'ei.mi.gi.ci.ai'
+function getNodeByPath(path) {
+  if (!path) return null;
+  const parts = path.split('.').map(Number);
+  let node = state.goal;
+  let arr = node.elements; let n = arr[parts[0]];
+  if (parts.length === 1) return n;
+  arr = n.milestones || (n.milestones = []); n = arr[parts[1]];
+  if (parts.length === 2) return n;
+  arr = n.gaps || (n.gaps = []); n = arr[parts[2]];
+  if (parts.length === 3) return n;
+  arr = n.commitments || (n.commitments = []); n = arr[parts[3]];
+  if (parts.length === 4) return n;
+  arr = n.actions || (n.actions = []); n = arr[parts[4]];
+  return n;
+}
+function removeNode(path) {
+  if (!confirm('このノードを削除しますか？子要素も全部消えます。')) return;
+  const parts = path.split('.').map(Number);
+  let arr;
+  if (parts.length === 1) arr = state.goal.elements;
+  else {
+    const parent = getNodeByPath(parts.slice(0, -1).join('.'));
+    const keys = ['milestones','gaps','commitments','actions'];
+    arr = parent[keys[parts.length - 2]];
+  }
+  arr.splice(parts[parts.length - 1], 1);
+  save(); renderAll();
+}
+function addChild(parentPath, kind) {
+  const parent = parentPath ? getNodeByPath(parentPath) : state.goal;
+  if (kind === 'element') {
+    state.goal.elements.push({ id: uid(), title: '新しい要素', current: '', target: '', milestones: [] });
+  } else if (kind === 'milestone') {
+    parent.milestones = parent.milestones || [];
+    parent.milestones.push({ id: uid(), title: '新しいマイルストーン', deadline: '', gaps: [] });
+  } else if (kind === 'gap') {
+    parent.gaps = parent.gaps || [];
+    parent.gaps.push({ id: uid(), title: '新しいギャップ', deltaText: '', commitments: [] });
+  } else if (kind === 'commit') {
+    parent.commitments = parent.commitments || [];
+    parent.commitments.push({ id: uid(), title: '新しいコミットメント', actions: [] });
+  } else if (kind === 'action') {
+    parent.actions = parent.actions || [];
+    parent.actions.push({ id: uid(), title: '新しいアクション', status: 'todo', due: '', week: thisWeekKey() });
+  }
+  save(); renderAll();
+}
+function cycleStatus(path) {
+  const a = getNodeByPath(path);
+  const order = ['todo', 'doing', 'done'];
+  const cur = a.status || 'todo';
+  const idx = order.indexOf(cur);
+  a.status = order[(idx + 1) % order.length];
+  save(); renderAll();
+}
+
+function bindTreeEvents() {
+  // contenteditable + inputs
+  document.querySelectorAll('#tree-root [data-path]').forEach(el => {
+    const path = el.dataset.path;
+    el.querySelectorAll('[data-field]').forEach(field => {
+      const fname = field.dataset.field;
+      if (field.tagName === 'INPUT') {
+        field.addEventListener('change', () => {
+          const node = getNodeByPath(path);
+          let v = field.value;
+          if (field.type === 'number') v = v === '' ? undefined : Number(v);
+          node[fname] = v;
+          save(); renderHeader(); renderFlowCounts(); updateRollups();
+        });
+      } else {
+        field.addEventListener('blur', () => {
+          const node = getNodeByPath(path);
+          node[fname] = field.innerText.trim();
+          save();
+        });
+        field.addEventListener('keydown', e => {
+          if (e.key === 'Enter') { e.preventDefault(); field.blur(); }
+        });
+      }
+    });
+  });
+}
+
+function updateRollups() {
+  // Recalculate roll-up bars without full re-render (cheap)
+  document.querySelectorAll('#tree-root .node[data-path]').forEach(nodeEl => {
+    const path = nodeEl.dataset.path;
+    const node = getNodeByPath(path);
+    if (!node) return;
+    const parts = path.split('.').length;
+    let pct = 0;
+    if (parts === 1) pct = elementPct(node);
+    else if (parts === 2) pct = milestonePct(node);
+    else if (parts === 3) pct = gapPct(node);
+    else if (parts === 4) pct = commitPct(node);
+    const bar = nodeEl.querySelector(':scope > .roll-up .roll-up-fill');
+    const lbl = nodeEl.querySelector(':scope > .roll-up .roll-up-pct');
+    if (bar) {
+      bar.style.width = pct + '%';
+      bar.className = 'roll-up-fill ' + pctClass(pct);
+    }
+    if (lbl) lbl.textContent = Math.round(pct) + '%';
+  });
+  renderHeader();
+}
+
+// ============================================================
+// Week panel
+// ============================================================
+function collectActionsByWeek() {
+  const map = {};
+  state.goal.elements.forEach((e, ei) => (e.milestones || []).forEach((m, mi) => (m.gaps || []).forEach((g, gi) => (g.commitments || []).forEach((c, ci) => (c.actions || []).forEach((a, ai) => {
+    const k = a.week || 'unscheduled';
+    if (!map[k]) map[k] = [];
+    map[k].push({ a, path: `${ei}.${mi}.${gi}.${ci}.${ai}`, parent: { gap: g, commit: c } });
+  })))));
+  return map;
+}
+
+function renderWeek() {
+  const map = collectActionsByWeek();
+  const allKeys = Object.keys(map).filter(k => k !== 'unscheduled').sort();
+  const cur = thisWeekKey();
+  if (!activeWeek || (!map[activeWeek] && activeWeek !== cur)) activeWeek = cur;
+
+  // Build week tabs: prev 2, current, next 2 + any with data
+  const candidates = new Set([
+    thisWeekKey(-2), thisWeekKey(-1), cur, thisWeekKey(1), thisWeekKey(2),
+    ...allKeys
+  ]);
+  const sorted = [...candidates].sort();
+
+  const tabs = document.getElementById('week-tabs');
+  tabs.innerHTML = sorted.map(k => {
+    const list = map[k] || [];
+    const done = list.filter(x => x.a.status === 'done').length;
+    const [s, e] = weekRangeFromKey(k);
+    const isCur = k === cur;
+    return `<button class="wt ${k === activeWeek ? 'active' : ''}" data-week="${k}">
+      <div>${isCur ? '今週' : k.split('-W')[1] + '週'}<span class="meta">${fmtDateMD(s)}〜${fmtDateMD(e)}</span></div>
+      <div class="meta">${done}/${list.length} 完了</div>
+    </button>`;
+  }).join('') + `<button class="wt" data-week="unscheduled">
+    <div>未設定<span class="meta">週なし</span></div>
+    <div class="meta">${(map['unscheduled']||[]).length} 件</div>
+  </button>`;
+  tabs.querySelectorAll('.wt').forEach(btn => btn.addEventListener('click', () => { activeWeek = btn.dataset.week; renderWeek(); }));
+
+  const list = map[activeWeek] || [];
+  const [s, e] = activeWeek === 'unscheduled' ? [null, null] : weekRangeFromKey(activeWeek);
+  const content = document.getElementById('week-content');
+  if (list.length === 0) {
+    content.innerHTML = `<div class="week-block"><div class="empty">この週のアクションはまだありません。<br>ツリーから追加するか、下のボタンで「未設定」に作成してください。</div></div>
+    <button class="add-btn" onclick="quickAddActionForWeek()">＋ この週に新規アクション（要素未指定）</button>`;
+    return;
+  }
+  const done = list.filter(x => x.a.status === 'done').length;
+  const stuck = list.filter(x => isOverdue(x.a.due) && x.a.status !== 'done').length;
+  const pct = Math.round(avg(list.map(x => actionPct(x.a))));
+  content.innerHTML = `<div class="week-block">
+    <div class="week-head">
+      <h3>${activeWeek === 'unscheduled' ? '未設定アクション' : `${activeWeek}（${fmtDateMD(s)}〜${fmtDateMD(e)}）`}</h3>
+      <span class="week-pill">${pct}% (${done}/${list.length}${stuck ? ' / 滞留'+stuck : ''})</span>
+    </div>
+    ${list.map(({a, path, parent}) => {
+      const overdue = isOverdue(a.due) && a.status !== 'done';
+      const computedStatus = overdue ? 'stuck' : (a.status || 'todo');
+      return `<div class="action-row ${computedStatus}">
+        <span class="action-check ${a.status === 'done' ? 'checked' : (a.status === 'doing' ? 'doing' : '')}" onclick="cycleStatus('${path}')">${a.status === 'done' ? '✓' : (a.status === 'doing' ? '◐' : '')}</span>
+        <span class="action-title-edit" contenteditable="true" data-week-edit="${path}|title">${escapeHtml(a.title)}</span>
+        <span class="action-status-pill ${computedStatus}">${statusLabel(computedStatus)}</span>
+        <span class="lv-tag gap" style="font-size:9.5px;">📐 ${escapeHtml(parent.gap?.title?.slice(0,20) || '')}</span>
+        ${a.due ? `<span class="node-meta"><span class="badge ${overdue?'warn':''}">📅 ${a.due}</span></span>` : ''}
+      </div>`;
+    }).join('')}
+  </div>`;
+
+  // Bind inline edit
+  content.querySelectorAll('[data-week-edit]').forEach(el => {
+    el.addEventListener('blur', () => {
+      const [path, field] = el.dataset.weekEdit.split('|');
+      const node = getNodeByPath(path);
+      node[field] = el.innerText.trim();
+      save();
+    });
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); el.blur(); } });
+  });
+}
+
+function quickAddActionForWeek() {
+  // Add a quick action under a "Quick Capture" element/gap/commitment
+  let qcEl = state.goal.elements.find(e => e.title === '⚡ Quick Capture');
+  if (!qcEl) {
+    qcEl = { id: uid(), title: '⚡ Quick Capture', current: '', target: '', milestones: [
+      { id: uid(), title: '未分類のマイルストーン', deadline: '', gaps: [
+        { id: uid(), title: '未分類のギャップ', deltaText: '', commitments: [
+          { id: uid(), title: '未分類のコミット', actions: [] }
+        ]}
+      ]}
+    ]};
+    state.goal.elements.push(qcEl);
+  }
+  const c = qcEl.milestones[0].gaps[0].commitments[0];
+  const week = activeWeek === 'unscheduled' ? '' : activeWeek;
+  c.actions.push({ id: uid(), title: '新しいアクション', status: 'todo', due: '', week });
+  save(); renderAll();
+}
+
+// ============================================================
+// KPI panel
+// ============================================================
+function ensureKpiMonth(month) {
+  if (!state.kpi[month]) {
+    state.kpi[month] = { main: [], breakdown: [], activity: [] };
+  }
+  ['main','breakdown','activity'].forEach(s => {
+    if (!Array.isArray(state.kpi[month][s])) state.kpi[month][s] = [];
+    state.kpi[month][s].forEach(normalizeKpiRow);
+  });
+  return state.kpi[month];
+}
+
+// 旧形式 weeks:[n,n,n,n,n] / 新形式 weeks:[{c,e},...] への正規化
+function normalizeKpiRow(row) {
+  if (!Array.isArray(row.weeks)) row.weeks = [];
+  row.weeks = row.weeks.map(w => {
+    if (typeof w === 'number') return { c: w, e: 0 };
+    if (w && typeof w === 'object') return { c: Number(w.c) || 0, e: Number(w.e) || 0 };
+    return { c: 0, e: 0 };
+  });
+  while (row.weeks.length < 5) row.weeks.push({ c: 0, e: 0 });
+  return row;
+}
+
+function migrateKpiWeeks() {
+  Object.keys(state.kpi || {}).forEach(month => {
+    ['main','breakdown','activity'].forEach(s => {
+      if (!Array.isArray(state.kpi[month][s])) state.kpi[month][s] = [];
+      state.kpi[month][s].forEach(normalizeKpiRow);
+    });
+  });
+}
+
+function renderKpi() {
+  if (!kpiMonth) kpiMonth = monthKeyToday();
+  document.getElementById('kpi-month').value = kpiMonth;
+  const data = ensureKpiMonth(kpiMonth);
+  // Sync section labels
+  if (!state.kpiLabels) state.kpiLabels = { ...DEFAULT_KPI_LABELS };
+  document.querySelectorAll('.section-label').forEach(el => {
+    const key = el.dataset.label;
+    el.textContent = state.kpiLabels[key] || DEFAULT_KPI_LABELS[key];
+    el.setAttribute('contenteditable', 'true');
+    el.onblur = () => {
+      const v = el.innerText.trim();
+      state.kpiLabels[key] = v || DEFAULT_KPI_LABELS[key];
+      save();
+    };
+    el.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); el.blur(); } };
+  });
+  ['main','breakdown','activity'].forEach(section => renderKpiSection(section, data[section]));
+}
+
+function renderKpiSection(section, rows) {
+  const tbody = document.querySelector('#kpi-' + section + ' tbody');
+  if (!rows || rows.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; color:#9b9a97; padding:20px;">行がありません。＋ボタンで追加</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.map((r, idx) => {
+    normalizeKpiRow(r);
+    const sumC = r.weeks.reduce((a, w) => a + (Number(w.c) || 0), 0);
+    const sumE = r.weeks.reduce((a, w) => a + (Number(w.e) || 0), 0);
+    const target = Number(r.target) || 0;
+    const landingPct = target > 0 ? Math.round((sumC + sumE) / target * 100) : 0;
+    const confirmedPct = target > 0 ? Math.round(sumC / target * 100) : 0;
+    const cls = target === 0 ? '' : (landingPct >= 90 ? 'pct-good' : landingPct >= 60 ? 'pct-mid' : 'pct-bad');
+    return `<tr data-section="${section}" data-idx="${idx}">
+      <td class="row-name"><input type="text" data-f="name" value="${escapeHtml(r.name || '')}" placeholder="項目名"></td>
+      <td><input type="text" data-f="unit" value="${escapeHtml(r.unit || '')}" placeholder="単位" style="width:50px;"></td>
+      <td><input type="number" data-f="target" value="${r.target ?? ''}" placeholder="0"></td>
+      ${[0,1,2,3,4].map(i => `<td class="cell-dual">
+        <input type="number" class="confirmed" data-f="c${i}" value="${r.weeks[i].c || ''}" placeholder="決" title="決定（確定済）">
+        <input type="number" class="expected"  data-f="e${i}" value="${r.weeks[i].e || ''}" placeholder="見" title="見込（パイプライン・予定）">
+      </td>`).join('')}
+      <td class="total">${sumC.toLocaleString()}</td>
+      <td class="total expected">${sumE.toLocaleString()}</td>
+      <td class="pct ${cls}" title="決定 ${target>0?confirmedPct+'%':'—'} / 着地 ${target>0?landingPct+'%':'—'}">${target > 0 ? landingPct + '%' : '—'}</td>
+      <td class="row-actions"><button class="btn-mini danger" onclick="deleteKpiRow('${section}', ${idx})">🗑</button></td>
+    </tr>`;
+  }).join('');
+
+  // bind
+  tbody.querySelectorAll('tr').forEach(tr => {
+    const sec = tr.dataset.section;
+    const idx = +tr.dataset.idx;
+    tr.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('change', () => {
+        const row = state.kpi[kpiMonth][sec][idx];
+        normalizeKpiRow(row);
+        const f = inp.dataset.f;
+        const val = inp.type === 'number' ? (inp.value === '' ? 0 : Number(inp.value)) : inp.value;
+        if (f.startsWith('c')) {
+          row.weeks[+f.slice(1)].c = Number(val);
+        } else if (f.startsWith('e')) {
+          row.weeks[+f.slice(1)].e = Number(val);
+        } else {
+          row[f] = val;
+        }
+        save();
+        renderKpiSection(sec, state.kpi[kpiMonth][sec]);
+      });
+    });
+  });
+}
+
+function addKpiRow(section) {
+  const data = ensureKpiMonth(kpiMonth);
+  data[section].push({ id: uid(), name: '', unit: '', target: 0, weeks: [{c:0,e:0},{c:0,e:0},{c:0,e:0},{c:0,e:0},{c:0,e:0}] });
+  save();
+  renderKpiSection(section, data[section]);
+}
+function deleteKpiRow(section, idx) {
+  state.kpi[kpiMonth][section].splice(idx, 1);
+  save();
+  renderKpiSection(section, state.kpi[kpiMonth][section]);
+}
+function copyPrevMonthKpi() {
+  const [y, m] = kpiMonth.split('-').map(Number);
+  const prevD = new Date(y, m - 2, 1);
+  const prev = prevD.getFullYear() + '-' + pad(prevD.getMonth() + 1);
+  if (!state.kpi[prev]) { toast(prev + ' のデータがありません'); return; }
+  const cur = ensureKpiMonth(kpiMonth);
+  ['main','breakdown','activity'].forEach(s => {
+    if (cur[s].length > 0 && !confirm(s + ' の既存データを上書きしますか？')) return;
+    cur[s] = state.kpi[prev][s].map(r => ({ id: uid(), name: r.name, unit: r.unit, target: r.target, weeks: [{c:0,e:0},{c:0,e:0},{c:0,e:0},{c:0,e:0},{c:0,e:0}] }));
+  });
+  save(); renderKpi();
+  toast('前月の項目をコピーしました');
+}
+
+// ============================================================
+// Reflection
+// ============================================================
+function renderReflect() {
+  const list = document.getElementById('reflect-list');
+  const refs = state.reflections.filter(r => r.mode === activeRefMode).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  if (refs.length === 0) {
+    list.innerHTML = `<div class="ref-card"><div class="empty">${activeRefMode === 'weekly' ? '週次' : '月次'}KPTがまだありません。下のボタンから追加してください。</div></div>`;
+    return;
+  }
+  list.innerHTML = refs.map(r => {
+    return `<div class="ref-card" data-rid="${r.id}">
+      <div class="ref-head">
+        <h3>${activeRefMode === 'weekly' ? '🗓 週次' : '📆 月次'} — ${r.period}</h3>
+        <div>
+          <select class="ref-eval" data-f="eval">
+            ${['◎','○','△','×'].map(v => `<option ${v===r.eval?'selected':''}>${v}</option>`).join('')}
+          </select>
+          <button class="btn-mini danger" onclick="deleteReflection('${r.id}')">🗑</button>
+        </div>
+      </div>
+      <div class="kpt">
+        <div class="kpt-col kpt-keep"><h4>KEEP — 続けたいこと</h4><textarea data-f="keep" placeholder="今週うまくいったこと…">${escapeHtml(r.keep || '')}</textarea></div>
+        <div class="kpt-col kpt-prob"><h4>PROBLEM — 課題</h4><textarea data-f="problem" placeholder="うまくいかなかったこと…">${escapeHtml(r.problem || '')}</textarea></div>
+        <div class="kpt-col kpt-try"><h4>TRY — 試したいこと</h4><textarea data-f="try" placeholder="次にやってみること…">${escapeHtml(r.try || '')}</textarea></div>
+      </div>
+    </div>`;
+  }).join('');
+  list.querySelectorAll('[data-rid]').forEach(card => {
+    const rid = card.dataset.rid;
+    card.querySelectorAll('[data-f]').forEach(inp => {
+      const handler = () => {
+        const r = state.reflections.find(x => x.id === rid);
+        if (!r) return;
+        r[inp.dataset.f] = inp.value;
+        save();
+      };
+      inp.addEventListener('change', handler);
+      inp.addEventListener('blur', handler);
+    });
+  });
+}
+function addReflection() {
+  const period = activeRefMode === 'weekly' ? thisWeekKey() : monthKeyToday();
+  state.reflections.push({ id: uid(), mode: activeRefMode, period, eval: '○', keep: '', problem: '', try: '', createdAt: Date.now() });
+  save(); renderReflect();
+}
+function deleteReflection(id) {
+  if (!confirm('この振り返りを削除しますか？')) return;
+  state.reflections = state.reflections.filter(r => r.id !== id);
+  save(); renderReflect();
+}
+
+// ============================================================
+// Settings
+// ============================================================
+function exportJson() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const ts = new Date().toISOString().slice(0, 10);
+  a.href = url;
+  a.download = `goal-tracker-${ts}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('JSON をダウンロードしました');
+}
+document.getElementById('import-file').addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const obj = JSON.parse(reader.result);
+      if (!obj.goal) throw new Error('Invalid format');
+      if (!confirm('現在のデータを上書きしますか？')) return;
+      state = obj;
+      save(); renderAll();
+      toast('インポート完了');
+    } catch (err) {
+      alert('読み込みに失敗しました: ' + err.message);
+    }
+  };
+  reader.readAsText(f);
+});
+function loadSample() { state = sampleData(); save(); renderAll(); toast('サンプルデータを読み込みました'); }
+function loadPreset() {
+  const sel = document.getElementById('preset-select');
+  const key = sel ? sel.value : 'sales';
+  const fn = PRESETS[key];
+  if (!fn) { toast('テンプレートが見つかりません'); return; }
+  if (!confirm('現在のデータを破棄して「' + sel.options[sel.selectedIndex].text + '」を読み込みますか？')) return;
+  state = fn();
+  save(); renderAll(); toast(sel.options[sel.selectedIndex].text + ' を読み込みました');
+}
+function resetAll() { localStorage.removeItem(STORAGE_KEY); state = emptyData(); save(); renderAll(); toast('リセットしました'); }
+
+// ============================================================
+// Tabs / wiring
+// ============================================================
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('panel-' + t.dataset.panel).classList.add('active');
+    if (t.dataset.panel === 'week') renderWeek();
+    if (t.dataset.panel === 'kpi') renderKpi();
+    if (t.dataset.panel === 'reflect') renderReflect();
+  });
+});
+document.querySelectorAll('.ref-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.ref-tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    activeRefMode = t.dataset.ref;
+    renderReflect();
+  });
+});
+
+// Goal title / deadline
+document.querySelector('[data-edit="goal.title"]').addEventListener('blur', e => {
+  state.goal.title = e.target.innerText.trim();
+  save();
+});
+document.querySelector('[data-edit="goal.title"]').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
+});
+document.querySelector('[data-edit="goal.deadline"]').addEventListener('change', e => {
+  state.goal.deadline = e.target.value;
+  save(); renderHeader();
+});
+document.getElementById('kpi-month').addEventListener('change', e => {
+  kpiMonth = e.target.value || monthKeyToday();
+  renderKpi();
+});
+
+// Render all
+function renderAll() {
+  renderHeader();
+  renderFlowCounts();
+  renderTree();
+  // Conditional: only re-render visible panel
+  const active = document.querySelector('.panel.active').id;
+  if (active === 'panel-week') renderWeek();
+  if (active === 'panel-kpi') renderKpi();
+  if (active === 'panel-reflect') renderReflect();
+}
+
+// ============================================================
+// Theme switcher
+// ============================================================
+const THEMES = ['default', 'cockpit', 'cyan', 'studio'];
+function applyTheme(name) {
+  if (!THEMES.includes(name)) name = 'default';
+  document.body.dataset.theme = name;
+  if (state) {
+    state.meta.theme = name;
+    save();
+  } else {
+    localStorage.setItem(STORAGE_KEY + ':theme', name);
+  }
+  document.querySelectorAll('[data-theme-set]').forEach(b => {
+    b.classList.toggle('active', b.dataset.themeSet === name);
+  });
+}
+document.querySelectorAll('[data-theme-set]').forEach(b => {
+  b.addEventListener('click', () => applyTheme(b.dataset.themeSet));
+});
+
+// ============================================================
+// Boot
+// ============================================================
+load();
+const savedTheme = (state.meta && state.meta.theme) || localStorage.getItem(STORAGE_KEY + ':theme') || 'default';
+applyTheme(savedTheme);
+renderAll();
+</script>
+</body>
+</html>
