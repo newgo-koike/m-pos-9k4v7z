@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Goal Tracker — Personal OS</title>
+<title>Goal Tracker — Pharma Eight∞ Tool</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
 <style>
   /* ========== Theme system ========== */
   :root, body[data-theme="default"] {
@@ -487,14 +489,90 @@
   .roll-up-fill.good { background: linear-gradient(90deg, var(--green), var(--green-text)); }
   .roll-up-pct { font-size: 12px; font-weight: 700; color: var(--ink); min-width: 44px; text-align: right; }
 
+  /* ========== Tree connector lines (L字) ========== */
   .children {
-    margin-top: 12px;
-    margin-left: 22px;
-    padding-left: 14px;
-    border-left: 2px dashed var(--line);
+    margin-top: 14px;
+    margin-left: 18px;
+    padding-left: 32px;
     display: flex; flex-direction: column;
-    gap: 8px;
+    gap: 12px;
+    position: relative;
   }
+  /* 親から下方向に伸びる縦線 */
+  .children::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -4px;
+    bottom: 22px;
+    width: 2px;
+    background: var(--line-2);
+    border-radius: 1px;
+  }
+  /* 各子ノードの左に出る横線 + 角丸の合流 */
+  .children > .node, .children > .action-row {
+    position: relative;
+  }
+  .children > .node::before, .children > .action-row::before {
+    content: "";
+    position: absolute;
+    left: -32px;
+    top: 22px;
+    width: 26px;
+    height: 12px;
+    border-left: 2px solid var(--line-2);
+    border-bottom: 2px solid var(--line-2);
+    border-bottom-left-radius: 8px;
+  }
+  /* 矢印の先端 */
+  .children > .node::after, .children > .action-row::after {
+    content: "▸";
+    position: absolute;
+    left: -12px;
+    top: 22px;
+    transform: translateY(-7px);
+    font-size: 14px;
+    color: var(--line-2);
+    line-height: 1;
+  }
+  /* 「＋ 追加」ボタンも縦線の続きに見せる */
+  .children > .add-btn {
+    margin-left: 0;
+    align-self: flex-start;
+    position: relative;
+  }
+  .children > .add-btn::before {
+    content: "";
+    position: absolute;
+    left: -32px;
+    top: 50%;
+    width: 26px;
+    height: 0;
+    border-top: 2px dashed var(--line);
+  }
+  /* レベル別に縦線の色を変える（親要素の color に応じて） */
+  .node.lv-element > .children::before { background: var(--lv-element); opacity: 0.45; }
+  .node.lv-element > .children > .node::before, .node.lv-element > .children > .add-btn::before { border-color: var(--lv-element); opacity: 0.55; }
+  .node.lv-milestone > .children::before { background: var(--lv-milestone); opacity: 0.45; }
+  .node.lv-milestone > .children > .node::before, .node.lv-milestone > .children > .add-btn::before { border-color: var(--lv-milestone); opacity: 0.55; }
+  .node.lv-gap > .children::before { background: var(--lv-commit); opacity: 0.4; }
+  .node.lv-gap > .children > .node::before, .node.lv-gap > .children > .add-btn::before { border-color: var(--lv-commit); opacity: 0.5; }
+  .node.lv-commit > .children::before { background: var(--lv-action); opacity: 0.5; }
+  .node.lv-commit > .children > .action-row::before { border-color: var(--lv-action); opacity: 0.6; }
+  .node.lv-commit > .children > .action-row::after { color: var(--lv-action); }
+  .node.lv-commit > .children > .add-btn::before { border-color: var(--lv-action); opacity: 0.5; }
+
+  /* 子の数バッジ */
+  .child-count {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 10px; padding: 1px 7px;
+    background: var(--card-hover);
+    border-radius: 10px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-left: auto;
+  }
+  .child-count.empty { opacity: 0.4; }
 
   /* Action item */
   .action-row {
@@ -734,6 +812,105 @@
   body[data-theme="default"] .ref-add { background: var(--navy); color: #fff; }
   body[data-theme="default"] .ref-add:hover { background: var(--navy-light); }
 
+  /* ========== Help panel ========== */
+  .help-section {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 12px; padding: 20px 24px;
+    margin-bottom: 14px;
+  }
+  .help-section h3 {
+    font-size: 15px; color: var(--ink); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--line);
+  }
+  .help-section p { font-size: 13px; line-height: 1.85; color: var(--ink); margin-bottom: 10px; }
+  .help-flow {
+    background: var(--legend-bg); border-left: 3px solid var(--orange);
+    padding: 14px 18px; border-radius: 6px;
+    font-family: var(--font); font-size: 12.5px;
+    line-height: 1.9; white-space: pre-wrap;
+    color: var(--ink); margin: 8px 0 4px;
+  }
+  .help-list { padding-left: 22px; font-size: 13px; line-height: 1.95; color: var(--ink); }
+  .help-list li { margin-bottom: 6px; }
+  .help-list li b { color: var(--orange); }
+  .help-tip {
+    background: var(--orange-soft); border-radius: 6px;
+    padding: 10px 14px; font-size: 12.5px; color: var(--ink); margin-top: 12px;
+    border-left: 3px solid var(--orange);
+  }
+  .help-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+  .help-table th, .help-table td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
+  .help-table th { background: var(--legend-bg); font-weight: 700; color: var(--ink); font-size: 11.5px; letter-spacing: 0.04em; }
+  .help-table td:first-child { white-space: nowrap; font-weight: 600; }
+  .help-table td:nth-child(2) { white-space: nowrap; color: var(--muted); font-size: 12px; }
+
+  /* ========== Login screen ========== */
+  .login-overlay {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    background-image: var(--bg-noise);
+    z-index: 10000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .login-card {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 16px; padding: 36px 32px 32px;
+    box-shadow: var(--header-shadow);
+    width: 100%; max-width: 380px;
+    position: relative;
+    overflow: hidden;
+  }
+  .login-card::before {
+    content: ""; position: absolute;
+    top: -100px; right: -100px;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, var(--hero-glow) 0%, transparent 70%);
+    opacity: 1;
+  }
+  .login-head { position: relative; z-index: 1; text-align: center; margin-bottom: 24px; }
+  .login-head .label { font-size: 11px; letter-spacing: 0.32em; color: var(--orange); margin-bottom: 8px; }
+  .login-head h1 { font-size: 22px; font-weight: 800; color: var(--ink); }
+  .login-head p { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .login-form { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 12px; }
+  .login-form input {
+    width: 100%; padding: 12px 14px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--card); color: var(--ink);
+    font-size: 14px; font-family: inherit;
+  }
+  .login-form input:focus { outline: 2px solid var(--orange); border-color: var(--orange); }
+  .login-form button {
+    width: 100%; padding: 12px;
+    background: var(--orange); color: var(--accent-fg);
+    border: none; border-radius: 8px;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    font-family: inherit; margin-top: 4px;
+  }
+  .login-form button:hover { background: var(--orange-deep); }
+  .login-form button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .login-error {
+    color: var(--red-text); font-size: 12.5px;
+    background: var(--red-soft); padding: 10px 12px;
+    border-radius: 6px; line-height: 1.6;
+    border-left: 3px solid var(--red);
+  }
+  .login-foot {
+    margin-top: 20px; font-size: 11px; color: var(--muted); text-align: center;
+    position: relative; z-index: 1; line-height: 1.7;
+  }
+
+  /* ログアウトボタン（ヘッダー） */
+  .logout-btn {
+    position: absolute; top: 12px; right: 14px;
+    background: var(--header-input-bg); border: 1px solid var(--header-input-bd);
+    color: inherit; padding: 4px 10px; border-radius: 6px;
+    font-size: 11px; cursor: pointer; font-family: inherit;
+  }
+  .logout-btn:hover { background: var(--header-input-bd); }
+  .login-user { font-size: 11px; color: var(--header-text-mute); margin-right: 8px; }
+
   /* ========== Settings ========== */
   .settings-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
@@ -819,9 +996,34 @@
 </style>
 </head>
 <body>
+
+<!-- ============== LOGIN OVERLAY ============== -->
+<div class="login-overlay" id="login-overlay" style="display:none;">
+  <div class="login-card">
+    <div class="login-head">
+      <div class="label">🎯 GOAL TRACKER</div>
+      <h1>Pharma Eight∞ Tool</h1>
+      <p>メールアドレスとパスワードでログイン</p>
+    </div>
+    <form class="login-form" id="login-form" onsubmit="event.preventDefault(); doLogin();">
+      <input type="email" id="login-email" placeholder="メールアドレス" autocomplete="email" required>
+      <input type="password" id="login-password" placeholder="パスワード" autocomplete="current-password" required>
+      <button type="submit" id="login-btn">ログイン</button>
+      <div class="login-error" id="login-error" style="display:none;"></div>
+    </form>
+    <div class="login-foot">
+      アカウント未発行の方は管理者（小池）までご連絡ください。<br>
+      © 2026 Pharma Eight∞
+    </div>
+  </div>
+</div>
+
 <div class="app">
 
   <header>
+    <button class="logout-btn" id="logout-btn" onclick="doLogout()" style="display:none;">
+      <span class="login-user" id="login-user-label"></span>ログアウト
+    </button>
     <div class="h-row">
       <div>
         <div class="h-title">🎯 GOAL TRACKER · Personal OS</div>
@@ -851,6 +1053,7 @@
     <button class="tab" data-panel="week">⚡ 今週</button>
     <button class="tab" data-panel="kpi">📊 KPI</button>
     <button class="tab" data-panel="reflect">🔄 振り返り</button>
+    <button class="tab" data-panel="help">📖 使い方</button>
     <button class="tab" data-panel="settings">⚙ 設定</button>
   </nav>
 
@@ -930,6 +1133,84 @@
     <button class="ref-add" onclick="addReflection()">＋ 新しい振り返りを追加</button>
   </section>
 
+  <!-- ============== HELP PANEL ============== -->
+  <section class="panel" id="panel-help">
+    <div class="panel-head">
+      <h2>📖 Goal Tracker 使い方ガイド</h2>
+      <p>「ゴールから降ろして、毎日の数字で動かす」— 5分で読める運用マニュアル。</p>
+    </div>
+
+    <div class="help-section">
+      <h3>🎯 1. このツールが目指すもの</h3>
+      <p>このツールは <b>「世界一の行動管理ツール」</b> を目指して作られています。<br>
+      最終ゴールから順番に「要素・マイルストーン・ギャップ・コミットメント・アクション・数字」までを一気通貫で見える化し、<br>
+      <b>下のレイヤーで数字を入れたら、上の進捗まで自動で動く</b>体験を提供します。</p>
+      <pre class="help-flow">🎯 ゴール
+  └─ 🧩 要素（達成に必要な構成要素）
+       └─ 📍 マイルストーン（3ヶ月単位）
+            └─ 📐 ギャップ（現状とのズレ）
+                 └─ 🤝 コミットメント（こうなる！宣言）
+                      └─ ⚡ アクション（週ごと）
+                           └─ 📊 数字（測定）
+                                ↑
+                       下から上へ進捗がロールアップ</pre>
+    </div>
+
+    <div class="help-section">
+      <h3>🚀 2. 最初の30分で立ち上げる</h3>
+      <ol class="help-list">
+        <li><b>ゴールを書く</b>：ヘッダーの「あなたのゴール…」をクリック → 1年後の到達点を1行で書く（例：2026年12月までに月商300万を3ヶ月連続で達成する）</li>
+        <li><b>要素を3〜5個に分解</b>：ツリータブで「＋ 要素を追加」。ゴールを構成する大きな柱を入れる（例：見込み客10名／成約率50%／紹介ルート構築）</li>
+        <li><b>マイルストーン</b>：各要素に対して「3ヶ月後の到達点」を1〜2個</li>
+        <li><b>ギャップ</b>：現状とマイルストーンの差を数字で（例：+4名、+7件、+50pt）</li>
+        <li><b>コミットメント</b>：そのギャップを埋めるために「こうする！」と決める（例：毎月10件の紹介依頼面談を実施）</li>
+        <li><b>アクション</b>：今週やる具体的な動き3〜5個に落とす</li>
+      </ol>
+      <p class="help-tip">💡 ヒント：最初は粗くてOK。<b>毎週の振り返りで微調整</b>していく前提です。</p>
+    </div>
+
+    <div class="help-section">
+      <h3>📅 3. 毎週・毎月のルーティン</h3>
+      <table class="help-table">
+        <tr><th>頻度</th><th>所要</th><th>やること</th></tr>
+        <tr><td>毎日</td><td>1〜3分</td><td>⚡今週タブで進捗チェック・数字入力・チェックボックス</td></tr>
+        <tr><td>週末（金 or 日）</td><td>15分</td><td>① 数字を確定 → ② 🔄振り返りタブでKPT記入 → ③ 滞留アクション処理 → ④ 翌週のアクション3〜5件設計</td></tr>
+        <tr><td>月末</td><td>60分</td><td>📊KPIタブで月次達成率確認 → 🔄月次KPT → 課題進捗 → マイルストーンへの距離 → 翌月テーマ</td></tr>
+        <tr><td>3ヶ月</td><td>90分</td><td>🌳ツリーを全体見直し（要素・マイルストーン・コミットを再設計）</td></tr>
+      </table>
+    </div>
+
+    <div class="help-section">
+      <h3>📊 4. KPIタブの「決定 / 見込」の使い分け</h3>
+      <p>各週セルは <b>上段=決定（確定済み）</b> / <b>下段=見込（パイプライン・予定）</b> の2値構造。</p>
+      <ul class="help-list">
+        <li><b>決定</b>：すでに獲得した成果（成約済み売上、完了したアポ）</li>
+        <li><b>見込</b>：これから入る予定（クロージング待ちの案件、予約済みアポ）</li>
+        <li><b>決定計</b>：確定累計／<b>見込計</b>：予定累計／<b>着地%</b>：(決定+見込)÷目標 で計算</li>
+      </ul>
+      <p class="help-tip">💡 セクション名（主要指標 / 内訳 / 行動量）はクリックで自由に書き換え可能。業種に合わせてカスタマイズしてください。</p>
+    </div>
+
+    <div class="help-section">
+      <h3>🎨 5. テーマ切替・データのバックアップ</h3>
+      <ul class="help-list">
+        <li><b>テーマ切替</b>：ヘッダー右の ⌂ ⚔ ◆ ○ で4世界観を切替（Default/Cockpit/Sci-Fi/Studio）</li>
+        <li><b>JSON Export/Import</b>：⚙ 設定タブからバックアップ可能。別端末への移行もこれでOK</li>
+        <li><b>テンプレート読込</b>：5プリセット（営業／クリエイター／経営者／個人目標／白紙）から選んでスタート</li>
+      </ul>
+    </div>
+
+    <div class="help-section">
+      <h3>🤝 6. つまずいたら</h3>
+      <ul class="help-list">
+        <li><b>カスケードを書けない</b>→ 1個だけでもOK。完璧を目指さない</li>
+        <li><b>数字が決められない</b>→ 「測れる数字に置き換える」を1on1で兵頭さんと相談</li>
+        <li><b>滞留アクションだらけ</b>→ そもそも今週のキャパを超えてる証拠。3個に絞る</li>
+        <li><b>毎週続かない</b>→ 金曜午後 or 日曜夜に「15分ブロック」をカレンダーに固定</li>
+      </ul>
+    </div>
+  </section>
+
   <!-- ============== SETTINGS PANEL ============== -->
   <section class="panel" id="panel-settings">
     <div class="panel-head">
@@ -987,6 +1268,117 @@ let state = null;
 let activeWeek = null;        // ISO week key for week panel
 let kpiMonth = null;          // 'YYYY-MM'
 let activeRefMode = 'weekly'; // 'weekly' | 'monthly'
+
+// ============================================================
+// Supabase auth + cloud sync
+// ============================================================
+let sb = null;             // Supabase client
+let currentUser = null;    // { id, email }
+let saveTimer = null;      // debounce
+const SB_TABLE = 'goal_tracker_states';
+
+function initSupabase() {
+  if (typeof SUPABASE_CONFIG === 'undefined' || !SUPABASE_CONFIG.url || SUPABASE_CONFIG.url.includes('YOUR_')) {
+    alert('config.js が未設定です。Supabase URL と anon key を設定してください。');
+    return null;
+  }
+  sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+  return sb;
+}
+
+async function doLogin() {
+  const btn = document.getElementById('login-btn');
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'ログイン中…';
+  if (!sb) initSupabase();
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  btn.disabled = false;
+  btn.textContent = 'ログイン';
+  if (error) {
+    errEl.textContent = '⚠ ログインに失敗しました：' + (error.message || '不明なエラー');
+    errEl.style.display = 'block';
+    return;
+  }
+  currentUser = { id: data.user.id, email: data.user.email };
+  document.getElementById('login-overlay').style.display = 'none';
+  showLogoutButton();
+  await loadFromCloud();
+  renderAll();
+  toast('ログインしました：' + currentUser.email);
+}
+
+async function doLogout() {
+  if (!confirm('ログアウトしますか？（未保存の変更は失われます）')) return;
+  if (sb) await sb.auth.signOut();
+  currentUser = null;
+  state = null;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+function showLogoutButton() {
+  const btn = document.getElementById('logout-btn');
+  const lbl = document.getElementById('login-user-label');
+  if (currentUser) {
+    btn.style.display = '';
+    lbl.textContent = currentUser.email + '  ／  ';
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
+async function loadFromCloud() {
+  if (!sb || !currentUser) return;
+  const { data, error } = await sb.from(SB_TABLE)
+    .select('state_json')
+    .eq('user_id', currentUser.id)
+    .maybeSingle();
+  if (error && error.code !== 'PGRST116') {
+    console.error('loadFromCloud error', error);
+  }
+  if (data && data.state_json) {
+    state = data.state_json;
+    if (!state.kpi) state.kpi = {};
+    if (!state.reflections) state.reflections = [];
+    if (!state.meta) state.meta = { version: 1 };
+    if (!state.kpiLabels) state.kpiLabels = { ...DEFAULT_KPI_LABELS };
+    migrateKpiWeeks();
+  } else {
+    state = emptyData();
+    await saveToCloud(); // initial empty row
+  }
+}
+
+async function saveToCloud() {
+  if (!sb || !currentUser || !state) return;
+  state.meta.lastUpdated = Date.now();
+  const { error } = await sb.from(SB_TABLE).upsert({
+    user_id: currentUser.id,
+    state_json: state,
+    updated_at: new Date().toISOString()
+  }, { onConflict: 'user_id' });
+  if (error) {
+    console.error('saveToCloud error', error);
+    toast('⚠ 保存失敗（ネットワーク確認）');
+  }
+}
+
+async function checkExistingSession() {
+  if (!sb) initSupabase();
+  if (!sb) return false;
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    currentUser = { id: session.user.id, email: session.user.email };
+    showLogoutButton();
+    await loadFromCloud();
+    return true;
+  }
+  return false;
+}
 
 // ============================================================
 // Presets — universal sample data for various users
@@ -1324,9 +1716,17 @@ function load() {
   }
 }
 function save() {
+  if (!state) return;
   state.meta.lastUpdated = Date.now();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  document.getElementById('last-updated').textContent = new Date(state.meta.lastUpdated).toLocaleString('ja-JP', { hour: '2-digit', minute: '2-digit', month: 'numeric', day: 'numeric' });
+  // Local cache (offline fallback)
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  const lu = document.getElementById('last-updated');
+  if (lu) lu.textContent = new Date(state.meta.lastUpdated).toLocaleString('ja-JP', { hour: '2-digit', minute: '2-digit', month: 'numeric', day: 'numeric' });
+  // Cloud sync (debounced)
+  if (currentUser && sb) {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveToCloud, 800);
+  }
 }
 function toast(msg) {
   const t = document.getElementById('toast');
@@ -2072,10 +2472,25 @@ document.querySelectorAll('[data-theme-set]').forEach(b => {
 // ============================================================
 // Boot
 // ============================================================
-load();
-const savedTheme = (state.meta && state.meta.theme) || localStorage.getItem(STORAGE_KEY + ':theme') || 'default';
-applyTheme(savedTheme);
-renderAll();
+async function boot() {
+  // Apply theme first (no state needed)
+  const savedTheme = localStorage.getItem(STORAGE_KEY + ':theme') || 'default';
+  document.body.dataset.theme = savedTheme;
+  document.querySelectorAll('[data-theme-set]').forEach(b => {
+    b.classList.toggle('active', b.dataset.themeSet === savedTheme);
+  });
+
+  // Try to restore an existing session
+  const hasSession = await checkExistingSession();
+  if (hasSession) {
+    document.getElementById('login-overlay').style.display = 'none';
+    if (state && state.meta && state.meta.theme) applyTheme(state.meta.theme);
+    renderAll();
+  } else {
+    document.getElementById('login-overlay').style.display = 'flex';
+  }
+}
+boot();
 </script>
 </body>
 </html>
