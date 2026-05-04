@@ -395,35 +395,16 @@
   .flow-chip .num { font-size: 18px; font-weight: 800; color: var(--orange); margin-top: 2px; }
   .flow-arrow { font-size: 18px; color: var(--muted); align-self: center; }
 
-  /* ========== Tree ========== */
-  .tree { display: flex; flex-direction: column; gap: 10px; }
-  .node {
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-left: 4px solid var(--lv-goal);
-    border-radius: 10px;
-    padding: 14px 16px;
-    transition: box-shadow 0.15s;
-    position: relative;
-  }
-  .node:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.06); }
-  .node.lv-element { border-left-color: var(--lv-element); }
-  .node.lv-milestone { border-left-color: var(--lv-milestone); }
-  .node.lv-gap { border-left-color: var(--lv-gap); }
-  .node.lv-commit { border-left-color: var(--lv-commit); }
-  .node.lv-action { border-left-color: var(--lv-action); padding: 10px 14px; }
+  /* ========== Tree (horizontal cascade) ========== */
+  .tree { display: flex; flex-direction: column; gap: 14px; }
 
-  .node-head {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 6px;
-    flex-wrap: wrap;
-  }
   .lv-tag {
     display: inline-flex; align-items: center; gap: 4px;
-    padding: 2px 8px;
+    padding: 3px 9px;
     border-radius: 4px;
-    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em;
     background: var(--orange-soft); color: var(--orange);
+    white-space: nowrap;
   }
   .lv-tag.goal { background: var(--lv-goal-soft); color: var(--lv-goal); }
   .lv-tag.element { background: var(--lv-element-soft); color: var(--lv-element); }
@@ -432,178 +413,279 @@
   .lv-tag.commit { background: var(--lv-commit-soft); color: var(--lv-commit); }
   .lv-tag.action { background: var(--lv-action-soft); color: var(--lv-action); }
 
-  .node-title {
-    font-size: 15px; font-weight: 700; color: var(--ink);
-    flex: 1;
-    padding: 2px 6px; margin: -2px -6px;
-    border-radius: 4px;
-    cursor: text;
-    min-width: 200px;
-  }
-  .node-title:hover { background: var(--card-hover); }
-  .node-title[contenteditable="true"]:focus { outline: 2px solid var(--orange); background: var(--orange-soft); }
-  .node.lv-action .node-title { font-size: 13.5px; font-weight: 500; }
-
-  .node-meta {
-    display: flex; gap: 10px; flex-wrap: wrap;
-    font-size: 11px; color: var(--muted);
-    align-items: center;
-  }
-  .node-meta input[type="date"], .node-meta input[type="text"], .node-meta input[type="number"] {
-    border: 1px solid var(--line); padding: 2px 6px; border-radius: 4px;
-    font-size: 11px; background: var(--card); color: var(--ink);
-    font-family: inherit;
-  }
-  .node-meta input[type="number"] { width: 70px; }
-  .node-meta input[type="text"] { width: 80px; }
-  .node-meta .badge {
-    background: var(--card); border: 1px solid var(--line);
-    padding: 2px 6px; border-radius: 4px;
-    font-weight: 600;
-  }
-  .node-meta .badge.warn { background: var(--red-soft); color: var(--red-text); border-color: var(--red); }
-
-  .node-actions {
-    display: flex; gap: 4px;
-  }
   .btn-mini {
     border: none; background: transparent;
     color: var(--muted);
     width: 26px; height: 26px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
   }
   .btn-mini:hover { background: var(--line); color: var(--ink); }
   .btn-mini.danger:hover { background: var(--red-soft); color: var(--red-text); }
 
   .roll-up {
     display: flex; align-items: center; gap: 10px;
-    margin-top: 8px;
   }
   .roll-up-bar { flex: 1; height: 7px; background: var(--line); border-radius: 4px; overflow: hidden; }
   .roll-up-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--orange)); border-radius: 4px; transition: width 0.3s; }
   .roll-up-fill.bad { background: linear-gradient(90deg, var(--red), var(--red-deep)); }
   .roll-up-fill.mid { background: linear-gradient(90deg, var(--orange), var(--orange-deep)); }
   .roll-up-fill.good { background: linear-gradient(90deg, var(--green), var(--green-text)); }
-  .roll-up-pct { font-size: 12px; font-weight: 700; color: var(--ink); min-width: 44px; text-align: right; }
+  .roll-up-pct { font-size: 12px; font-weight: 700; color: var(--ink); min-width: 40px; text-align: right; }
 
-  /* ========== Tree connector lines (L字) ========== */
-  .children {
-    margin-top: 14px;
-    margin-left: 18px;
-    padding-left: 32px;
-    display: flex; flex-direction: column;
-    gap: 12px;
-    position: relative;
+  /* ---- Breadcrumb ---- */
+  .cascade-bread {
+    display: flex; align-items: center; gap: 6px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 10px;
+    font-size: 12px;
   }
-  /* 親から下方向に伸びる縦線 */
-  .children::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: -4px;
-    bottom: 22px;
-    width: 2px;
-    background: var(--line-2);
-    border-radius: 1px;
+  .cascade-bread .bc-item {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 5px;
+    background: var(--card-hover); color: var(--ink);
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.12s;
   }
-  /* 各子ノードの左に出る横線 + 角丸の合流 */
-  .children > .node, .children > .action-row {
-    position: relative;
-  }
-  .children > .node::before, .children > .action-row::before {
-    content: "";
-    position: absolute;
-    left: -32px;
-    top: 22px;
-    width: 26px;
-    height: 12px;
-    border-left: 2px solid var(--line-2);
-    border-bottom: 2px solid var(--line-2);
-    border-bottom-left-radius: 8px;
-  }
-  /* 矢印の先端 */
-  .children > .node::after, .children > .action-row::after {
-    content: "▸";
-    position: absolute;
-    left: -12px;
-    top: 22px;
-    transform: translateY(-7px);
-    font-size: 14px;
-    color: var(--line-2);
-    line-height: 1;
-  }
-  /* 「＋ 追加」ボタンも縦線の続きに見せる */
-  .children > .add-btn {
-    margin-left: 0;
-    align-self: flex-start;
-    position: relative;
-  }
-  .children > .add-btn::before {
-    content: "";
-    position: absolute;
-    left: -32px;
-    top: 50%;
-    width: 26px;
-    height: 0;
-    border-top: 2px dashed var(--line);
-  }
-  /* レベル別に縦線の色を変える（親要素の color に応じて） */
-  .node.lv-element > .children::before { background: var(--lv-element); opacity: 0.45; }
-  .node.lv-element > .children > .node::before, .node.lv-element > .children > .add-btn::before { border-color: var(--lv-element); opacity: 0.55; }
-  .node.lv-milestone > .children::before { background: var(--lv-milestone); opacity: 0.45; }
-  .node.lv-milestone > .children > .node::before, .node.lv-milestone > .children > .add-btn::before { border-color: var(--lv-milestone); opacity: 0.55; }
-  .node.lv-gap > .children::before { background: var(--lv-commit); opacity: 0.4; }
-  .node.lv-gap > .children > .node::before, .node.lv-gap > .children > .add-btn::before { border-color: var(--lv-commit); opacity: 0.5; }
-  .node.lv-commit > .children::before { background: var(--lv-action); opacity: 0.5; }
-  .node.lv-commit > .children > .action-row::before { border-color: var(--lv-action); opacity: 0.6; }
-  .node.lv-commit > .children > .action-row::after { color: var(--lv-action); }
-  .node.lv-commit > .children > .add-btn::before { border-color: var(--lv-action); opacity: 0.5; }
+  .cascade-bread .bc-item:hover { background: var(--orange-soft); color: var(--orange); border-color: var(--orange); }
+  .cascade-bread .bc-sep { color: var(--muted); font-size: 13px; }
 
-  /* 子の数バッジ */
-  .child-count {
+  /* ---- Cascade row (one level) ---- */
+  .cascade-row {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 14px 14px;
+    position: relative;
+  }
+  .cascade-row + .cascade-row::before {
+    content: "▼";
+    position: absolute;
+    top: -16px; left: 28px;
+    color: var(--orange);
+    font-size: 16px; line-height: 1;
+    text-shadow: 0 0 0 var(--paper);
+  }
+  .cascade-row .row-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+  .cascade-row .row-title {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--muted);
+  }
+  .cascade-row .row-cards {
+    display: flex; gap: 12px;
+    overflow-x: auto;
+    padding: 6px 2px 8px;
+    scroll-snap-type: x proximity;
+  }
+  .cascade-row .row-cards::-webkit-scrollbar { height: 8px; }
+  .cascade-row .row-cards::-webkit-scrollbar-track { background: transparent; }
+  .cascade-row .row-cards::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+
+  /* ---- Card ---- */
+  .card {
+    flex: 0 0 300px;
+    scroll-snap-align: start;
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-top: 4px solid var(--lv-element);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    display: flex; flex-direction: column; gap: 9px;
+  }
+  .card.lv-element { border-top-color: var(--lv-element); }
+  .card.lv-milestone { border-top-color: var(--lv-milestone); }
+  .card.lv-gap { border-top-color: var(--lv-gap); }
+  .card.lv-commit { border-top-color: var(--lv-commit); }
+  .card:hover {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.07);
+    transform: translateY(-1px);
+    border-color: var(--line-2);
+  }
+  .card.selected {
+    border-color: var(--orange);
+    box-shadow: 0 6px 20px rgba(255,122,0,0.18);
+    background: var(--paper);
+  }
+  .card.selected::after {
+    content: "";
+    position: absolute;
+    bottom: -10px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 10px solid var(--orange);
+  }
+
+  .card-tag-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-tag-row .child-count {
+    margin-left: auto;
     display: inline-flex; align-items: center; gap: 3px;
-    font-size: 10px; padding: 1px 7px;
+    font-size: 10px; padding: 2px 8px;
     background: var(--card-hover);
     border-radius: 10px;
     color: var(--muted);
     font-weight: 600;
-    margin-left: auto;
   }
-  .child-count.empty { opacity: 0.4; }
+  .card-tag-row .child-count.empty { opacity: 0.4; }
+
+  .card-title {
+    font-size: 16px; font-weight: 700; color: var(--ink);
+    padding: 8px 12px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    cursor: text;
+    background: var(--card-hover);
+    min-height: 24px;
+    line-height: 1.45;
+    word-break: break-word;
+  }
+  .card.selected .card-title { background: var(--paper); border-color: var(--line); }
+  .card-title:hover { border-color: var(--line); background: var(--paper); }
+  .card-title[contenteditable="true"]:focus {
+    outline: none; border-color: var(--orange);
+    background: var(--orange-soft);
+  }
+
+  .card-meta {
+    display: flex; flex-direction: column; gap: 7px;
+  }
+  .card-meta .meta-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-meta .meta-label {
+    font-size: 11px; font-weight: 700; color: var(--muted);
+    min-width: 36px;
+    letter-spacing: 0.04em;
+  }
+  .card-meta input[type="date"],
+  .card-meta input[type="text"],
+  .card-meta input[type="number"] {
+    flex: 1;
+    border: 1px solid var(--line);
+    padding: 8px 11px; border-radius: 6px;
+    font-size: 14px; background: var(--paper); color: var(--ink);
+    font-family: inherit;
+    min-width: 0;
+  }
+  .card-meta input:focus {
+    outline: none; border-color: var(--orange);
+    background: var(--orange-soft);
+  }
+  .card-meta .badge {
+    background: var(--card); border: 1px solid var(--line);
+    padding: 3px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 600;
+    white-space: nowrap;
+  }
+  .card-meta .badge.warn { background: var(--red-soft); color: var(--red-text); border-color: var(--red); }
+
+  .card-foot {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 2px;
+    border-top: 1px dashed var(--line);
+    padding-top: 9px;
+  }
+  .card-foot .roll-up { flex: 1; }
+  .card-foot .btn-mini { width: 26px; height: 26px; }
+
+  /* ＋ 追加カード */
+  .add-card {
+    flex: 0 0 180px;
+    scroll-snap-align: start;
+    border: 2px dashed var(--line);
+    background: transparent;
+    color: var(--muted);
+    padding: 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .add-card:hover {
+    border-color: var(--orange); color: var(--orange);
+    background: var(--orange-soft);
+  }
+
+  /* 空状態 */
+  .cascade-empty {
+    flex: 1;
+    padding: 22px 14px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    background: var(--card-hover);
+    border-radius: 10px;
+    border: 1px dashed var(--line);
+  }
+
+  /* ---- Action level (leaf, vertical list) ---- */
+  .cascade-row.action-level .row-cards {
+    flex-direction: column; gap: 8px;
+    overflow-x: visible;
+  }
 
   /* Action item */
   .action-row {
     display: flex; align-items: center; gap: 10px;
-    padding: 8px 12px;
+    padding: 10px 14px;
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 8px;
     transition: all 0.15s;
+    flex-wrap: wrap;
   }
   .action-row:hover { border-color: var(--lv-action); background: var(--card-hover); }
   .action-row.stuck { border-color: var(--action-stuck-bd); background: var(--action-stuck-bg); }
   .action-row.done { opacity: 0.6; }
   .action-row.done .action-title-edit { text-decoration: line-through; }
+  .action-row input[type="date"],
+  .action-row input[type="text"],
+  .action-row input[type="number"] {
+    border: 1px solid var(--line);
+    padding: 6px 9px; border-radius: 5px;
+    font-size: 13px; background: var(--paper); color: var(--ink);
+    font-family: inherit;
+  }
+  .action-row input[type="number"] { width: 76px; }
+  .action-row input:focus {
+    outline: none; border-color: var(--orange);
+    background: var(--orange-soft);
+  }
 
   .action-check {
-    width: 18px; height: 18px;
+    width: 22px; height: 22px;
     border: 2px solid var(--line);
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
     display: inline-flex; align-items: center; justify-content: center;
-    font-size: 12px;
+    font-size: 13px;
     flex-shrink: 0;
     background: var(--card);
   }
   .action-check.checked { background: var(--lv-action); border-color: var(--lv-action); color: var(--accent-fg); }
   .action-check.doing { background: var(--orange-soft); border-color: var(--orange); }
   .action-status-pill {
-    font-size: 10px; padding: 2px 6px; border-radius: 3px;
+    font-size: 10.5px; padding: 3px 8px; border-radius: 3px;
     font-weight: 700;
     background: var(--lv-gap-soft); color: var(--muted);
+    white-space: nowrap;
   }
   .action-status-pill.todo { background: var(--lv-gap-soft); color: var(--muted); }
   .action-status-pill.doing { background: var(--orange-soft); color: var(--orange); }
@@ -611,13 +693,15 @@
   .action-status-pill.stuck { background: var(--red-soft); color: var(--red-text); }
 
   .action-title-edit {
-    flex: 1; font-size: 13.5px;
-    padding: 2px 6px; margin: -2px -6px;
-    border-radius: 4px;
+    flex: 1; min-width: 200px; font-size: 14.5px;
+    padding: 6px 10px;
+    border: 1px solid transparent;
+    border-radius: 5px;
     cursor: text;
+    background: var(--card-hover);
   }
-  .action-title-edit:hover { background: var(--card-hover); }
-  .action-title-edit[contenteditable="true"]:focus { outline: 2px solid var(--orange); background: var(--orange-soft); }
+  .action-title-edit:hover { background: var(--paper); border-color: var(--line); }
+  .action-title-edit[contenteditable="true"]:focus { outline: none; border-color: var(--orange); background: var(--orange-soft); }
 
   .add-btn {
     border: 1.5px dashed var(--line);
@@ -661,6 +745,13 @@
   .week-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
   .week-head h3 { font-size: 15px; color: var(--ink); }
   .week-pill { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 12px; background: var(--orange-soft); color: var(--orange); }
+  .week-due {
+    font-size: 11px; font-weight: 600;
+    background: var(--card); border: 1px solid var(--line);
+    padding: 3px 8px; border-radius: 4px;
+    white-space: nowrap;
+  }
+  .week-due.warn { background: var(--red-soft); color: var(--red-text); border-color: var(--red); }
 
   .empty {
     text-align: center;
@@ -1268,6 +1359,7 @@ let state = null;
 let activeWeek = null;        // ISO week key for week panel
 let kpiMonth = null;          // 'YYYY-MM'
 let activeRefMode = 'weekly'; // 'weekly' | 'monthly'
+let openPath = [];            // cascade tree open path: [eIdx, mIdx, gIdx, cIdx]
 
 // ============================================================
 // Supabase auth + cloud sync
@@ -1277,11 +1369,14 @@ let currentUser = null;    // { id, email }
 let saveTimer = null;      // debounce
 const SB_TABLE = 'goal_tracker_states';
 
+function isSupabaseConfigured() {
+  return typeof SUPABASE_CONFIG !== 'undefined'
+    && SUPABASE_CONFIG.url
+    && !SUPABASE_CONFIG.url.includes('YOUR_')
+    && typeof window.supabase !== 'undefined';
+}
 function initSupabase() {
-  if (typeof SUPABASE_CONFIG === 'undefined' || !SUPABASE_CONFIG.url || SUPABASE_CONFIG.url.includes('YOUR_')) {
-    alert('config.js が未設定です。Supabase URL と anon key を設定してください。');
-    return null;
-  }
+  if (!isSupabaseConfigured()) return null;
   sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
   return sb;
 }
@@ -1838,99 +1933,182 @@ function rollUpHtml(pct) {
   </div>`;
 }
 
+// ----- Horizontal cascade tree -----
+const LEVEL_DEFS = [
+  { key: 'elements',    tagClass: 'element',   tagEmoji: '🧩', tagLabel: '要素',           addLabel: '＋ 要素を追加',         kind: 'element', pctFn: 'elementPct' },
+  { key: 'milestones',  tagClass: 'milestone', tagEmoji: '📍', tagLabel: 'マイルストーン', addLabel: '＋ マイルストーン追加', kind: 'milestone', pctFn: 'milestonePct' },
+  { key: 'gaps',        tagClass: 'gap',       tagEmoji: '📐', tagLabel: 'ギャップ',       addLabel: '＋ ギャップ追加',       kind: 'gap', pctFn: 'gapPct' },
+  { key: 'commitments', tagClass: 'commit',    tagEmoji: '🤝', tagLabel: 'コミット',       addLabel: '＋ コミット追加',       kind: 'commit', pctFn: 'commitPct' },
+];
+
+function setOpenPath(arr) {
+  openPath = (arr || []).slice();
+  renderTree();
+}
+
+function onCardClick(path, ev) {
+  if (ev && ev.target && ev.target.closest('input, [contenteditable], button')) return;
+  const parts = path.split('.').map(Number);
+  const lv = parts.length - 1;
+  const sameAsOpen = openPath.length > lv
+    && openPath[lv] === parts[lv]
+    && parts.every((p, k) => openPath[k] === p);
+  if (sameAsOpen) {
+    setOpenPath(parts.slice(0, lv));      // toggle close
+  } else {
+    setOpenPath(parts);                    // open down to this card
+  }
+}
+
+function pctForLevel(lv, node) {
+  if (lv === 0) return elementPct(node);
+  if (lv === 1) return milestonePct(node);
+  if (lv === 2) return gapPct(node);
+  if (lv === 3) return commitPct(node);
+  return 0;
+}
+
+function cardHtml(node, lv, path, isSelected) {
+  const def = LEVEL_DEFS[lv];
+  const pct = pctForLevel(lv, node);
+  const childKey = LEVEL_DEFS[lv + 1] ? LEVEL_DEFS[lv + 1].key : 'actions';
+  const childCount = (node[childKey] || []).length;
+  const childIsAction = lv === 3;
+
+  let meta = '';
+  if (lv === 0) {
+    meta = `
+      <div class="meta-row"><span class="meta-label">現状</span>
+        <input type="text" data-field="current" value="${escapeHtml(node.current || '')}" placeholder="例: 月商300万">
+      </div>
+      <div class="meta-row"><span class="meta-label">目標</span>
+        <input type="text" data-field="target" value="${escapeHtml(node.target || '')}" placeholder="例: 月商500万">
+      </div>`;
+  } else if (lv === 1) {
+    const dl = daysLeft(node.deadline);
+    const dlBadge = dl !== null
+      ? `<span class="badge ${dl < 0 ? 'warn' : ''}">${dl >= 0 ? '残' + dl + '日' : Math.abs(dl) + '日経過'}</span>`
+      : '';
+    meta = `
+      <div class="meta-row"><span class="meta-label">期日</span>
+        <input type="date" data-field="deadline" value="${node.deadline || ''}">
+        ${dlBadge}
+      </div>`;
+  } else if (lv === 2) {
+    meta = `
+      <div class="meta-row"><span class="meta-label">差分</span>
+        <input type="text" data-field="deltaText" value="${escapeHtml(node.deltaText || '')}" placeholder="例: +200万">
+      </div>`;
+  }
+
+  const childLabel = childIsAction ? 'アクション' : (LEVEL_DEFS[lv + 1] ? LEVEL_DEFS[lv + 1].tagLabel : '');
+  return `<div class="card lv-${def.tagClass} ${isSelected ? 'selected' : ''}" data-path="${path}" onclick="onCardClick('${path}', event)">
+    <div class="card-tag-row">
+      <span class="lv-tag ${def.tagClass}">${def.tagEmoji} ${def.tagLabel}</span>
+      <span class="child-count ${childCount === 0 ? 'empty' : ''}" title="子の数">${childCount} ${childLabel}</span>
+    </div>
+    <div class="card-title" contenteditable="true" data-field="title">${escapeHtml(node.title)}</div>
+    ${meta ? `<div class="card-meta">${meta}</div>` : ''}
+    <div class="card-foot">
+      ${rollUpHtml(pct)}
+      <button class="btn-mini danger" title="削除" onclick="event.stopPropagation(); removeNode('${path}')">🗑</button>
+    </div>
+  </div>`;
+}
+
+function renderCascadeRow(lv, parent, parentPathArr) {
+  const def = LEVEL_DEFS[lv];
+  const items = parent[def.key] || [];
+  const parentPathStr = parentPathArr.join('.');
+  const childPrefix = parentPathArr.length ? parentPathStr + '.' : '';
+
+  let cards = '';
+  if (items.length === 0) {
+    cards += `<div class="cascade-empty">まだ${def.tagLabel}がありません</div>`;
+  } else {
+    items.forEach((node, i) => {
+      const path = childPrefix + i;
+      const samePrefix = parentPathArr.every((p, k) => openPath[k] === p);
+      const isSelected = samePrefix && openPath[lv] === i;
+      cards += cardHtml(node, lv, path, isSelected);
+    });
+  }
+  cards += `<button class="add-card" onclick="addChild('${parentPathStr}','${def.kind}')">${def.addLabel}</button>`;
+
+  return `<div class="cascade-row" data-level="${lv}">
+    <div class="row-head">
+      <div class="row-title">
+        <span class="lv-tag ${def.tagClass}">${def.tagEmoji} ${def.tagLabel}</span>
+        <span>レベル</span>
+      </div>
+    </div>
+    <div class="row-cards">${cards}</div>
+  </div>`;
+}
+
+function renderActionLevel(commitNode, parentPathArr) {
+  const actions = commitNode.actions || [];
+  const parentPathStr = parentPathArr.join('.');
+  let rows = '';
+  if (actions.length === 0) {
+    rows += `<div class="cascade-empty">アクションがまだありません。下の「＋」から追加してください。</div>`;
+  } else {
+    actions.forEach((a, ai) => {
+      rows += actionHtml(a, parentPathArr[0], parentPathArr[1], parentPathArr[2], parentPathArr[3], ai);
+    });
+  }
+  rows += `<button class="add-card" onclick="addChild('${parentPathStr}','action')">＋ アクションを追加</button>`;
+
+  return `<div class="cascade-row action-level" data-level="4">
+    <div class="row-head">
+      <div class="row-title">
+        <span class="lv-tag action">⚡ アクション</span>
+        <span>レベル（実行）</span>
+      </div>
+    </div>
+    <div class="row-cards">${rows}</div>
+  </div>`;
+}
+
 function renderTree() {
   const root = document.getElementById('tree-root');
   let html = '';
-  state.goal.elements.forEach((el, ei) => {
-    const ePct = elementPct(el);
-    html += `<div class="node lv-element" data-path="${ei}">
-      <div class="node-head">
-        <span class="lv-tag element">🧩 要素</span>
-        <span class="node-title" contenteditable="true" data-field="title">${escapeHtml(el.title)}</span>
-        <div class="node-meta">
-          現状 <input type="text" data-field="current" value="${escapeHtml(el.current || '')}" placeholder="例: 3名">
-          目標 <input type="text" data-field="target" value="${escapeHtml(el.target || '')}" placeholder="例: 10名">
-        </div>
-        <div class="node-actions">
-          <button class="btn-mini" title="マイルストーン追加" onclick="addChild('${ei}','milestone')">＋📍</button>
-          <button class="btn-mini danger" title="削除" onclick="removeNode('${ei}')">🗑</button>
-        </div>
-      </div>
-      ${rollUpHtml(ePct)}
-      <div class="children">
-        ${(el.milestones || []).map((m, mi) => milestoneHtml(m, ei, mi)).join('')}
-        <button class="add-btn" onclick="addChild('${ei}','milestone')">＋ マイルストーン</button>
-      </div>
-    </div>`;
-  });
-  html += `<button class="add-btn" onclick="addChild('','element')" style="align-self:flex-start; margin-top:8px;">＋ 要素を追加</button>`;
+
+  // ---- Breadcrumb ----
+  let bc = `<span class="bc-item" onclick="setOpenPath([])">🎯 ${escapeHtml((state.goal.title || 'ゴール').slice(0, 24))}</span>`;
+  let trace = state.goal;
+  for (let lv = 0; lv < openPath.length; lv++) {
+    const def = LEVEL_DEFS[lv];
+    if (!def) break;
+    trace = (trace[def.key] || [])[openPath[lv]];
+    if (!trace) break;
+    const upTo = openPath.slice(0, lv + 1).join(',');
+    bc += `<span class="bc-sep">›</span>
+      <span class="bc-item" onclick="setOpenPath([${upTo}])">${def.tagEmoji} ${escapeHtml((trace.title || '').slice(0, 18) || '…')}</span>`;
+  }
+  html += `<div class="cascade-bread">${bc}</div>`;
+
+  // ---- Element row (always) ----
+  html += renderCascadeRow(0, state.goal, []);
+
+  // ---- Drill-down rows ----
+  let parent = state.goal;
+  const traversed = [];
+  for (let lv = 0; lv < openPath.length && lv < LEVEL_DEFS.length; lv++) {
+    const def = LEVEL_DEFS[lv];
+    parent = (parent[def.key] || [])[openPath[lv]];
+    if (!parent) break;
+    traversed.push(openPath[lv]);
+
+    if (lv + 1 < LEVEL_DEFS.length) {
+      html += renderCascadeRow(lv + 1, parent, traversed.slice());
+    } else {
+      html += renderActionLevel(parent, traversed.slice());
+    }
+  }
+
   root.innerHTML = html;
   bindTreeEvents();
-}
-
-function milestoneHtml(m, ei, mi) {
-  const pct = milestonePct(m);
-  const dl = daysLeft(m.deadline);
-  return `<div class="node lv-milestone" data-path="${ei}.${mi}">
-    <div class="node-head">
-      <span class="lv-tag milestone">📍 マイルストーン</span>
-      <span class="node-title" contenteditable="true" data-field="title">${escapeHtml(m.title)}</span>
-      <div class="node-meta">
-        期日 <input type="date" data-field="deadline" value="${m.deadline || ''}">
-        ${dl !== null ? `<span class="badge ${dl < 0 ? 'warn' : ''}">${dl >= 0 ? '残'+dl+'日' : Math.abs(dl)+'日経過'}</span>` : ''}
-      </div>
-      <div class="node-actions">
-        <button class="btn-mini" title="ギャップ追加" onclick="addChild('${ei}.${mi}','gap')">＋📐</button>
-        <button class="btn-mini danger" onclick="removeNode('${ei}.${mi}')">🗑</button>
-      </div>
-    </div>
-    ${rollUpHtml(pct)}
-    <div class="children">
-      ${(m.gaps || []).map((g, gi) => gapHtml(g, ei, mi, gi)).join('')}
-      <button class="add-btn" onclick="addChild('${ei}.${mi}','gap')">＋ ギャップ</button>
-    </div>
-  </div>`;
-}
-
-function gapHtml(g, ei, mi, gi) {
-  const pct = gapPct(g);
-  return `<div class="node lv-gap" data-path="${ei}.${mi}.${gi}">
-    <div class="node-head">
-      <span class="lv-tag gap">📐 ギャップ</span>
-      <span class="node-title" contenteditable="true" data-field="title">${escapeHtml(g.title)}</span>
-      <div class="node-meta">
-        差分 <input type="text" data-field="deltaText" value="${escapeHtml(g.deltaText || '')}" placeholder="例: +4名">
-      </div>
-      <div class="node-actions">
-        <button class="btn-mini" title="コミット追加" onclick="addChild('${ei}.${mi}.${gi}','commit')">＋🤝</button>
-        <button class="btn-mini danger" onclick="removeNode('${ei}.${mi}.${gi}')">🗑</button>
-      </div>
-    </div>
-    ${rollUpHtml(pct)}
-    <div class="children">
-      ${(g.commitments || []).map((c, ci) => commitHtml(c, ei, mi, gi, ci)).join('')}
-      <button class="add-btn" onclick="addChild('${ei}.${mi}.${gi}','commit')">＋ コミットメント</button>
-    </div>
-  </div>`;
-}
-
-function commitHtml(c, ei, mi, gi, ci) {
-  const pct = commitPct(c);
-  return `<div class="node lv-commit" data-path="${ei}.${mi}.${gi}.${ci}">
-    <div class="node-head">
-      <span class="lv-tag commit">🤝 コミット</span>
-      <span class="node-title" contenteditable="true" data-field="title">${escapeHtml(c.title)}</span>
-      <div class="node-actions">
-        <button class="btn-mini" title="アクション追加" onclick="addChild('${ei}.${mi}.${gi}.${ci}','action')">＋⚡</button>
-        <button class="btn-mini danger" onclick="removeNode('${ei}.${mi}.${gi}.${ci}')">🗑</button>
-      </div>
-    </div>
-    ${rollUpHtml(pct)}
-    <div class="children">
-      ${(c.actions || []).map((a, ai) => actionHtml(a, ei, mi, gi, ci, ai)).join('')}
-      <button class="add-btn" onclick="addChild('${ei}.${mi}.${gi}.${ci}','action')">＋ アクション</button>
-    </div>
-  </div>`;
 }
 
 function actionHtml(a, ei, mi, gi, ci, ai) {
@@ -1983,24 +2161,46 @@ function removeNode(path) {
     arr = parent[keys[parts.length - 2]];
   }
   arr.splice(parts[parts.length - 1], 1);
+  // Maintain openPath: collapse if this node was open, shift if a sibling before it was deleted
+  const lvDeleted = parts.length - 1;
+  if (parts.length <= 4 && openPath.length > lvDeleted) {
+    const ancestorsMatch = parts.slice(0, lvDeleted).every((p, k) => openPath[k] === p);
+    if (ancestorsMatch) {
+      if (openPath[lvDeleted] === parts[lvDeleted]) {
+        openPath = openPath.slice(0, lvDeleted);
+      } else if (openPath[lvDeleted] > parts[lvDeleted]) {
+        openPath[lvDeleted]--;
+      }
+    }
+  }
   save(); renderAll();
 }
 function addChild(parentPath, kind) {
   const parent = parentPath ? getNodeByPath(parentPath) : state.goal;
+  let newIdx = -1;
   if (kind === 'element') {
     state.goal.elements.push({ id: uid(), title: '新しい要素', current: '', target: '', milestones: [] });
+    newIdx = state.goal.elements.length - 1;
   } else if (kind === 'milestone') {
     parent.milestones = parent.milestones || [];
     parent.milestones.push({ id: uid(), title: '新しいマイルストーン', deadline: '', gaps: [] });
+    newIdx = parent.milestones.length - 1;
   } else if (kind === 'gap') {
     parent.gaps = parent.gaps || [];
     parent.gaps.push({ id: uid(), title: '新しいギャップ', deltaText: '', commitments: [] });
+    newIdx = parent.gaps.length - 1;
   } else if (kind === 'commit') {
     parent.commitments = parent.commitments || [];
     parent.commitments.push({ id: uid(), title: '新しいコミットメント', actions: [] });
+    newIdx = parent.commitments.length - 1;
   } else if (kind === 'action') {
     parent.actions = parent.actions || [];
     parent.actions.push({ id: uid(), title: '新しいアクション', status: 'todo', due: '', week: thisWeekKey() });
+  }
+  // Auto-select the newly added node so its child row appears immediately
+  if (kind !== 'action' && newIdx >= 0) {
+    const parentParts = parentPath ? parentPath.split('.').map(Number) : [];
+    openPath = [...parentParts, newIdx];
   }
   save(); renderAll();
 }
@@ -2043,8 +2243,8 @@ function bindTreeEvents() {
 
 function updateRollups() {
   // Recalculate roll-up bars without full re-render (cheap)
-  document.querySelectorAll('#tree-root .node[data-path]').forEach(nodeEl => {
-    const path = nodeEl.dataset.path;
+  document.querySelectorAll('#tree-root .card[data-path]').forEach(cardEl => {
+    const path = cardEl.dataset.path;
     const node = getNodeByPath(path);
     if (!node) return;
     const parts = path.split('.').length;
@@ -2053,8 +2253,8 @@ function updateRollups() {
     else if (parts === 2) pct = milestonePct(node);
     else if (parts === 3) pct = gapPct(node);
     else if (parts === 4) pct = commitPct(node);
-    const bar = nodeEl.querySelector(':scope > .roll-up .roll-up-fill');
-    const lbl = nodeEl.querySelector(':scope > .roll-up .roll-up-pct');
+    const bar = cardEl.querySelector('.roll-up-fill');
+    const lbl = cardEl.querySelector('.roll-up-pct');
     if (bar) {
       bar.style.width = pct + '%';
       bar.className = 'roll-up-fill ' + pctClass(pct);
@@ -2130,7 +2330,7 @@ function renderWeek() {
         <span class="action-title-edit" contenteditable="true" data-week-edit="${path}|title">${escapeHtml(a.title)}</span>
         <span class="action-status-pill ${computedStatus}">${statusLabel(computedStatus)}</span>
         <span class="lv-tag gap" style="font-size:9.5px;">📐 ${escapeHtml(parent.gap?.title?.slice(0,20) || '')}</span>
-        ${a.due ? `<span class="node-meta"><span class="badge ${overdue?'warn':''}">📅 ${a.due}</span></span>` : ''}
+        ${a.due ? `<span class="week-due ${overdue?'warn':''}">📅 ${a.due}</span>` : ''}
       </div>`;
     }).join('')}
   </div>`;
@@ -2384,7 +2584,7 @@ document.getElementById('import-file').addEventListener('change', e => {
   };
   reader.readAsText(f);
 });
-function loadSample() { state = sampleData(); save(); renderAll(); toast('サンプルデータを読み込みました'); }
+function loadSample() { state = sampleData(); openPath = []; save(); renderAll(); toast('サンプルデータを読み込みました'); }
 function loadPreset() {
   const sel = document.getElementById('preset-select');
   const key = sel ? sel.value : 'sales';
@@ -2392,9 +2592,10 @@ function loadPreset() {
   if (!fn) { toast('テンプレートが見つかりません'); return; }
   if (!confirm('現在のデータを破棄して「' + sel.options[sel.selectedIndex].text + '」を読み込みますか？')) return;
   state = fn();
+  openPath = [];
   save(); renderAll(); toast(sel.options[sel.selectedIndex].text + ' を読み込みました');
 }
-function resetAll() { localStorage.removeItem(STORAGE_KEY); state = emptyData(); save(); renderAll(); toast('リセットしました'); }
+function resetAll() { localStorage.removeItem(STORAGE_KEY); state = emptyData(); openPath = []; save(); renderAll(); toast('リセットしました'); }
 
 // ============================================================
 // Tabs / wiring
@@ -2479,6 +2680,15 @@ async function boot() {
   document.querySelectorAll('[data-theme-set]').forEach(b => {
     b.classList.toggle('active', b.dataset.themeSet === savedTheme);
   });
+
+  // Supabase 未設定時は従来の localStorage モードで動かす（プレビュー用）
+  if (!isSupabaseConfigured()) {
+    load();
+    if (state && state.meta && state.meta.theme) applyTheme(state.meta.theme);
+    renderAll();
+    document.getElementById('login-overlay').style.display = 'none';
+    return;
+  }
 
   // Try to restore an existing session
   const hasSession = await checkExistingSession();
