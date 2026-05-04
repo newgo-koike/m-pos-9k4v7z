@@ -1007,6 +1007,353 @@
   .btn.success { background: var(--green); color: #fff; }
   .btn.success:hover { background: var(--green-text); }
 
+  /* ========== Design panel — view switcher ========== */
+  .view-switcher {
+    display: flex; gap: 4px; flex-wrap: wrap;
+    background: var(--paper); border: 1px solid var(--line);
+    padding: 5px; border-radius: 10px;
+    margin: 8px 0 16px;
+  }
+  .view-tab {
+    flex: 1 1 auto; min-width: 130px;
+    padding: 9px 14px;
+    border: none; background: transparent;
+    color: var(--muted);
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 13px; font-weight: 600;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .view-tab:hover { background: var(--card-hover); color: var(--ink); }
+  .view-tab.active {
+    background: var(--orange); color: var(--accent-fg);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+  body[data-theme="default"] .view-tab.active { background: var(--navy); color: #fff; }
+  .design-view { display: none; }
+  .design-view.active { display: block; }
+  .view-hint {
+    font-size: 12px; color: var(--muted);
+    padding: 0 4px 12px; line-height: 1.55;
+  }
+
+  /* ========== Mindmap view ========== */
+  .mindmap-container {
+    position: relative;
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    height: 70vh;
+    min-height: 520px;
+  }
+  .mindmap-controls {
+    position: absolute; top: 12px; right: 12px; z-index: 5;
+    display: flex; gap: 4px; align-items: center;
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 8px; padding: 4px 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .mm-btn {
+    background: transparent; border: none;
+    width: 28px; height: 28px; border-radius: 5px;
+    cursor: pointer; color: var(--ink);
+    font-size: 14px; font-weight: 700;
+    font-family: inherit;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .mm-btn:hover { background: var(--card-hover); }
+  .mm-help { font-size: 10px; color: var(--muted); padding: 0 8px; }
+  .mindmap-svg {
+    width: 100%; height: 100%;
+    cursor: grab;
+    background: var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+  .mindmap-svg:active { cursor: grabbing; }
+  .mm-link { fill: none; stroke-width: 1.6; opacity: 0.55; }
+  .mm-link.lv-element { stroke: var(--lv-element); }
+  .mm-link.lv-milestone { stroke: var(--lv-milestone); }
+  .mm-link.lv-gap { stroke: var(--lv-gap); }
+  .mm-link.lv-commit { stroke: var(--lv-commit); }
+  .mm-link.lv-action { stroke: var(--lv-action); opacity: 0.4; }
+  .mm-node {
+    cursor: pointer;
+    transition: filter 0.15s;
+  }
+  .mm-node:hover { filter: drop-shadow(0 0 8px rgba(255,122,0,0.4)); }
+  .mm-node-bg {
+    fill: var(--card);
+    stroke: var(--line);
+    stroke-width: 1.5;
+  }
+  .mm-node.lv-goal .mm-node-bg { fill: var(--orange-soft); stroke: var(--orange); stroke-width: 3; }
+  .mm-node.lv-element .mm-node-bg { stroke-width: 2.5; }
+  .mm-node.lv-element.pct-high .mm-node-bg { stroke: var(--green); }
+  .mm-node.lv-element.pct-mid .mm-node-bg { stroke: var(--orange); }
+  .mm-node.lv-element.pct-low .mm-node-bg { stroke: var(--red); }
+  .mm-node.lv-milestone .mm-node-bg { stroke-width: 2; }
+  .mm-node.lv-milestone.pct-high .mm-node-bg { stroke: var(--green); }
+  .mm-node.lv-milestone.pct-mid .mm-node-bg { stroke: var(--orange); }
+  .mm-node.lv-milestone.pct-low .mm-node-bg { stroke: var(--red); }
+  .mm-node.lv-gap .mm-node-bg { stroke: var(--lv-gap); stroke-width: 1.5; }
+  .mm-node.lv-commit .mm-node-bg { stroke: var(--lv-commit); stroke-width: 1.5; }
+  .mm-node.selected .mm-node-bg { stroke: var(--orange) !important; stroke-width: 4 !important; }
+  .mm-node-tag {
+    fill: var(--muted); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .mm-node.lv-goal .mm-node-tag { fill: var(--orange); }
+  .mm-node.lv-element .mm-node-tag { fill: var(--lv-element); }
+  .mm-node.lv-milestone .mm-node-tag { fill: var(--lv-milestone); }
+  .mm-node.lv-gap .mm-node-tag { fill: var(--lv-gap); }
+  .mm-node.lv-commit .mm-node-tag { fill: var(--lv-commit); }
+  .mm-node-title {
+    fill: var(--ink); font-size: 12.5px; font-weight: 600;
+    font-family: inherit;
+  }
+  .mm-node.lv-goal .mm-node-title { font-size: 14px; font-weight: 800; fill: var(--orange); }
+  .mm-node.lv-element .mm-node-title { font-size: 13px; font-weight: 700; }
+  .mm-node-pct {
+    fill: var(--muted); font-size: 10.5px; font-weight: 700;
+    text-anchor: end;
+    font-variant-numeric: tabular-nums;
+  }
+  .mm-node-pct.high { fill: var(--green-text, var(--green)); }
+  .mm-node-pct.mid { fill: var(--orange); }
+  .mm-node-pct.low { fill: var(--red-text, var(--red)); }
+  .mm-add-btn {
+    cursor: pointer;
+  }
+  .mm-add-btn-bg {
+    fill: var(--paper); stroke: var(--line); stroke-width: 1.2;
+    stroke-dasharray: 3 2;
+  }
+  .mm-add-btn:hover .mm-add-btn-bg {
+    stroke: var(--orange); fill: var(--orange-soft);
+  }
+  .mm-add-btn-text {
+    fill: var(--muted); font-size: 11px; font-weight: 600;
+  }
+  .mm-add-btn:hover .mm-add-btn-text { fill: var(--orange); }
+  .mm-empty {
+    text-anchor: middle;
+    fill: var(--muted); font-size: 13px;
+  }
+  .mm-action-pip { transition: r 0.15s; }
+  .mm-action-pip:hover { r: 6; }
+
+  /* ========== Heatmap view ========== */
+  .heatmap-root {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 12px; padding: 6px;
+  }
+  .heatmap-summary {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px; margin-bottom: 14px;
+  }
+  .hm-stat {
+    background: var(--card); border: 1px solid var(--line);
+    padding: 11px 14px; border-radius: 9px;
+  }
+  .hm-stat .lbl { font-size: 10.5px; color: var(--muted); letter-spacing: 0.06em; }
+  .hm-stat .num { font-size: 22px; font-weight: 800; margin-top: 3px; line-height: 1; }
+  .hm-element-row {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 10px; padding: 14px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 16px;
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .hm-element-row:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.06); }
+  .hm-el-info {
+    border-right: 2px solid var(--line);
+    padding-right: 14px;
+    display: flex; flex-direction: column; gap: 6px;
+    cursor: pointer;
+  }
+  .hm-el-info .hm-tag {
+    font-size: 9.5px; font-weight: 800; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lv-element);
+  }
+  .hm-el-info .hm-title {
+    font-size: 14.5px; font-weight: 700; line-height: 1.4;
+    color: var(--ink);
+  }
+  .hm-el-info .hm-meta {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 2px;
+  }
+  .hm-el-info .hm-pct { font-size: 18px; font-weight: 800; }
+  .hm-el-info .hm-pct.high { color: var(--green-text, var(--green)); }
+  .hm-el-info .hm-pct.mid { color: var(--orange); }
+  .hm-el-info .hm-pct.low { color: var(--red-text, var(--red)); }
+  .hm-el-info .hm-bar { flex: 1; height: 5px; background: var(--line); border-radius: 3px; overflow: hidden; }
+  .hm-el-info .hm-bar > span { display: block; height: 100%; }
+  .hm-el-info .hm-stuck {
+    font-size: 11px; color: var(--red-text, var(--red)); font-weight: 700;
+    margin-top: 2px;
+  }
+  .hm-ms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .hm-ms-cell {
+    background: var(--card); border: 1px solid var(--line);
+    border-left: 4px solid var(--lv-milestone);
+    border-radius: 8px; padding: 10px 12px;
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .hm-ms-cell:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .hm-ms-cell.pct-high { border-left-color: var(--green); }
+  .hm-ms-cell.pct-mid { border-left-color: var(--orange); }
+  .hm-ms-cell.pct-low { border-left-color: var(--red); }
+  .hm-ms-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .hm-ms-head .ms-tag {
+    font-size: 9px; font-weight: 800; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lv-milestone);
+  }
+  .hm-ms-head .ms-pct { font-size: 13px; font-weight: 800; }
+  .hm-ms-head .ms-pct.high { color: var(--green-text, var(--green)); }
+  .hm-ms-head .ms-pct.mid { color: var(--orange); }
+  .hm-ms-head .ms-pct.low { color: var(--red-text, var(--red)); }
+  .hm-ms-cell .ms-title { font-size: 12.5px; font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
+  .hm-ms-cell .ms-deadline {
+    font-size: 10.5px; color: var(--muted); margin-bottom: 6px;
+  }
+  .hm-ms-cell .ms-deadline.warn { color: var(--red-text, var(--red)); font-weight: 600; }
+  .hm-gap-list {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .hm-gap-item {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 5px; padding: 6px 8px;
+    display: grid;
+    grid-template-columns: 1fr 36px;
+    gap: 8px; align-items: center;
+    cursor: pointer;
+  }
+  .hm-gap-item:hover { background: var(--card-hover); }
+  .hm-gap-title {
+    font-size: 11.5px; line-height: 1.35;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  .hm-gap-pct {
+    font-size: 11px; font-weight: 700; text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .hm-gap-pct.high { color: var(--green-text, var(--green)); }
+  .hm-gap-pct.mid { color: var(--orange); }
+  .hm-gap-pct.low { color: var(--red-text, var(--red)); }
+  .hm-action-strip {
+    display: flex; gap: 2px; flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .hm-action-pip {
+    width: 10px; height: 10px; border-radius: 2px;
+    cursor: pointer; transition: transform 0.1s;
+  }
+  .hm-action-pip:hover { transform: scale(1.5); }
+  .hm-action-pip.todo { background: var(--lv-gap-soft, #d1d5db); border: 1px solid var(--line); }
+  .hm-action-pip.doing { background: var(--orange); }
+  .hm-action-pip.done { background: var(--green); }
+  .hm-action-pip.stuck { background: var(--red); }
+  .hm-empty {
+    padding: 40px 20px; text-align: center;
+    color: var(--muted); font-size: 13px;
+    background: var(--card); border-radius: 10px;
+    border: 1px dashed var(--line);
+  }
+
+  /* ========== Edit Drawer (mindmap/heatmap node click) ========== */
+  .edit-drawer {
+    position: fixed; top: 0; right: 0;
+    width: 380px; max-width: 92vw; height: 100vh;
+    background: var(--paper);
+    border-left: 1px solid var(--line);
+    box-shadow: -8px 0 32px rgba(0,0,0,0.2);
+    z-index: 200;
+    transform: translateX(100%);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column;
+  }
+  .edit-drawer.open { transform: translateX(0); }
+  .edit-drawer-head {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .edit-drawer-head .ed-tag {
+    flex: 0 0 auto; padding: 3px 10px; border-radius: 5px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em;
+    background: var(--orange-soft); color: var(--orange);
+  }
+  .edit-drawer-head .ed-close {
+    margin-left: auto;
+    background: transparent; border: none;
+    width: 32px; height: 32px; border-radius: 6px;
+    cursor: pointer; font-size: 18px; color: var(--muted);
+  }
+  .edit-drawer-head .ed-close:hover { background: var(--card-hover); color: var(--ink); }
+  .edit-drawer-body {
+    flex: 1; overflow-y: auto;
+    padding: 18px 22px;
+  }
+  .edit-drawer-body label {
+    display: block; font-size: 11px; color: var(--muted);
+    font-weight: 700; letter-spacing: 0.06em;
+    margin-bottom: 6px; margin-top: 14px;
+  }
+  .edit-drawer-body label:first-child { margin-top: 0; }
+  .edit-drawer-body input[type="text"],
+  .edit-drawer-body input[type="date"],
+  .edit-drawer-body input[type="number"],
+  .edit-drawer-body textarea,
+  .edit-drawer-body select {
+    width: 100%;
+    border: 1px solid var(--line);
+    padding: 9px 12px; border-radius: 6px;
+    font-size: 14px; background: var(--card); color: var(--ink);
+    font-family: inherit;
+  }
+  .edit-drawer-body textarea { min-height: 60px; resize: vertical; }
+  .edit-drawer-body input:focus, .edit-drawer-body textarea:focus, .edit-drawer-body select:focus {
+    outline: none; border-color: var(--orange); background: var(--orange-soft);
+  }
+  .ed-progress {
+    margin-top: 16px;
+    padding: 12px;
+    background: var(--card); border-radius: 8px;
+  }
+  .ed-progress .pbar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin-top: 6px; }
+  .ed-progress .pbar > span { display: block; height: 100%; }
+  .ed-actions {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 18px 22px;
+    border-top: 1px solid var(--line);
+    background: var(--card-hover);
+  }
+  .ed-actions .ed-row { display: flex; gap: 8px; }
+  .ed-actions button { flex: 1; }
+  .edit-drawer-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 199; opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .edit-drawer-overlay.open { opacity: 1; pointer-events: auto; }
+
   /* ========== Overview panel (全体像) ========== */
   .overview-list {
     background: var(--paper); border: 1px solid var(--line);
@@ -1200,8 +1547,7 @@
   </header>
 
   <nav class="tabs" role="tablist">
-    <button class="tab active" data-panel="tree">🌳 ツリー</button>
-    <button class="tab" data-panel="overview">🗺 全体像</button>
+    <button class="tab active" data-panel="design">🎯 設計</button>
     <button class="tab" data-panel="week">⚡ 今週</button>
     <button class="tab" data-panel="kpi">📊 KPI</button>
     <button class="tab" data-panel="reflect">🔄 振り返り</button>
@@ -1209,23 +1555,44 @@
     <button class="tab" data-panel="settings">⚙ 設定</button>
   </nav>
 
-  <!-- ============== TREE PANEL ============== -->
-  <section class="panel active" id="panel-tree">
+  <!-- ============== DESIGN PANEL (4 view switcher) ============== -->
+  <section class="panel active" id="panel-design">
     <div class="cascade-flow" id="flow-counts"></div>
-    <div class="panel-head">
-      <h2>🌳 ゴール俯瞰ツリー</h2>
-      <p>下の数字を入れると、上のコミット・マイルストーン・ゴールまで進捗が伝わります。タイトルをクリックして編集。</p>
-    </div>
-    <div class="tree" id="tree-root"></div>
-  </section>
 
-  <!-- ============== OVERVIEW PANEL (全体像) ============== -->
-  <section class="panel" id="panel-overview">
-    <div class="panel-head">
-      <h2>🗺 全体像</h2>
-      <p>ツリーの全ノードを縦インデントで一覧。行をクリックすると「ツリー」タブの該当ノードまで自動で開きます。</p>
+    <div class="view-switcher" role="tablist">
+      <button class="view-tab active" data-view="tree" role="tab">🌳 ツリー</button>
+      <button class="view-tab" data-view="overview" role="tab">🗺 全体像</button>
+      <button class="view-tab" data-view="mindmap" role="tab">🧠 マインドマップ</button>
+      <button class="view-tab" data-view="heatmap" role="tab">🔥 ヒートマップ</button>
     </div>
-    <div id="overview-root"></div>
+
+    <div class="design-view active" id="view-tree">
+      <p class="view-hint">下の数字を入れると、上のコミット・マイルストーン・ゴールまで進捗が伝わります。タイトルをクリックして編集。</p>
+      <div class="tree" id="tree-root"></div>
+    </div>
+
+    <div class="design-view" id="view-overview">
+      <p class="view-hint">全ノードを縦インデントで一覧。行クリックで該当ノードを「ツリー」ビューで開きます。</p>
+      <div id="overview-root"></div>
+    </div>
+
+    <div class="design-view" id="view-mindmap">
+      <p class="view-hint">中央＝ゴール、放射状に展開。ノードクリックで詳細パネル。マウスドラッグでパン、ホイールでズーム。</p>
+      <div class="mindmap-container">
+        <div class="mindmap-controls">
+          <button class="mm-btn" onclick="mmZoom(1.2)" title="拡大">＋</button>
+          <button class="mm-btn" onclick="mmZoom(0.8)" title="縮小">−</button>
+          <button class="mm-btn" onclick="mmReset()" title="表示リセット">↺</button>
+          <span class="mm-help">ノードをクリックで編集</span>
+        </div>
+        <svg id="mindmap-root" class="mindmap-svg"></svg>
+      </div>
+    </div>
+
+    <div class="design-view" id="view-heatmap">
+      <p class="view-hint">要素 → マイルストーン → ギャップ → コミット → アクションを格子状に配置。色＝進捗、滞留マークで要注意箇所が一目。</p>
+      <div id="heatmap-root"></div>
+    </div>
   </section>
 
   <!-- ============== WEEK PANEL ============== -->
@@ -1429,6 +1796,18 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- ============== Edit Drawer (mindmap/heatmap node click) ============== -->
+<div class="edit-drawer-overlay" id="ed-overlay" onclick="closeEditDrawer()"></div>
+<aside class="edit-drawer" id="edit-drawer" aria-hidden="true">
+  <div class="edit-drawer-head">
+    <span class="ed-tag" id="ed-tag">📝</span>
+    <span id="ed-level-label" style="font-size:13px; font-weight:600; color:var(--muted);">レベル</span>
+    <button class="ed-close" onclick="closeEditDrawer()" title="閉じる">✕</button>
+  </div>
+  <div class="edit-drawer-body" id="ed-body"></div>
+  <div class="ed-actions" id="ed-actions"></div>
+</aside>
+
 <script>
 // ============================================================
 // State
@@ -1440,6 +1819,10 @@ let activeWeek = null;        // ISO week key for week panel
 let kpiMonth = null;          // 'YYYY-MM'
 let activeRefMode = 'weekly'; // 'weekly' | 'monthly'
 let openPath = [];            // cascade tree open path: [eIdx, mIdx, gIdx, cIdx]
+let designView = 'tree';      // 'tree' | 'overview' | 'mindmap' | 'heatmap'
+let mmViewBox = null;         // mindmap viewBox state
+let mmSelectedPath = null;    // currently-selected mindmap node
+let editDrawerPath = null;    // currently-edited node path
 
 // ============================================================
 // Supabase auth + cloud sync
@@ -2712,10 +3095,26 @@ document.querySelectorAll('.tab').forEach(t => {
     if (t.dataset.panel === 'week') renderWeek();
     if (t.dataset.panel === 'kpi') renderKpi();
     if (t.dataset.panel === 'reflect') renderReflect();
-    if (t.dataset.panel === 'overview') renderOverview();
+    if (t.dataset.panel === 'design') {
+      // Re-render the active sub-view
+      if (designView === 'mindmap') renderMindmap();
+      else if (designView === 'heatmap') renderHeatmap();
+      else if (designView === 'overview') renderOverview();
+    }
     if (t.dataset.panel === 'settings') renderArchives();
   });
 });
+
+// Design view switcher (sub-tabs inside 設計)
+document.querySelectorAll('.view-tab').forEach(b => {
+  b.addEventListener('click', () => setDesignView(b.dataset.view));
+});
+
+// Close edit drawer on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && editDrawerPath) closeEditDrawer();
+});
+
 document.querySelectorAll('.ref-tab').forEach(t => {
   t.addEventListener('click', () => {
     document.querySelectorAll('.ref-tab').forEach(x => x.classList.remove('active'));
@@ -2835,11 +3234,12 @@ function renderOverview() {
 }
 
 function jumpToNode(path) {
-  // Switch to ツリー tab
+  // Switch to 設計 tab + ツリー sub-view
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelector('.tab[data-panel="tree"]').classList.add('active');
+  document.querySelector('.tab[data-panel="design"]').classList.add('active');
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-tree').classList.add('active');
+  document.getElementById('panel-design').classList.add('active');
+  setDesignView('tree');
 
   if (!path) {
     openPath = [];
@@ -2848,7 +3248,545 @@ function jumpToNode(path) {
     openPath = parts.slice(0, Math.min(parts.length, 4));
   }
   renderTree();
-  document.getElementById('panel-tree').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('panel-design').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ============================================================
+// Design view switcher (ツリー / 全体像 / マインドマップ / ヒートマップ)
+// ============================================================
+function setDesignView(name) {
+  designView = name;
+  document.querySelectorAll('.view-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.view === name);
+  });
+  document.querySelectorAll('.design-view').forEach(v => {
+    v.classList.remove('active');
+  });
+  const target = document.getElementById('view-' + name);
+  if (target) target.classList.add('active');
+  if (name === 'mindmap') renderMindmap();
+  else if (name === 'heatmap') renderHeatmap();
+  else if (name === 'overview') renderOverview();
+  // tree is always rendered by renderTree() in renderAll
+}
+
+// ============================================================
+// Mindmap renderer — horizontal LR hierarchical tree (SVG)
+// ============================================================
+const MM_COL_W = 230;
+const MM_NODE_W = 200;
+const MM_NODE_H = 50;
+const MM_VGAP = 14;
+const MM_PADDING = 30;
+
+function mmBuildHierarchy() {
+  // Build a tree structure where root = goal
+  const root = {
+    type: 'goal', path: '',
+    title: state.goal.title || 'ゴール未設定',
+    pct: goalPct(),
+    children: state.goal.elements.map((e, ei) => ({
+      type: 'element', path: `${ei}`,
+      title: e.title, pct: elementPct(e), node: e,
+      children: (e.milestones || []).map((m, mi) => ({
+        type: 'milestone', path: `${ei}.${mi}`,
+        title: m.title, pct: milestonePct(m), deadline: m.deadline, node: m,
+        children: (m.gaps || []).map((g, gi) => ({
+          type: 'gap', path: `${ei}.${mi}.${gi}`,
+          title: g.title, pct: gapPct(g), node: g,
+          children: (g.commitments || []).map((c, ci) => ({
+            type: 'commit', path: `${ei}.${mi}.${gi}.${ci}`,
+            title: c.title, pct: commitPct(c), node: c,
+            children: (c.actions || []).map((a, ai) => ({
+              type: 'action', path: `${ei}.${mi}.${gi}.${ci}.${ai}`,
+              title: a.title, status: a.status || 'todo', node: a,
+              children: []
+            }))
+          }))
+        }))
+      }))
+    }))
+  };
+  return root;
+}
+
+function mmLayout(node, depth = 0, leafIdxRef = { i: 0 }) {
+  node.depth = depth;
+  if (!node.children || node.children.length === 0) {
+    node.y = leafIdxRef.i * (MM_NODE_H + MM_VGAP);
+    leafIdxRef.i++;
+  } else {
+    node.children.forEach(c => mmLayout(c, depth + 1, leafIdxRef));
+    const first = node.children[0].y;
+    const last = node.children[node.children.length - 1].y;
+    node.y = (first + last) / 2;
+  }
+  node.x = depth * MM_COL_W;
+}
+
+function mmCountLeaves(node) {
+  if (!node.children || node.children.length === 0) return 1;
+  return node.children.reduce((s, c) => s + mmCountLeaves(c), 0);
+}
+
+function mmPctClass(p) { return p >= 70 ? 'pct-high' : p >= 30 ? 'pct-mid' : 'pct-low'; }
+function mmPctTextClass(p) { return p >= 70 ? 'high' : p >= 30 ? 'mid' : 'low'; }
+
+function mmTrunc(s, n) { s = s || ''; return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+
+function mmRenderNode(n) {
+  const cls = `lv-${n.type}`;
+  const pctCls = (typeof n.pct === 'number') ? mmPctClass(n.pct) : '';
+  const sel = (mmSelectedPath === n.path) ? 'selected' : '';
+  let badge = '';
+  if (n.type === 'action') {
+    const colorMap = { done: 'var(--green)', doing: 'var(--orange)', stuck: 'var(--red)', todo: 'var(--lv-gap)' };
+    const fill = colorMap[n.status] || colorMap.todo;
+    return `<g class="mm-node ${cls} ${sel}" transform="translate(${n.x},${n.y})" data-path="${n.path}" onclick="onMmNodeClick('${n.path}')">
+      <rect class="mm-node-bg" x="0" y="0" width="${MM_NODE_W}" height="${MM_NODE_H - 14}" rx="8" ry="8" style="fill:${fill};opacity:0.18;stroke:${fill};stroke-width:1.5;"/>
+      <circle cx="14" cy="${(MM_NODE_H - 14)/2}" r="5" fill="${fill}"/>
+      <text class="mm-node-title" x="26" y="${(MM_NODE_H - 14)/2 + 4}" style="fill:var(--ink);">${escapeXml(mmTrunc(n.title, 20))}</text>
+    </g>`;
+  }
+  const tagText = ({goal:'🎯 ゴール',element:'🧩 要素',milestone:'📍 MS',gap:'📐 ギャップ',commit:'🤝 コミット'}[n.type]) || n.type;
+  const pctText = (typeof n.pct === 'number') ? Math.round(n.pct) + '%' : '';
+  let actionStrip = '';
+  if (n.type === 'commit' && n.children && n.children.length) {
+    actionStrip = n.children.slice(0, 8).map((a, idx) => {
+      const colorMap = { done: 'var(--green)', doing: 'var(--orange)', stuck: 'var(--red)', todo: '#cbd5e1' };
+      const fill = colorMap[a.status] || colorMap.todo;
+      return `<circle class="mm-action-pip" cx="${MM_NODE_W - 12 - idx * 11}" cy="${MM_NODE_H - 8}" r="4" fill="${fill}"/>`;
+    }).join('');
+  }
+  return `<g class="mm-node ${cls} ${pctCls} ${sel}" transform="translate(${n.x},${n.y})" data-path="${n.path}" onclick="onMmNodeClick('${n.path}')">
+    <rect class="mm-node-bg" x="0" y="0" width="${MM_NODE_W}" height="${MM_NODE_H}" rx="9" ry="9"/>
+    <text class="mm-node-tag" x="11" y="14">${escapeXml(tagText)}</text>
+    <text class="mm-node-pct ${mmPctTextClass(n.pct || 0)}" x="${MM_NODE_W - 11}" y="14">${pctText}</text>
+    <text class="mm-node-title" x="11" y="32">${escapeXml(mmTrunc(n.title || '無題', 22))}</text>
+    ${actionStrip}
+  </g>`;
+}
+
+function mmRenderLink(parent, child) {
+  const x1 = parent.x + MM_NODE_W;
+  const y1 = parent.y + MM_NODE_H / 2;
+  const x2 = child.x;
+  const y2 = child.y + (child.type === 'action' ? (MM_NODE_H - 14) / 2 : MM_NODE_H / 2);
+  const midX = (x1 + x2) / 2;
+  return `<path class="mm-link lv-${child.type}" d="M${x1},${y1} C${midX},${y1} ${midX},${y2} ${x2},${y2}"/>`;
+}
+
+function mmRenderAddBtn(parent) {
+  // Add a "＋ 追加" button as a leaf-like node after the last child
+  const x = parent.x + MM_COL_W;
+  const lastChild = parent.children && parent.children.length ? parent.children[parent.children.length - 1] : null;
+  const y = lastChild ? lastChild.y + MM_NODE_H + MM_VGAP : parent.y;
+  const childKindMap = { goal: 'element', element: 'milestone', milestone: 'gap', gap: 'commit', commit: 'action' };
+  const kind = childKindMap[parent.type];
+  if (!kind) return '';
+  const labelMap = { element: '＋ 要素', milestone: '＋ MS', gap: '＋ ギャップ', commit: '＋ コミット', action: '＋ アクション' };
+  return `<g class="mm-add-btn" transform="translate(${x},${y})" onclick="addChild('${parent.path}','${kind}'); setDesignView('mindmap');">
+    <rect class="mm-add-btn-bg" x="0" y="0" width="${MM_NODE_W}" height="${MM_NODE_H - 16}" rx="8" ry="8"/>
+    <text class="mm-add-btn-text" x="${MM_NODE_W/2}" y="${(MM_NODE_H - 16)/2 + 4}" text-anchor="middle">${escapeXml(labelMap[kind])}</text>
+  </g>`;
+}
+
+function escapeXml(s) {
+  return (s == null ? '' : String(s)).replace(/[<>&"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function renderMindmap() {
+  const svg = document.getElementById('mindmap-root');
+  if (!svg) return;
+  if (!state.goal.elements.length) {
+    const w = 800, h = 400;
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    svg.innerHTML = `<text class="mm-empty" x="${w/2}" y="${h/2 - 20}">まだ要素がありません</text>
+      <text class="mm-empty" x="${w/2}" y="${h/2 + 16}" style="font-size:12px;">「ツリー」ビューで「＋ 要素を追加」から始めましょう</text>`;
+    return;
+  }
+
+  const root = mmBuildHierarchy();
+  mmLayout(root);
+
+  // Compute total bounds
+  let maxX = 0, maxY = 0, minY = 0;
+  function walk(n) {
+    if (n.x + MM_NODE_W > maxX) maxX = n.x + MM_NODE_W;
+    if (n.y + MM_NODE_H > maxY) maxY = n.y + MM_NODE_H;
+    if (n.y < minY) minY = n.y;
+    (n.children || []).forEach(walk);
+  }
+  walk(root);
+  const totalW = maxX + MM_PADDING * 2 + MM_COL_W; // extra room for add buttons
+  const totalH = (maxY - minY) + MM_PADDING * 2;
+  const offsetY = MM_PADDING - minY;
+
+  // Apply offsets
+  function applyOffset(n) {
+    n.y = n.y + offsetY;
+    n.x = n.x + MM_PADDING;
+    (n.children || []).forEach(applyOffset);
+  }
+  applyOffset(root);
+
+  // Render
+  let html = '<g>';
+  // Links first
+  function renderLinks(n) {
+    (n.children || []).forEach(c => {
+      html += mmRenderLink(n, c);
+      renderLinks(c);
+    });
+  }
+  renderLinks(root);
+  // Nodes
+  function renderNodes(n) {
+    html += mmRenderNode(n);
+    (n.children || []).forEach(renderNodes);
+  }
+  renderNodes(root);
+  // Add buttons
+  function renderAddButtons(n) {
+    if (n.type !== 'action') html += mmRenderAddBtn(n);
+    (n.children || []).forEach(renderAddButtons);
+  }
+  renderAddButtons(root);
+  html += '</g>';
+  svg.innerHTML = html;
+
+  // ViewBox: initially fit-to-content but if we already have user-set viewBox, preserve it
+  if (!mmViewBox) {
+    mmViewBox = { x: 0, y: 0, w: totalW, h: Math.max(totalH, 400) };
+  }
+  svg.setAttribute('viewBox', `${mmViewBox.x} ${mmViewBox.y} ${mmViewBox.w} ${mmViewBox.h}`);
+}
+
+function mmZoom(factor) {
+  if (!mmViewBox) return;
+  const cx = mmViewBox.x + mmViewBox.w / 2;
+  const cy = mmViewBox.y + mmViewBox.h / 2;
+  mmViewBox.w /= factor;
+  mmViewBox.h /= factor;
+  mmViewBox.x = cx - mmViewBox.w / 2;
+  mmViewBox.y = cy - mmViewBox.h / 2;
+  document.getElementById('mindmap-root').setAttribute('viewBox', `${mmViewBox.x} ${mmViewBox.y} ${mmViewBox.w} ${mmViewBox.h}`);
+}
+function mmReset() {
+  mmViewBox = null;
+  renderMindmap();
+}
+function onMmNodeClick(path) {
+  mmSelectedPath = path;
+  openEditDrawer(path);
+  // Update selection highlight cheaply
+  document.querySelectorAll('#mindmap-root .mm-node').forEach(n => n.classList.remove('selected'));
+  const target = document.querySelector(`#mindmap-root .mm-node[data-path="${path}"]`);
+  if (target) target.classList.add('selected');
+}
+
+// Mindmap pan/zoom interactions
+(function bindMmInteractions() {
+  let panning = false, panStart = null;
+  document.addEventListener('mousedown', e => {
+    const svg = e.target.closest('#mindmap-root');
+    if (!svg) return;
+    if (e.target.closest('.mm-node, .mm-add-btn')) return;
+    if (!mmViewBox) return;
+    panning = true;
+    panStart = { x: e.clientX, y: e.clientY, vbx: mmViewBox.x, vby: mmViewBox.y };
+  });
+  window.addEventListener('mouseup', () => panning = false);
+  window.addEventListener('mousemove', e => {
+    if (!panning) return;
+    const svg = document.getElementById('mindmap-root');
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    const dx = (panStart.x - e.clientX) * (mmViewBox.w / rect.width);
+    const dy = (panStart.y - e.clientY) * (mmViewBox.h / rect.height);
+    mmViewBox.x = panStart.vbx + dx;
+    mmViewBox.y = panStart.vby + dy;
+    svg.setAttribute('viewBox', `${mmViewBox.x} ${mmViewBox.y} ${mmViewBox.w} ${mmViewBox.h}`);
+  });
+  document.addEventListener('wheel', e => {
+    const svg = e.target.closest('#mindmap-root');
+    if (!svg) return;
+    if (!mmViewBox) return;
+    e.preventDefault();
+    mmZoom(e.deltaY < 0 ? 1.12 : 0.88);
+  }, { passive: false });
+})();
+
+// ============================================================
+// Heatmap renderer — nested element/MS/Gap/Commit/Action grid
+// ============================================================
+function hmPctClass(p) { return p >= 70 ? 'pct-high' : p >= 30 ? 'pct-mid' : 'pct-low'; }
+function hmPctTextClass(p) { return p >= 70 ? 'high' : p >= 30 ? 'mid' : 'low'; }
+function hmBarColor(p) {
+  return p >= 70 ? 'linear-gradient(90deg, var(--green), var(--green-text, var(--green)))'
+       : p >= 30 ? 'linear-gradient(90deg, var(--orange), var(--orange-deep))'
+                 : 'linear-gradient(90deg, var(--red), var(--red-deep))';
+}
+
+function renderHeatmap() {
+  const root = document.getElementById('heatmap-root');
+  if (!root) return;
+  if (!state.goal.elements.length) {
+    root.innerHTML = `<div class="hm-empty">まだ何も登録されていません。「ツリー」ビューから始めましょう。</div>`;
+    return;
+  }
+
+  // Stats
+  let elN = 0, msN = 0, gapN = 0, cN = 0, aN = 0, doneN = 0, stuckN = 0;
+  state.goal.elements.forEach(e => {
+    elN++;
+    (e.milestones || []).forEach(m => {
+      msN++;
+      (m.gaps || []).forEach(g => {
+        gapN++;
+        (g.commitments || []).forEach(c => {
+          cN++;
+          (c.actions || []).forEach(a => {
+            aN++;
+            if (a.status === 'done') doneN++;
+            if (isOverdue(a.due) && a.status !== 'done') stuckN++;
+          });
+        });
+      });
+    });
+  });
+
+  let html = `<div class="heatmap-summary">
+    <div class="hm-stat"><div class="lbl">ゴール進捗</div><div class="num" style="color:var(--orange);">${Math.round(goalPct())}%</div></div>
+    <div class="hm-stat"><div class="lbl">要素 / MS</div><div class="num" style="color:var(--lv-element);">${elN} / ${msN}</div></div>
+    <div class="hm-stat"><div class="lbl">ギャップ / コミット</div><div class="num" style="color:var(--lv-commit);">${gapN} / ${cN}</div></div>
+    <div class="hm-stat"><div class="lbl">アクション 完 / 全</div><div class="num" style="color:var(--green);">${doneN} / ${aN}</div></div>
+    <div class="hm-stat"><div class="lbl">滞留</div><div class="num" style="color:${stuckN > 0 ? 'var(--red)' : 'var(--muted)'};">${stuckN}</div></div>
+  </div>`;
+
+  state.goal.elements.forEach((el, ei) => {
+    const ePct = elementPct(el);
+    const elPath = `${ei}`;
+    let elStuck = 0;
+    (el.milestones || []).forEach(m => (m.gaps || []).forEach(g => (g.commitments || []).forEach(c => (c.actions || []).forEach(a => {
+      if (isOverdue(a.due) && a.status !== 'done') elStuck++;
+    }))));
+
+    html += `<div class="hm-element-row">
+      <div class="hm-el-info" onclick="openEditDrawer('${elPath}')">
+        <span class="hm-tag">🧩 要素</span>
+        <span class="hm-title">${escapeHtml(el.title || '無題')}</span>
+        <div class="hm-meta">
+          <span class="hm-pct ${hmPctTextClass(ePct)}">${Math.round(ePct)}%</span>
+          <span class="hm-bar"><span style="width:${ePct}%; background:${hmBarColor(ePct)};"></span></span>
+        </div>
+        ${elStuck > 0 ? `<span class="hm-stuck">⚠ 滞留 ${elStuck} 件</span>` : ''}
+        <div style="font-size:11px; color:var(--muted); margin-top:4px;">現状 ${escapeHtml(el.current||'-')} → 目標 ${escapeHtml(el.target||'-')}</div>
+      </div>
+      <div class="hm-ms-grid">
+        ${(el.milestones || []).map((m, mi) => msCell(m, ei, mi)).join('') || '<div style="color:var(--muted); font-size:12px; padding:14px;">マイルストーン未登録</div>'}
+      </div>
+    </div>`;
+  });
+
+  function msCell(m, ei, mi) {
+    const pct = milestonePct(m);
+    const path = `${ei}.${mi}`;
+    const dl = daysLeft(m.deadline);
+    const dlBadge = dl !== null
+      ? `<div class="ms-deadline ${dl < 0 ? 'warn' : ''}">${dl >= 0 ? '残'+dl+'日' : Math.abs(dl)+'日経過'} （${m.deadline||'-'}）</div>`
+      : '';
+    return `<div class="hm-ms-cell ${hmPctClass(pct)}" onclick="event.stopPropagation(); openEditDrawer('${path}')">
+      <div class="hm-ms-head">
+        <span class="ms-tag">📍 MS</span>
+        <span class="ms-pct ${hmPctTextClass(pct)}">${Math.round(pct)}%</span>
+      </div>
+      <div class="ms-title">${escapeHtml(m.title || '無題')}</div>
+      ${dlBadge}
+      <div class="hm-gap-list">
+        ${(m.gaps || []).map((g, gi) => gapItem(g, ei, mi, gi)).join('') || '<div style="color:var(--muted); font-size:11px;">ギャップ未登録</div>'}
+      </div>
+    </div>`;
+  }
+
+  function gapItem(g, ei, mi, gi) {
+    const pct = gapPct(g);
+    const path = `${ei}.${mi}.${gi}`;
+    // Collect all actions across commitments
+    const actions = [];
+    (g.commitments || []).forEach(c => (c.actions || []).forEach(a => actions.push(a)));
+    const pips = actions.slice(0, 30).map(a => {
+      const overdue = isOverdue(a.due) && a.status !== 'done';
+      const cls = overdue ? 'stuck' : (a.status || 'todo');
+      return `<span class="hm-action-pip ${cls}" title="${escapeHtml(a.title)} (${cls})"></span>`;
+    }).join('');
+    return `<div class="hm-gap-item" onclick="event.stopPropagation(); openEditDrawer('${path}')">
+      <div>
+        <div class="hm-gap-title">📐 ${escapeHtml(g.title || '無題')}${g.deltaText ? ` <span style="color:var(--muted); font-size:10px;">(${escapeHtml(g.deltaText)})</span>` : ''}</div>
+        ${pips ? `<div class="hm-action-strip">${pips}</div>` : ''}
+      </div>
+      <div class="hm-gap-pct ${hmPctTextClass(pct)}">${Math.round(pct)}%</div>
+    </div>`;
+  }
+
+  root.innerHTML = html;
+}
+
+// ============================================================
+// Edit drawer — invoked from mindmap/heatmap clicks
+// ============================================================
+function openEditDrawer(path) {
+  if (!path) return;
+  editDrawerPath = path;
+  const node = getNodeByPath(path);
+  if (!node) return;
+  const parts = path.split('.').map(Number);
+  const lv = parts.length;  // 1=element, 2=ms, 3=gap, 4=commit, 5=action
+  const lvInfo = [
+    null,
+    { tag: '🧩 要素', emoji: '🧩' },
+    { tag: '📍 マイルストーン', emoji: '📍' },
+    { tag: '📐 ギャップ', emoji: '📐' },
+    { tag: '🤝 コミットメント', emoji: '🤝' },
+    { tag: '⚡ アクション', emoji: '⚡' }
+  ][lv];
+  document.getElementById('ed-tag').textContent = lvInfo.emoji;
+  document.getElementById('ed-level-label').textContent = lvInfo.tag;
+
+  const body = document.getElementById('ed-body');
+  let html = `<label>タイトル</label>
+    <input type="text" id="ed-title" value="${escapeHtml(node.title || '')}" placeholder="名前を入力">`;
+
+  if (lv === 1) {
+    html += `<label>現状</label><input type="text" id="ed-current" value="${escapeHtml(node.current||'')}" placeholder="例: 月商300万">
+    <label>目標</label><input type="text" id="ed-target" value="${escapeHtml(node.target||'')}" placeholder="例: 月商500万">`;
+  } else if (lv === 2) {
+    html += `<label>期日</label><input type="date" id="ed-deadline" value="${node.deadline||''}">`;
+  } else if (lv === 3) {
+    html += `<label>差分（埋めるべきギャップ）</label><input type="text" id="ed-deltaText" value="${escapeHtml(node.deltaText||'')}" placeholder="例: +200万">`;
+  } else if (lv === 5) {
+    const status = node.status || 'todo';
+    html += `<label>ステータス</label>
+      <select id="ed-status">
+        <option value="todo" ${status==='todo'?'selected':''}>未着手</option>
+        <option value="doing" ${status==='doing'?'selected':''}>進行中</option>
+        <option value="done" ${status==='done'?'selected':''}>完了</option>
+      </select>
+    <label>期日</label><input type="date" id="ed-due" value="${node.due||''}">
+    <label>週 (YYYY-Www)</label><input type="text" id="ed-week" value="${escapeHtml(node.week||'')}" placeholder="${thisWeekKey()}">
+    <label>実績数</label><input type="number" id="ed-actualNum" value="${node.actualNum ?? ''}" placeholder="数値">
+    <label>目標数</label><input type="number" id="ed-targetNum" value="${node.targetNum ?? ''}" placeholder="数値">`;
+  }
+
+  // Progress display
+  const pcts = [null, elementPct, milestonePct, gapPct, commitPct, null];
+  if (pcts[lv]) {
+    const p = pcts[lv](node);
+    html += `<div class="ed-progress">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:11px; color:var(--muted); font-weight:700; letter-spacing:0.06em;">配下からの集計進捗</span>
+        <span style="font-weight:800; font-size:16px; color:${p>=70?'var(--green-text, var(--green))':p>=30?'var(--orange)':'var(--red-text, var(--red))'};">${Math.round(p)}%</span>
+      </div>
+      <div class="pbar"><span style="width:${p}%; background:${p>=70?'var(--green)':p>=30?'var(--orange)':'var(--red)'};"></span></div>
+    </div>`;
+  }
+
+  body.innerHTML = html;
+
+  // Action buttons
+  const actions = document.getElementById('ed-actions');
+  const childKindMap = { 1: 'milestone', 2: 'gap', 3: 'commit', 4: 'action' };
+  const childKind = childKindMap[lv];
+  const childLabelMap = { milestone: '📍 マイルストーン', gap: '📐 ギャップ', commit: '🤝 コミット', action: '⚡ アクション' };
+  let aHtml = '';
+  if (childKind) {
+    aHtml += `<button class="btn" onclick="edAddChild('${path}','${childKind}')">＋ ${childLabelMap[childKind]}を追加</button>`;
+  }
+  aHtml += `<div class="ed-row">
+    <button class="btn outline" onclick="edSave()">💾 保存</button>
+    <button class="btn danger" onclick="edDelete('${path}')">🗑 削除</button>
+  </div>`;
+  actions.innerHTML = aHtml;
+
+  document.getElementById('edit-drawer').classList.add('open');
+  document.getElementById('edit-drawer').setAttribute('aria-hidden', 'false');
+  document.getElementById('ed-overlay').classList.add('open');
+  // Focus title
+  setTimeout(() => { const t = document.getElementById('ed-title'); if (t) t.focus(); }, 100);
+}
+
+function closeEditDrawer() {
+  editDrawerPath = null;
+  document.getElementById('edit-drawer').classList.remove('open');
+  document.getElementById('edit-drawer').setAttribute('aria-hidden', 'true');
+  document.getElementById('ed-overlay').classList.remove('open');
+}
+
+function edSave() {
+  if (!editDrawerPath) return;
+  const node = getNodeByPath(editDrawerPath);
+  if (!node) return;
+  const parts = editDrawerPath.split('.').map(Number);
+  const lv = parts.length;
+
+  const title = document.getElementById('ed-title');
+  if (title) node.title = title.value.trim();
+
+  if (lv === 1) {
+    node.current = document.getElementById('ed-current').value;
+    node.target = document.getElementById('ed-target').value;
+  } else if (lv === 2) {
+    node.deadline = document.getElementById('ed-deadline').value;
+  } else if (lv === 3) {
+    node.deltaText = document.getElementById('ed-deltaText').value;
+  } else if (lv === 5) {
+    node.status = document.getElementById('ed-status').value;
+    node.due = document.getElementById('ed-due').value;
+    node.week = document.getElementById('ed-week').value;
+    const an = document.getElementById('ed-actualNum').value;
+    const tn = document.getElementById('ed-targetNum').value;
+    node.actualNum = an === '' ? undefined : Number(an);
+    node.targetNum = tn === '' ? undefined : Number(tn);
+  }
+
+  save(); renderAll();
+  toast('保存しました');
+}
+
+function edAddChild(parentPath, kind) {
+  // Reuse addChild but stay in current view
+  const prevView = designView;
+  addChild(parentPath, kind);
+  // After addChild, openPath includes new node, but we stay in current view
+  if (prevView !== 'tree') setDesignView(prevView);
+  // Re-open drawer for the parent (so user can keep adding)
+  openEditDrawer(parentPath);
+  toast(({milestone:'📍 MS', gap:'📐 ギャップ', commit:'🤝 コミット', action:'⚡ アクション'}[kind] || '子') + 'を追加しました');
+}
+
+function edDelete(path) {
+  if (!confirm('このノードを削除しますか？子要素も全部消えます。')) return;
+  const parts = path.split('.').map(Number);
+  let arr;
+  if (parts.length === 1) arr = state.goal.elements;
+  else {
+    const parent = getNodeByPath(parts.slice(0, -1).join('.'));
+    const keys = ['milestones','gaps','commitments','actions'];
+    arr = parent[keys[parts.length - 2]];
+  }
+  arr.splice(parts[parts.length - 1], 1);
+  // openPath truncate
+  const lvDeleted = parts.length - 1;
+  if (parts.length <= 4 && openPath.length > lvDeleted) {
+    const ancestorsMatch = parts.slice(0, lvDeleted).every((p, k) => openPath[k] === p);
+    if (ancestorsMatch) {
+      if (openPath[lvDeleted] === parts[lvDeleted]) openPath = openPath.slice(0, lvDeleted);
+      else if (openPath[lvDeleted] > parts[lvDeleted]) openPath[lvDeleted]--;
+    }
+  }
+  closeEditDrawer();
+  save(); renderAll();
+  toast('削除しました');
 }
 
 // ============================================================
@@ -2974,7 +3912,11 @@ function renderAll() {
   if (active === 'panel-week') renderWeek();
   if (active === 'panel-kpi') renderKpi();
   if (active === 'panel-reflect') renderReflect();
-  if (active === 'panel-overview') renderOverview();
+  if (active === 'panel-design') {
+    if (designView === 'mindmap') renderMindmap();
+    else if (designView === 'heatmap') renderHeatmap();
+    else if (designView === 'overview') renderOverview();
+  }
 }
 
 // ============================================================
