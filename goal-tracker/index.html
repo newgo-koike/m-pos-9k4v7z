@@ -249,6 +249,11 @@
   }
   .h-goal:hover { background: var(--header-input-bg); }
   .h-goal[contenteditable="true"]:focus { outline: 2px solid var(--gold); background: var(--header-input-bg); }
+  .h-goal[contenteditable="true"]:empty::after {
+    content: "あなたのゴールをここに（クリックで編集）";
+    color: var(--header-text-mute); font-style: italic;
+  }
+  .h-goal[contenteditable="true"]:empty:focus::after { content: ""; }
   .h-meta {
     display: flex; gap: 16px; margin-top: 10px;
     font-size: 12px; color: var(--header-text);
@@ -395,6 +400,29 @@
   }
   .cascade-bread .bc-item:hover { background: var(--orange-soft); color: var(--orange); border-color: var(--orange); }
   .cascade-bread .bc-sep { color: var(--muted); font-size: 13px; }
+  .cascade-bread .bc-root::before {
+    content: "🎯 ";
+    pointer-events: none;
+  }
+  .cascade-bread .bc-root[contenteditable="true"] {
+    cursor: text;
+    min-width: 80px;
+    background: var(--card);
+    border: 1px solid var(--line);
+  }
+  .cascade-bread .bc-root[contenteditable="true"]:hover {
+    background: var(--card-hover); color: var(--ink); border-color: var(--line-2);
+  }
+  .cascade-bread .bc-root[contenteditable="true"]:focus {
+    outline: none; background: var(--orange-soft); border-color: var(--orange); color: var(--orange);
+  }
+  .cascade-bread .bc-root[contenteditable="true"]:empty::after {
+    content: "ここをクリックしてゴール名を入力";
+    color: var(--muted); font-style: italic; font-weight: 400;
+  }
+  .cascade-bread .bc-root[contenteditable="true"]:empty:focus::after {
+    content: "";
+  }
 
   /* ---- Cascade row (one level) ---- */
   .cascade-row {
@@ -1065,7 +1093,7 @@
     <div class="h-row">
       <div>
         <div class="h-title">🎯 GOAL TRACKER · Personal OS</div>
-        <div class="h-goal" data-edit="goal.title" contenteditable="true">あなたのゴールをここに（クリックで編集）</div>
+        <div class="h-goal" data-edit="goal.title" contenteditable="true"></div>
         <div class="h-meta">
           <span><b>期日</b><input type="date" data-edit="goal.deadline" value="2026-12-31"></span>
           <span><b>残り</b><span id="days-left">—</span></span>
@@ -1649,7 +1677,7 @@ function presetPersonal() {
 // ---------- preset: blank
 function presetBlank() {
   return shellState({
-    title: 'あなたのゴールをここに（クリックで編集）',
+    title: '',
     deadline: '',
     elements: []
   }, { [monthKeyToday()]: { main: [], breakdown: [], activity: [] } });
@@ -2021,7 +2049,8 @@ function renderTree() {
   let html = '';
 
   // ---- Breadcrumb ----
-  let bc = `<span class="bc-item" onclick="setOpenPath([])">🎯 ${escapeHtml((state.goal.title || 'ゴール').slice(0, 24))}</span>`;
+  const goalTitle = state.goal.title || '';
+  let bc = `<span class="bc-item bc-root" data-edit-bc="goal.title" contenteditable="true" spellcheck="false">${escapeHtml(goalTitle)}</span>`;
   let trace = state.goal;
   for (let lv = 0; lv < openPath.length; lv++) {
     const def = LEVEL_DEFS[lv];
@@ -2187,6 +2216,17 @@ function bindTreeEvents() {
       }
     });
   });
+
+  // Breadcrumb root pill — live two-way sync with header h-goal
+  const bcRoot = document.querySelector('[data-edit-bc="goal.title"]');
+  if (bcRoot && typeof syncGoalTitleFrom === 'function') {
+    bcRoot.addEventListener('input', () => syncGoalTitleFrom(bcRoot));
+    bcRoot.addEventListener('blur', () => syncGoalTitleFrom(bcRoot));
+    bcRoot.addEventListener('keydown', e => {
+      if (e.isComposing || e.keyCode === 229) return;
+      if (e.key === 'Enter') { e.preventDefault(); bcRoot.blur(); }
+    });
+  }
 }
 
 function updateRollups() {
@@ -2574,12 +2614,20 @@ document.querySelectorAll('.ref-tab').forEach(t => {
   });
 });
 
-// Goal title / deadline
-document.querySelector('[data-edit="goal.title"]').addEventListener('blur', e => {
-  state.goal.title = e.target.innerText.trim();
+// Goal title / deadline — live two-way sync between header (h-goal) and breadcrumb (bc-root)
+function syncGoalTitleFrom(sourceEl) {
+  if (!sourceEl) return;
+  const v = sourceEl.innerText;
+  state.goal.title = v.trim();
+  document.querySelectorAll('[data-edit="goal.title"], [data-edit-bc="goal.title"]').forEach(el => {
+    if (el !== sourceEl && el !== document.activeElement) el.textContent = state.goal.title;
+  });
   save();
-});
-document.querySelector('[data-edit="goal.title"]').addEventListener('keydown', e => {
+}
+const _hGoal = document.querySelector('[data-edit="goal.title"]');
+_hGoal.addEventListener('input', () => syncGoalTitleFrom(_hGoal));
+_hGoal.addEventListener('blur', () => syncGoalTitleFrom(_hGoal));
+_hGoal.addEventListener('keydown', e => {
   if (e.isComposing || e.keyCode === 229) return;
   if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
 });
