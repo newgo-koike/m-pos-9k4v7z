@@ -195,67 +195,6 @@
     --separator: #4a5d7e;
   }
 
-  /* ===== ○ Studio Elegant (Dark Neutral) ===== */
-  body[data-theme="studio"] {
-    --ink: #f5f5f5;
-    --bg: #0a0a0c;
-    --paper: #131316;
-    --card: #1a1a1f;
-    --card-hover: rgba(255,255,255,0.04);
-    --navy: #131316;
-    --navy-light: #1a1a1f;
-    --header-text: #d4d4d8;
-    --header-text-mute: #a1a1aa;
-    --header-input-bg: rgba(255,255,255,0.05);
-    --header-input-bd: rgba(255,255,255,0.14);
-    --orange: #c9a961;
-    --orange-soft: rgba(201,169,97,0.15);
-    --orange-soft-strong: rgba(201,169,97,0.28);
-    --orange-deep: #e3c485;
-    --accent-fg: #0a0a0c;
-    --green: #22c55e;
-    --green-soft: rgba(34,197,94,0.18);
-    --green-text: #4ade80;
-    --red: #ef4444;
-    --red-soft: rgba(239,68,68,0.18);
-    --red-deep: #f87171;
-    --red-text: #f87171;
-    --gold: #c9a961;
-    --gold-bright: #e3c485;
-    --line: rgba(255,255,255,0.08);
-    --line-2: rgba(255,255,255,0.16);
-    --muted: #a1a1aa;
-    --total-bg: rgba(255,255,255,0.03);
-    --legend-bg: rgba(255,255,255,0.025);
-    --legend-bd: var(--gold);
-    --kpt-keep-bg: rgba(34,197,94,0.12);
-    --kpt-prob-bg: rgba(239,68,68,0.12);
-    --kpt-try-bg: rgba(59,130,246,0.18);
-    --kpt-try-text: #93c5fd;
-    --action-stuck-bd: #ef4444;
-    --action-stuck-bg: rgba(239,68,68,0.08);
-    --shadow: rgba(0,0,0,0.4);
-    --shadow-strong: rgba(201,169,97,0.18);
-    --tabs-shadow: 0 0 0 1px var(--line) inset;
-    --header-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px var(--line) inset;
-    --hero-glow: rgba(201,169,97,0.35);
-    --bg-noise: none;
-    --lv-goal: #ef4444;
-    --lv-element: #c9a961;
-    --lv-milestone: #e3c485;
-    --lv-gap: #a1a1aa;
-    --lv-commit: #3b82f6;
-    --lv-action: #22c55e;
-    --lv-goal-soft: rgba(239,68,68,0.18);
-    --lv-element-soft: rgba(201,169,97,0.18);
-    --lv-milestone-soft: rgba(227,196,133,0.18);
-    --lv-gap-soft: rgba(161,161,170,0.15);
-    --lv-commit-soft: rgba(59,130,246,0.18);
-    --lv-action-soft: rgba(34,197,94,0.18);
-    --expected-text: #e3c485;
-    --expected-placeholder: #52525b;
-    --separator: #52525b;
-  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
@@ -992,15 +931,20 @@
     position: relative; z-index: 1; line-height: 1.7;
   }
 
-  /* ログアウトボタン（ヘッダー） */
-  .logout-btn {
-    position: absolute; top: 12px; right: 14px;
-    background: var(--header-input-bg); border: 1px solid var(--header-input-bd);
-    color: inherit; padding: 4px 10px; border-radius: 6px;
-    font-size: 11px; cursor: pointer; font-family: inherit;
+  /* ログアウトボタン（ヘッダー上部に配置） */
+  .topbar {
+    display: flex; justify-content: flex-end; align-items: center;
+    margin-bottom: 8px; min-height: 28px;
   }
-  .logout-btn:hover { background: var(--header-input-bd); }
-  .login-user { font-size: 11px; color: var(--header-text-mute); margin-right: 8px; }
+  .logout-btn {
+    background: var(--paper); border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 5px 12px; border-radius: 6px;
+    font-size: 11px; cursor: pointer; font-family: inherit;
+    display: inline-flex; align-items: center;
+  }
+  .logout-btn:hover { background: var(--card-hover); border-color: var(--line-2); }
+  .login-user { font-size: 11px; color: var(--muted); margin-right: 8px; }
 
   /* ========== Settings ========== */
   .settings-grid {
@@ -1111,10 +1055,13 @@
 
 <div class="app">
 
-  <header>
+  <div class="topbar">
     <button class="logout-btn" id="logout-btn" onclick="doLogout()" style="display:none;">
       <span class="login-user" id="login-user-label"></span>ログアウト
     </button>
+  </div>
+
+  <header>
     <div class="h-row">
       <div>
         <div class="h-title">🎯 GOAL TRACKER · Personal OS</div>
@@ -1133,7 +1080,6 @@
           <button class="theme-chip" data-theme-set="default" title="⌂ Default — Light Notion-ish">⌂</button>
           <button class="theme-chip" data-theme-set="cockpit" title="⚔ Gold Cockpit">⚔</button>
           <button class="theme-chip" data-theme-set="cyan" title="◆ Cyan Observatory (Sci-Fi)">◆</button>
-          <button class="theme-chip" data-theme-set="studio" title="○ Studio Elegant">○</button>
         </div>
       </div>
     </div>
@@ -1285,7 +1231,7 @@
     <div class="help-section">
       <h3>🎨 5. テーマ切替・データのバックアップ</h3>
       <ul class="help-list">
-        <li><b>テーマ切替</b>：ヘッダー右の ⌂ ⚔ ◆ ○ で4世界観を切替（Default/Cockpit/Sci-Fi/Studio）</li>
+        <li><b>テーマ切替</b>：ヘッダー右の ⌂ ⚔ ◆ で3世界観を切替（Default/Cockpit/Sci-Fi）</li>
         <li><b>JSON Export/Import</b>：⚙ 設定タブからバックアップ可能。別端末への移行もこれでOK</li>
         <li><b>テンプレート読込</b>：5プリセット（営業／クリエイター／経営者／個人目標／白紙）から選んでスタート</li>
       </ul>
@@ -2661,7 +2607,7 @@ function renderAll() {
 // ============================================================
 // Theme switcher
 // ============================================================
-const THEMES = ['default', 'cockpit', 'cyan', 'studio'];
+const THEMES = ['default', 'cockpit', 'cyan'];
 function applyTheme(name) {
   if (!THEMES.includes(name)) name = 'default';
   document.body.dataset.theme = name;
