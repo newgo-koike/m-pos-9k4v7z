@@ -1547,7 +1547,7 @@
   </header>
 
   <nav class="tabs" role="tablist">
-    <button class="tab active" data-panel="design">🎯 設計</button>
+    <button class="tab active" data-panel="design">🎯 行動設計</button>
     <button class="tab" data-panel="week">⚡ 今週</button>
     <button class="tab" data-panel="kpi">📊 KPI</button>
     <button class="tab" data-panel="reflect">🔄 振り返り</button>
@@ -1560,19 +1560,19 @@
     <div class="cascade-flow" id="flow-counts"></div>
 
     <div class="view-switcher" role="tablist">
-      <button class="view-tab active" data-view="tree" role="tab">🌳 ツリー</button>
-      <button class="view-tab" data-view="overview" role="tab">🗺 全体像</button>
+      <button class="view-tab active" data-view="tree" role="tab">🌳 設計</button>
+      <button class="view-tab" data-view="overview" role="tab">🗺 一覧</button>
       <button class="view-tab" data-view="mindmap" role="tab">🧠 マインドマップ</button>
       <button class="view-tab" data-view="heatmap" role="tab">🔥 ヒートマップ</button>
     </div>
 
     <div class="design-view active" id="view-tree">
-      <p class="view-hint">下の数字を入れると、上のコミット・マイルストーン・ゴールまで進捗が伝わります。タイトルをクリックして編集。</p>
+      <p class="view-hint">ゴールから要素・マイルストーン・ギャップ・コミット・アクションまでをカスケードで設計。タイトルや数字を入れると、上のレベルまで進捗が自動集計されます。</p>
       <div class="tree" id="tree-root"></div>
     </div>
 
     <div class="design-view" id="view-overview">
-      <p class="view-hint">全ノードを縦インデントで一覧。行クリックで該当ノードを「ツリー」ビューで開きます。</p>
+      <p class="view-hint">全ノードを縦インデントで一覧表示。行クリックで該当ノードを「設計」ビューで開きます。</p>
       <div id="overview-root"></div>
     </div>
 
@@ -1599,7 +1599,7 @@
   <section class="panel" id="panel-week">
     <div class="panel-head">
       <h2>⚡ 今週のアクション</h2>
-      <p>「今週これとこれをやる」を週単位で管理。ツリーから自動的に集まります。</p>
+      <p>「今週これとこれをやる」を週単位で管理。行動設計から自動的に集まります。</p>
     </div>
     <div class="week-tabs" id="week-tabs"></div>
     <div id="week-content"></div>
@@ -1688,7 +1688,7 @@
       <h3>🚀 2. 最初の30分で立ち上げる</h3>
       <ol class="help-list">
         <li><b>ゴールを書く</b>：ヘッダーの「あなたのゴール…」をクリック → 1年後の到達点を1行で書く（例：2026年12月までに月商300万を3ヶ月連続で達成する）</li>
-        <li><b>要素を3〜5個に分解</b>：ツリータブで「＋ 要素を追加」。ゴールを構成する大きな柱を入れる（例：見込み客10名／成約率50%／紹介ルート構築）</li>
+        <li><b>要素を3〜5個に分解</b>：行動設計タブの「設計」ビューで「＋ 要素を追加」。ゴールを構成する大きな柱を入れる（例：見込み客10名／成約率50%／紹介ルート構築）</li>
         <li><b>マイルストーン</b>：各要素に対して「3ヶ月後の到達点」を1〜2個</li>
         <li><b>ギャップ</b>：現状とマイルストーンの差を数字で（例：+4名、+7件、+50pt）</li>
         <li><b>コミットメント</b>：そのギャップを埋めるために「こうする！」と決める（例：毎月10件の紹介依頼面談を実施）</li>
@@ -1704,7 +1704,7 @@
         <tr><td>毎日</td><td>1〜3分</td><td>⚡今週タブで進捗チェック・数字入力・チェックボックス</td></tr>
         <tr><td>週末（金 or 日）</td><td>15分</td><td>① 数字を確定 → ② 🔄振り返りタブでKPT記入 → ③ 滞留アクション処理 → ④ 翌週のアクション3〜5件設計</td></tr>
         <tr><td>月末</td><td>60分</td><td>📊KPIタブで月次達成率確認 → 🔄月次KPT → 課題進捗 → マイルストーンへの距離 → 翌月テーマ</td></tr>
-        <tr><td>3ヶ月</td><td>90分</td><td>🌳ツリーを全体見直し（要素・マイルストーン・コミットを再設計）</td></tr>
+        <tr><td>3ヶ月</td><td>90分</td><td>🎯 行動設計を全体見直し（要素・マイルストーン・コミットを再設計）</td></tr>
       </table>
     </div>
 
@@ -2790,7 +2790,7 @@ function renderWeek() {
   const [s, e] = activeWeek === 'unscheduled' ? [null, null] : weekRangeFromKey(activeWeek);
   const content = document.getElementById('week-content');
   if (list.length === 0) {
-    content.innerHTML = `<div class="week-block"><div class="empty">この週のアクションはまだありません。<br>ツリーから追加するか、下のボタンで「未設定」に作成してください。</div></div>
+    content.innerHTML = `<div class="week-block"><div class="empty">この週のアクションはまだありません。<br>「行動設計」から追加するか、下のボタンで「未設定」に作成してください。</div></div>
     <button class="add-btn" onclick="quickAddActionForWeek()">＋ この週に新規アクション（要素未指定）</button>`;
     return;
   }
@@ -3174,7 +3174,7 @@ function renderOverview() {
   const root = document.getElementById('overview-root');
   if (!root) return;
   if (!state.goal.elements.length) {
-    root.innerHTML = `<div class="cascade-empty" style="margin: 30px 0; padding: 50px 20px;">まだ何も登録されていません。「🌳 ツリー」タブから始めましょう。</div>`;
+    root.innerHTML = `<div class="cascade-empty" style="margin: 30px 0; padding: 50px 20px;">まだ何も登録されていません。「🌳 設計」ビューから始めましょう。</div>`;
     return;
   }
 
@@ -3402,7 +3402,7 @@ function renderMindmap() {
     const w = 800, h = 400;
     svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
     svg.innerHTML = `<text class="mm-empty" x="${w/2}" y="${h/2 - 20}">まだ要素がありません</text>
-      <text class="mm-empty" x="${w/2}" y="${h/2 + 16}" style="font-size:12px;">「ツリー」ビューで「＋ 要素を追加」から始めましょう</text>`;
+      <text class="mm-empty" x="${w/2}" y="${h/2 + 16}" style="font-size:12px;">「設計」ビューで「＋ 要素を追加」から始めましょう</text>`;
     return;
   }
 
@@ -3532,7 +3532,7 @@ function renderHeatmap() {
   const root = document.getElementById('heatmap-root');
   if (!root) return;
   if (!state.goal.elements.length) {
-    root.innerHTML = `<div class="hm-empty">まだ何も登録されていません。「ツリー」ビューから始めましょう。</div>`;
+    root.innerHTML = `<div class="hm-empty">まだ何も登録されていません。「設計」ビューから始めましょう。</div>`;
     return;
   }
 
@@ -3804,7 +3804,7 @@ function completeGoal() {
     ''
   );
   if (summary === null) return; // cancelled
-  if (!confirm(`本当にアーカイブしますか？\n\n現在の要素ツリー・KPI・振り返りはすべて「過去のゴール」として保管され、新しい空のゴールから始まります。`)) return;
+  if (!confirm(`本当にアーカイブしますか？\n\n現在の行動設計（要素以下）・KPI・振り返りはすべて「過去のゴール」として保管され、新しい空のゴールから始まります。`)) return;
 
   if (!Array.isArray(state.archive)) state.archive = [];
   state.archive.push({
