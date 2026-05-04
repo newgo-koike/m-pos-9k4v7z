@@ -10,6 +10,6 @@
 // setup.sql を Supabase の SQL Editor で実行してください。
 // ============================================================
 const SUPABASE_CONFIG = {
-  url: 'https://YOUR_PROJECT.supabase.co',
-  anonKey: 'YOUR_ANON_KEY'
+  url: 'https://kqumhqcbgfwwichozqqc.supabase.co',
+  anonKey: 'sb_publishable_pinS3O3UwLGttnkZEm2G9w_bdRZw6Wg'
 };
