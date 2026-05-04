@@ -729,83 +729,133 @@
 
   /* ========== KPI panel ========== */
   .kpi-controls {
-    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
     background: var(--paper); border: 1px solid var(--line);
-    padding: 12px 16px; border-radius: 10px;
-    margin-bottom: 14px;
+    padding: 14px 18px; border-radius: 10px;
+    margin-bottom: 16px;
   }
-  .kpi-controls label { font-size: 12px; color: var(--muted); }
+  .kpi-controls label { font-size: 12.5px; color: var(--muted); font-weight: 600; }
   .kpi-controls input, .kpi-controls select {
-    border: 1px solid var(--line); padding: 5px 9px; border-radius: 5px;
-    font-size: 13px; background: var(--card); color: var(--ink); font-family: inherit;
+    border: 1.5px solid var(--line); padding: 7px 12px; border-radius: 6px;
+    font-size: 13.5px; background: var(--paper); color: var(--ink); font-family: inherit;
+    transition: border-color 0.12s;
+  }
+  .kpi-controls input:hover, .kpi-controls select:hover { border-color: var(--line-2); }
+  .kpi-controls input:focus, .kpi-controls select:focus {
+    outline: none; border-color: var(--orange); background: var(--orange-soft);
   }
   .kpi-section {
     background: var(--paper); border: 1px solid var(--line);
-    border-radius: 12px; padding: 18px 20px;
+    border-radius: 12px; padding: 18px 20px 16px;
     margin-bottom: 14px;
   }
-  .kpi-section h3 {
-    font-size: 14px; color: var(--ink); margin-bottom: 10px;
-    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  .kpi-section-head {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .kpi-section-head h3 {
+    font-size: 16px; font-weight: 800; color: var(--ink);
+    margin-bottom: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .kpi-section-head .section-hint {
+    font-size: 12px; color: var(--muted); font-weight: 500;
+    padding-left: 26px;
   }
   .section-label {
-    padding: 2px 6px; margin: -2px -6px;
-    border-radius: 4px; cursor: text;
+    padding: 3px 8px; margin: -3px -8px;
+    border-radius: 5px; cursor: text;
+    border: 1px dashed transparent;
+    transition: border-color 0.12s, background 0.12s;
   }
-  .section-label:hover { background: var(--card-hover); }
-  .section-label[contenteditable="true"]:focus { outline: 2px solid var(--orange); background: var(--orange-soft); }
-  .section-hint { font-size: 11px; color: var(--muted); font-weight: 400; letter-spacing: 0; }
+  .section-label:hover { background: var(--card-hover); border-color: var(--line); }
+  .section-label[contenteditable="true"]:focus { outline: none; border: 1px solid var(--orange); background: var(--orange-soft); }
+  .kpi-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--card);
+  }
   table.kpi {
     width: 100%; border-collapse: collapse;
-    font-size: 12.5px;
+    font-size: 13px;
   }
   table.kpi th, table.kpi td {
-    border: 1px solid var(--line);
-    padding: 6px 8px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 7px 9px;
     text-align: right;
+    vertical-align: middle;
   }
+  table.kpi th:last-child, table.kpi td:last-child { border-right: none; }
+  table.kpi tr:last-child td { border-bottom: none; }
   table.kpi th {
     background: var(--legend-bg); font-weight: 700; color: var(--ink);
     font-size: 11px; letter-spacing: 0.04em;
+    padding: 9px 9px;
+    border-bottom: 2px solid var(--line);
+    position: sticky; top: 0; z-index: 1;
   }
+  table.kpi th.col-name, table.kpi td.col-name,
+  table.kpi th.col-name + th, table.kpi td.col-name + td { text-align: left; }
   table.kpi td:first-child, table.kpi th:first-child { text-align: left; }
+  table.kpi tbody tr:hover { background: var(--card-hover); }
   table.kpi td input {
-    border: none; background: transparent;
+    border: 1px solid transparent;
+    background: transparent;
     width: 100%; text-align: right;
-    font-size: 12.5px;
+    font-size: 13px;
+    padding: 5px 8px;
+    border-radius: 4px;
     font-family: inherit;
     color: var(--ink);
+    transition: all 0.12s;
   }
-  table.kpi td input:focus { outline: 1px solid var(--orange); background: var(--orange-soft); }
+  table.kpi td input::placeholder {
+    color: var(--muted);
+    opacity: 0.6;
+  }
+  table.kpi td input:hover {
+    border-color: var(--line-2);
+    background: var(--paper);
+  }
+  table.kpi td input:focus {
+    outline: none;
+    border-color: var(--orange);
+    background: var(--orange-soft);
+  }
   table.kpi td.total { font-weight: 800; background: var(--total-bg); color: var(--ink); }
   table.kpi td.total.expected { color: var(--expected-text); font-weight: 700; }
   table.kpi td.pct {
     font-weight: 700;
     text-align: center;
-    font-size: 11.5px;
+    font-size: 12px;
   }
   /* 2-row cell: 決定（上） / 見込（下） */
-  table.kpi td.cell-dual { padding: 2px 4px; }
+  table.kpi td.cell-dual { padding: 3px 5px; }
   table.kpi td.cell-dual input {
     display: block;
-    font-size: 11.5px;
-    padding: 1px 4px;
+    font-size: 12px;
+    padding: 3px 6px;
     line-height: 1.4;
+    margin-bottom: 1px;
   }
-  table.kpi td.cell-dual input.confirmed { color: var(--ink); font-weight: 600; }
+  table.kpi td.cell-dual input.confirmed { color: var(--ink); font-weight: 700; }
   table.kpi td.cell-dual input.expected {
     color: var(--expected-text);
     font-style: italic;
     border-top: 1px dotted var(--line);
-    margin-top: 1px;
-    padding-top: 1px;
+    margin-top: 2px;
+    padding-top: 3px;
   }
   table.kpi td.cell-dual input.expected::placeholder { color: var(--expected-placeholder); font-style: normal; }
   .kpi-legend {
-    font-size: 11px; color: var(--muted);
-    margin-bottom: 8px; padding: 6px 10px;
-    background: var(--legend-bg); border-radius: 6px;
+    font-size: 11.5px; color: var(--muted);
+    margin-bottom: 10px; padding: 8px 12px;
+    background: var(--legend-bg); border-radius: 7px;
     border-left: 3px solid var(--legend-bd);
+    line-height: 1.6;
   }
   .kpi-legend b { color: var(--ink); margin-right: 4px; }
   .kpi-legend i { color: var(--expected-text); font-style: italic; }
@@ -815,6 +865,40 @@
 
   .row-actions { display: flex; gap: 4px; align-items: center; justify-content: flex-end; }
   .row-name input { font-weight: 600; }
+  table.kpi .col-actions { width: 40px; }
+
+  /* KPI add-row button (prominent) */
+  .kpi-add-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%;
+    padding: 12px 18px;
+    margin-top: 10px;
+    border: 2px dashed var(--line);
+    background: transparent;
+    color: var(--muted);
+    border-radius: 9px;
+    font-size: 13.5px; font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .kpi-add-btn:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+    background: var(--orange-soft);
+    transform: translateY(-1px);
+  }
+  .kpi-add-btn:active { transform: translateY(0); }
+  .kpi-add-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    background: var(--orange);
+    color: var(--accent-fg);
+    border-radius: 50%;
+    font-size: 14px; font-weight: 900;
+    font-family: inherit;
+  }
+  .kpi-add-btn:hover .kpi-add-icon { background: var(--orange-deep, var(--orange)); }
 
   /* ========== Reflection panel ========== */
   .ref-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
@@ -1619,31 +1703,49 @@
     </div>
 
     <div class="kpi-section">
-      <h3>📈 <span class="section-label" data-label="main">主要指標 (Outcome)</span> <button class="btn-mini" title="行を追加" onclick="addKpiRow('main')">＋</button> <span class="section-hint">— 売上・成果・到達点など、最終的に追う数字</span></h3>
-      <div class="kpi-legend">各セル：上段 <b>決定</b>（確定済み） / 下段 <i>見込</i>（パイプライン・予定）。<b>決定計</b>＝確定累計、<b>見込計</b>＝予定累計、<b>着地%</b>＝(決定+見込)÷目標。</div>
-      <table class="kpi" id="kpi-main"><thead><tr>
-        <th>項目</th><th>単位</th><th>目標</th>
-        <th>1週</th><th>2週</th><th>3週</th><th>4週</th><th>5週</th>
-        <th>決定計</th><th>見込計</th><th>着地%</th><th></th>
-      </tr></thead><tbody></tbody></table>
+      <div class="kpi-section-head">
+        <h3>📈 <span class="section-label" data-label="main">主要指標 (Outcome)</span></h3>
+        <p class="section-hint">売上・成果・到達点など、最終的に追う数字</p>
+      </div>
+      <div class="kpi-legend">📝 各セル：上段 <b>決定</b>（確定済み） ／ 下段 <i>見込</i>（パイプライン・予定）。 <b>決定計</b>＝確定累計、<b>見込計</b>＝予定累計、<b>着地%</b>＝(決定+見込)÷目標</div>
+      <div class="kpi-table-wrap">
+        <table class="kpi" id="kpi-main"><thead><tr>
+          <th class="col-name">項目名</th><th>単位</th><th>目標</th>
+          <th>1週</th><th>2週</th><th>3週</th><th>4週</th><th>5週</th>
+          <th>決定計</th><th>見込計</th><th>着地%</th><th class="col-actions"></th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+      <button class="kpi-add-btn" onclick="addKpiRow('main')"><span class="kpi-add-icon">＋</span> 行を追加</button>
     </div>
 
     <div class="kpi-section">
-      <h3>📦 <span class="section-label" data-label="breakdown">内訳・カテゴリ別</span> <button class="btn-mini" title="行を追加" onclick="addKpiRow('breakdown')">＋</button> <span class="section-hint">— 主要指標のカテゴリ分解（商品別・サービス別・領域別）</span></h3>
-      <table class="kpi" id="kpi-breakdown"><thead><tr>
-        <th>項目</th><th>単位</th><th>目標</th>
-        <th>1週</th><th>2週</th><th>3週</th><th>4週</th><th>5週</th>
-        <th>決定計</th><th>見込計</th><th>着地%</th><th></th>
-      </tr></thead><tbody></tbody></table>
+      <div class="kpi-section-head">
+        <h3>📦 <span class="section-label" data-label="breakdown">内訳・カテゴリ別</span></h3>
+        <p class="section-hint">主要指標のカテゴリ分解（商品別・サービス別・領域別）</p>
+      </div>
+      <div class="kpi-table-wrap">
+        <table class="kpi" id="kpi-breakdown"><thead><tr>
+          <th class="col-name">項目名</th><th>単位</th><th>目標</th>
+          <th>1週</th><th>2週</th><th>3週</th><th>4週</th><th>5週</th>
+          <th>決定計</th><th>見込計</th><th>着地%</th><th class="col-actions"></th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+      <button class="kpi-add-btn" onclick="addKpiRow('breakdown')"><span class="kpi-add-icon">＋</span> 行を追加</button>
     </div>
 
     <div class="kpi-section">
-      <h3>🛠 <span class="section-label" data-label="activity">行動量 (Process)</span> <button class="btn-mini" title="行を追加" onclick="addKpiRow('activity')">＋</button> <span class="section-hint">— 自分でコントロールできるアクション量（先行指標）</span></h3>
-      <table class="kpi" id="kpi-activity"><thead><tr>
-        <th>項目</th><th>単位</th><th>目標</th>
-        <th>1週</th><th>2週</th><th>3週</th><th>4週</th><th>5週</th>
-        <th>決定計</th><th>見込計</th><th>着地%</th><th></th>
-      </tr></thead><tbody></tbody></table>
+      <div class="kpi-section-head">
+        <h3>🛠 <span class="section-label" data-label="activity">行動量 (Process)</span></h3>
+        <p class="section-hint">自分でコントロールできるアクション量（先行指標）</p>
+      </div>
+      <div class="kpi-table-wrap">
+        <table class="kpi" id="kpi-activity"><thead><tr>
+          <th class="col-name">項目名</th><th>単位</th><th>目標</th>
+          <th>1週</th><th>2週</th><th>3週</th><th>4週</th><th>5週</th>
+          <th>決定計</th><th>見込計</th><th>着地%</th><th class="col-actions"></th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+      <button class="kpi-add-btn" onclick="addKpiRow('activity')"><span class="kpi-add-icon">＋</span> 行を追加</button>
     </div>
   </section>
 
@@ -2853,11 +2955,19 @@ function quickAddActionForWeek() {
 // KPI panel
 // ============================================================
 function ensureKpiMonth(month) {
+  let created = false;
   if (!state.kpi[month]) {
     state.kpi[month] = { main: [], breakdown: [], activity: [] };
+    created = true;
   }
   ['main','breakdown','activity'].forEach(s => {
     if (!Array.isArray(state.kpi[month][s])) state.kpi[month][s] = [];
+    if (created && state.kpi[month][s].length === 0) {
+      // Default: prefill 3 blank rows for first-time use of this month
+      for (let i = 0; i < 3; i++) {
+        state.kpi[month][s].push({ id: uid(), name: '', unit: '', target: 0, weeks: [{c:0,e:0},{c:0,e:0},{c:0,e:0},{c:0,e:0},{c:0,e:0}] });
+      }
+    }
     state.kpi[month][s].forEach(normalizeKpiRow);
   });
   return state.kpi[month];
@@ -2910,7 +3020,7 @@ function renderKpi() {
 function renderKpiSection(section, rows) {
   const tbody = document.querySelector('#kpi-' + section + ' tbody');
   if (!rows || rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; color:#9b9a97; padding:20px;">行がありません。＋ボタンで追加</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; color:var(--muted); padding:24px; font-size:12px;">下の「＋ 行を追加」ボタンから項目を作成してください</td></tr>`;
     return;
   }
   tbody.innerHTML = rows.map((r, idx) => {
@@ -2976,13 +3086,19 @@ function copyPrevMonthKpi() {
   const prevD = new Date(y, m - 2, 1);
   const prev = prevD.getFullYear() + '-' + pad(prevD.getMonth() + 1);
   if (!state.kpi[prev]) { toast(prev + ' のデータがありません'); return; }
+  if (!confirm(`${prev} の項目を ${kpiMonth} に丸ごとコピーします。\n${kpiMonth} の現在の入力（決定・見込の数値含む全項目）はすべて上書きされます。\n\nよろしいですか？`)) return;
   const cur = ensureKpiMonth(kpiMonth);
   ['main','breakdown','activity'].forEach(s => {
-    if (cur[s].length > 0 && !confirm(s + ' の既存データを上書きしますか？')) return;
-    cur[s] = state.kpi[prev][s].map(r => ({ id: uid(), name: r.name, unit: r.unit, target: r.target, weeks: [{c:0,e:0},{c:0,e:0},{c:0,e:0},{c:0,e:0},{c:0,e:0}] }));
+    cur[s] = (state.kpi[prev][s] || []).map(r => ({
+      id: uid(),
+      name: r.name || '',
+      unit: r.unit || '',
+      target: r.target || 0,
+      weeks: [{c:0,e:0},{c:0,e:0},{c:0,e:0},{c:0,e:0},{c:0,e:0}]
+    }));
   });
   save(); renderKpi();
-  toast('前月の項目をコピーしました');
+  toast('前月の項目をコピーしました（数値はリセット）');
 }
 
 // ============================================================
