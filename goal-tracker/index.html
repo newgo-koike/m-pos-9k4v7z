@@ -2234,6 +2234,8 @@ function bindTreeEvents() {
           save();
         });
         field.addEventListener('keydown', e => {
+          // Skip while IME is composing — Enter during 変換確定 must not trigger blur
+          if (e.isComposing || e.keyCode === 229) return;
           if (e.key === 'Enter') { e.preventDefault(); field.blur(); }
         });
       }
@@ -2343,7 +2345,10 @@ function renderWeek() {
       node[field] = el.innerText.trim();
       save();
     });
-    el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); el.blur(); } });
+    el.addEventListener('keydown', e => {
+      if (e.isComposing || e.keyCode === 229) return;
+      if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+    });
   });
 }
 
@@ -2416,7 +2421,10 @@ function renderKpi() {
       state.kpiLabels[key] = v || DEFAULT_KPI_LABELS[key];
       save();
     };
-    el.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); el.blur(); } };
+    el.onkeydown = e => {
+      if (e.isComposing || e.keyCode === 229) return;
+      if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+    };
   });
   ['main','breakdown','activity'].forEach(section => renderKpiSection(section, data[section]));
 }
@@ -2626,6 +2634,7 @@ document.querySelector('[data-edit="goal.title"]').addEventListener('blur', e =>
   save();
 });
 document.querySelector('[data-edit="goal.title"]').addEventListener('keydown', e => {
+  if (e.isComposing || e.keyCode === 229) return;
   if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
 });
 document.querySelector('[data-edit="goal.deadline"]').addEventListener('change', e => {
