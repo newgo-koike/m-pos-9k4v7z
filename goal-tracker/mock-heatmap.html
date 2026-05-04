@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Goal Tracker — Heatmap Mock (②C案)</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --paper: #ffffff;
+    --ink: #1f2937;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --line-2: #d1d5db;
+    --orange: #f59e0b;
+    --gold: #c9a961;
+    --red: #ef4444;
+    --green: #22c55e;
+    --blue: #3b82f6;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+    background: var(--bg); color: var(--ink);
+    min-height: 100vh; padding: 24px;
+    line-height: 1.5; font-size: 14px;
+  }
+  .container { max-width: 1280px; margin: 0 auto; }
+
+  header.head {
+    background: var(--paper); border: 1px solid var(--line);
+    padding: 18px 22px; border-radius: 12px; margin-bottom: 18px;
+    box-shadow: var(--shadow);
+  }
+  .head .crumb {
+    font-size: 11px; letter-spacing: 0.16em; color: var(--orange);
+    margin-bottom: 6px;
+  }
+  .head h1 { font-size: 22px; font-weight: 800; }
+  .head .meta { display: flex; gap: 18px; margin-top: 8px; font-size: 12px; color: var(--muted); }
+
+  .summary-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    margin-bottom: 18px;
+  }
+  .summary-card {
+    background: var(--paper); border: 1px solid var(--line);
+    padding: 14px 16px; border-radius: 10px; box-shadow: var(--shadow);
+  }
+  .summary-card .lbl { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+  .summary-card .num { font-size: 26px; font-weight: 800; margin-top: 4px; }
+  .summary-card .num.green { color: var(--green); }
+  .summary-card .num.orange { color: var(--orange); }
+  .summary-card .num.red { color: var(--red); }
+  .summary-card .num.blue { color: var(--blue); }
+
+  .heatmap {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 12px; padding: 20px; box-shadow: var(--shadow);
+  }
+  .heatmap h2 {
+    font-size: 14px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+  .heatmap h2 small { font-weight: 400; margin-left: 8px; }
+
+  .row-element {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 14px;
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+  }
+  .row-element:first-of-type { border-top: none; padding-top: 8px; }
+
+  .el-info {
+    display: flex; flex-direction: column; gap: 4px;
+    padding-right: 12px; border-right: 2px solid var(--line);
+  }
+  .el-info .el-tag {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+    color: var(--orange); text-transform: uppercase;
+  }
+  .el-info .el-title { font-size: 14px; font-weight: 700; line-height: 1.35; }
+  .el-info .el-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+  .el-info .el-pct {
+    font-size: 16px; font-weight: 800;
+  }
+  .el-info .el-pct.green { color: var(--green); }
+  .el-info .el-pct.orange { color: var(--orange); }
+  .el-info .el-pct.red { color: var(--red); }
+  .el-info .el-bar {
+    flex: 1; height: 5px; background: var(--line);
+    border-radius: 3px; overflow: hidden;
+  }
+  .el-info .el-bar > span {
+    display: block; height: 100%; border-radius: 3px;
+    transition: width 0.3s;
+  }
+
+  .ms-grid {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .ms-cell {
+    flex: 1 1 220px; min-width: 200px;
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 8px; padding: 10px;
+    display: flex; flex-direction: column; gap: 6px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .ms-cell:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+  .ms-cell .ms-head {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.06em;
+  }
+  .ms-cell .ms-pct {
+    font-size: 13px; font-weight: 800;
+  }
+  .ms-cell.green .ms-pct { color: var(--green); }
+  .ms-cell.orange .ms-pct { color: var(--orange); }
+  .ms-cell.red .ms-pct { color: var(--red); }
+  .ms-cell.green { border-left: 4px solid var(--green); }
+  .ms-cell.orange { border-left: 4px solid var(--orange); }
+  .ms-cell.red { border-left: 4px solid var(--red); }
+  .ms-cell .ms-title {
+    font-size: 13px; font-weight: 600; color: var(--ink);
+    line-height: 1.4;
+  }
+  .ms-cell .gap-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(28px, 1fr));
+    gap: 3px; margin-top: 4px;
+  }
+  .gap-cell {
+    aspect-ratio: 1; min-height: 28px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.15s;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.95);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    position: relative;
+  }
+  .gap-cell:hover { transform: scale(1.15); z-index: 2; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+
+  /* Heatmap colors — 進捗段階 */
+  .h-0   { background: #fee2e2; color: var(--red) !important; text-shadow: none !important; }
+  .h-20  { background: #fca5a5; }
+  .h-40  { background: #fbbf24; }
+  .h-60  { background: #84cc16; }
+  .h-80  { background: #22c55e; }
+  .h-100 { background: #15803d; }
+
+  .legend {
+    margin-top: 18px; padding: 14px 18px;
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 10px;
+    display: flex; gap: 18px; align-items: center;
+    font-size: 11px; color: var(--muted);
+  }
+  .legend strong { color: var(--ink); margin-right: 6px; font-size: 12px; }
+  .legend .scale { display: flex; gap: 2px; }
+  .legend .scale span {
+    width: 24px; height: 16px; border-radius: 2px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.95);
+  }
+
+  .tip {
+    position: fixed; pointer-events: none; z-index: 100;
+    background: rgba(15,15,15,0.95); color: #fff;
+    padding: 8px 12px; border-radius: 6px;
+    font-size: 12px; line-height: 1.5;
+    max-width: 280px;
+    opacity: 0; transition: opacity 0.15s;
+  }
+  .tip.show { opacity: 1; }
+  .tip .tip-t { font-weight: 700; color: #fbbf24; margin-bottom: 4px; }
+  .tip .tip-m { color: #cbd5e1; font-size: 11px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header class="head">
+    <div class="crumb">🗺 ヒートマップ案 (②C) — 進捗を色分けで一目把握</div>
+    <h1>2026年12月までに月商300万を3ヶ月連続で達成する</h1>
+    <div class="meta">
+      <span><b>残り</b>：212日</span>
+      <span><b>ゴール進捗</b>：48%</span>
+      <span><b>更新</b>：5/4 14:32</span>
+    </div>
+  </header>
+
+  <div class="summary-row">
+    <div class="summary-card">
+      <div class="lbl">要素数</div>
+      <div class="num blue">5</div>
+    </div>
+    <div class="summary-card">
+      <div class="lbl">マイルストーン</div>
+      <div class="num blue">7</div>
+    </div>
+    <div class="summary-card">
+      <div class="lbl">進捗70%以上</div>
+      <div class="num green">2</div>
+    </div>
+    <div class="summary-card">
+      <div class="lbl">進捗30%未満（要注意）</div>
+      <div class="num red">2</div>
+    </div>
+  </div>
+
+  <div class="heatmap" id="heatmap-root"></div>
+
+  <div class="legend">
+    <strong>進捗ヒートマップ</strong>
+    <span>遅延 / 危険</span>
+    <div class="scale">
+      <span class="h-0">0</span>
+      <span class="h-20">20</span>
+      <span class="h-40">40</span>
+      <span class="h-60">60</span>
+      <span class="h-80">80</span>
+      <span class="h-100">100</span>
+    </div>
+    <span>順調 / 完了</span>
+  </div>
+
+</div>
+
+<div class="tip" id="tip"></div>
+
+<script>
+const data = {
+  elements: [
+    { title: '見込み客導線', pct: 65, milestones: [
+      { title: '見込み7名・商談15件', pct: 70, gaps: [
+        { title: '+4名 リスト化', pct: 80 },
+        { title: '+7件 商談化', pct: 60 },
+        { title: 'CRM入力', pct: 90 }
+      ]},
+      { title: 'クロージング率30%', pct: 60, gaps: [
+        { title: '提案資料更新', pct: 75 },
+        { title: 'ロープレ実施', pct: 45 }
+      ]}
+    ]},
+    { title: '成約率改善（50%到達）', pct: 35, milestones: [
+      { title: '半期で50%突破', pct: 35, gaps: [
+        { title: 'ヒアリング深掘り', pct: 40 },
+        { title: '価格表現の見直し', pct: 30 },
+        { title: 'クロージングトーク改訂', pct: 25 },
+        { title: 'お試しプラン設計', pct: 50 }
+      ]}
+    ]},
+    { title: '紹介ルート構築', pct: 78, milestones: [
+      { title: '月6名安定獲得', pct: 80, gaps: [
+        { title: '紹介依頼トーク', pct: 85 },
+        { title: '紹介者へのお礼制度', pct: 75 },
+        { title: '紹介後フォロー', pct: 70 }
+      ]}
+    ]},
+    { title: 'リピート単価UP', pct: 25, milestones: [
+      { title: '2案目導線確立', pct: 25, gaps: [
+        { title: '初回後フォロー設計', pct: 25 },
+        { title: '2案目商品定義', pct: 15 },
+        { title: 'タイミング設計', pct: 35 }
+      ]}
+    ]},
+    { title: 'ブランディング', pct: 50, milestones: [
+      { title: 'SNS導線強化', pct: 55, gaps: [
+        { title: '週3投稿継続', pct: 60 },
+        { title: 'プロフ最適化', pct: 50 }
+      ]},
+      { title: 'リアルメディア', pct: 45, gaps: [
+        { title: '取材／登壇1件', pct: 30 },
+        { title: 'ニュースレター', pct: 60 }
+      ]}
+    ]}
+  ]
+};
+
+function escapeHtml(s) { return (s||'').replace(/[<>&"]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+function pctClass(p) { return p >= 70 ? 'green' : p >= 30 ? 'orange' : 'red'; }
+function pctBucket(p) {
+  if (p >= 90) return 'h-100';
+  if (p >= 70) return 'h-80';
+  if (p >= 50) return 'h-60';
+  if (p >= 30) return 'h-40';
+  if (p >= 10) return 'h-20';
+  return 'h-0';
+}
+function pctColor(p) {
+  return p >= 70 ? 'var(--green)' : p >= 30 ? 'var(--orange)' : 'var(--red)';
+}
+function lerpColor(p) {
+  // gradient red→orange→green
+  if (p >= 70) return `linear-gradient(90deg, #84cc16, #22c55e)`;
+  if (p >= 30) return `linear-gradient(90deg, #fbbf24, #f59e0b)`;
+  return `linear-gradient(90deg, #fca5a5, #ef4444)`;
+}
+
+function build() {
+  const root = document.getElementById('heatmap-root');
+  let html = `<h2>進捗ヒートマップ <small>要素 → マイルストーン → ギャップを格子状に表示</small></h2>`;
+
+  data.elements.forEach(el => {
+    const elCls = pctClass(el.pct);
+    html += `<div class="row-element">
+      <div class="el-info">
+        <span class="el-tag">🧩 要素</span>
+        <span class="el-title">${escapeHtml(el.title)}</span>
+        <div class="el-meta">
+          <span class="el-pct ${elCls}">${el.pct}%</span>
+          <span class="el-bar"><span style="width:${el.pct}%; background:${lerpColor(el.pct)};"></span></span>
+        </div>
+      </div>
+      <div class="ms-grid">
+        ${el.milestones.map(ms => msCell(ms)).join('')}
+      </div>
+    </div>`;
+  });
+  root.innerHTML = html;
+  bindHover();
+}
+
+function msCell(ms) {
+  const cls = pctClass(ms.pct);
+  return `<div class="ms-cell ${cls}">
+    <div class="ms-head">
+      <span>📍 マイルストーン</span>
+      <span class="ms-pct">${ms.pct}%</span>
+    </div>
+    <div class="ms-title">${escapeHtml(ms.title)}</div>
+    <div class="gap-grid">
+      ${ms.gaps.map(g => `
+        <div class="gap-cell ${pctBucket(g.pct)}"
+             data-tip="📐 ${escapeHtml(g.title)}|進捗 ${g.pct}%">
+          ${g.pct}
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
+}
+
+function bindHover() {
+  const tip = document.getElementById('tip');
+  document.querySelectorAll('[data-tip]').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      const [t, m] = el.dataset.tip.split('|');
+      tip.innerHTML = `<div class="tip-t">${escapeHtml(t)}</div><div class="tip-m">${escapeHtml(m||'')}</div>`;
+      tip.classList.add('show');
+    });
+    el.addEventListener('mouseleave', () => tip.classList.remove('show'));
+    el.addEventListener('mousemove', e => {
+      tip.style.left = (e.clientX + 14) + 'px';
+      tip.style.top = (e.clientY + 14) + 'px';
+    });
+  });
+}
+
+build();
+</script>
+</body>
+</html>

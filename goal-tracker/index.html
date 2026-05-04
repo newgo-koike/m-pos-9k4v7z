@@ -1004,6 +1004,92 @@
     border: 1.5px solid var(--line);
   }
   .btn.outline:hover { border-color: var(--orange); color: var(--orange); }
+  .btn.success { background: var(--green); color: #fff; }
+  .btn.success:hover { background: var(--green-text); }
+
+  /* ========== Overview panel (全体像) ========== */
+  .overview-list {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 12px; padding: 6px 6px;
+    display: flex; flex-direction: column; gap: 1px;
+  }
+  .ov-row {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) 220px 56px;
+    gap: 14px; align-items: center;
+    padding: 9px 14px; border-radius: 8px;
+    cursor: pointer; transition: background 0.12s, transform 0.12s;
+  }
+  .ov-row:hover { background: var(--card-hover); transform: translateX(2px); }
+  .ov-title {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; line-height: 1.4;
+    color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  .ov-title .ov-emoji {
+    flex-shrink: 0;
+    width: 22px; text-align: center; font-size: 14px;
+  }
+  .ov-row.lv-goal .ov-title { font-size: 15px; font-weight: 800; color: var(--lv-goal, var(--orange)); }
+  .ov-row.lv-element .ov-title { font-weight: 700; color: var(--lv-element, var(--ink)); }
+  .ov-row.lv-milestone .ov-title { font-weight: 600; color: var(--ink); }
+  .ov-row.lv-gap .ov-title { font-size: 13px; }
+  .ov-row.lv-commit .ov-title { font-size: 13px; color: var(--muted); }
+  .ov-row.lv-action .ov-title { font-size: 12.5px; color: var(--muted); }
+  .ov-row.lv-action .ov-title .ov-emoji { color: var(--lv-action); }
+  .ov-bar {
+    height: 6px; background: var(--line);
+    border-radius: 3px; overflow: hidden;
+  }
+  .ov-bar > span {
+    display: block; height: 100%; border-radius: 3px;
+    transition: width 0.3s;
+  }
+  .ov-pct {
+    text-align: right; font-weight: 700; font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+  .ov-pct.high { color: var(--green-text, var(--green)); }
+  .ov-pct.mid { color: var(--orange); }
+  .ov-pct.low { color: var(--red-text, var(--red)); }
+  .ov-summary {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    margin-bottom: 14px;
+  }
+  .ov-stat {
+    background: var(--paper); border: 1px solid var(--line);
+    padding: 12px 14px; border-radius: 10px;
+  }
+  .ov-stat .lbl { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+  .ov-stat .num { font-size: 22px; font-weight: 800; margin-top: 2px; }
+
+  /* Goal-completion + archive list */
+  .archive-list {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-top: 10px;
+  }
+  .archive-item {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 8px; padding: 12px 14px;
+  }
+  .archive-item .ai-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 12px;
+  }
+  .archive-item .ai-title { font-weight: 700; font-size: 13.5px; flex: 1; }
+  .archive-item .ai-date { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .archive-item .ai-meta { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .archive-item .ai-summary {
+    font-size: 12px; margin-top: 8px; line-height: 1.6;
+    color: var(--ink); padding: 8px 10px;
+    background: var(--paper); border-radius: 5px;
+    border-left: 3px solid var(--orange);
+  }
+  .archive-item .ai-actions { display: flex; gap: 6px; margin-top: 10px; }
+  .archive-item .btn { padding: 5px 12px; font-size: 11px; margin-right: 0; }
+
+  .setting-card.full { grid-column: 1 / -1; }
 
   /* ========== Toast ========== */
   .toast {
@@ -1115,6 +1201,7 @@
 
   <nav class="tabs" role="tablist">
     <button class="tab active" data-panel="tree">🌳 ツリー</button>
+    <button class="tab" data-panel="overview">🗺 全体像</button>
     <button class="tab" data-panel="week">⚡ 今週</button>
     <button class="tab" data-panel="kpi">📊 KPI</button>
     <button class="tab" data-panel="reflect">🔄 振り返り</button>
@@ -1130,6 +1217,15 @@
       <p>下の数字を入れると、上のコミット・マイルストーン・ゴールまで進捗が伝わります。タイトルをクリックして編集。</p>
     </div>
     <div class="tree" id="tree-root"></div>
+  </section>
+
+  <!-- ============== OVERVIEW PANEL (全体像) ============== -->
+  <section class="panel" id="panel-overview">
+    <div class="panel-head">
+      <h2>🗺 全体像</h2>
+      <p>ツリーの全ノードを縦インデントで一覧。行をクリックすると「ツリー」タブの該当ノードまで自動で開きます。</p>
+    </div>
+    <div id="overview-root"></div>
   </section>
 
   <!-- ============== WEEK PANEL ============== -->
@@ -1283,6 +1379,16 @@
       <p>localStorage に自動保存されます。バックアップは JSON で出力可能。</p>
     </div>
     <div class="settings-grid">
+      <div class="setting-card full">
+        <h3>✅ このゴールを完了して次へ</h3>
+        <p>現在のゴール（タイトル・要素ツリー・KPI・振り返り）を一括でアーカイブし、新しい空のゴールから始められます。アーカイブは下の「過去のゴール」からいつでも復元・閲覧できます。</p>
+        <button class="btn success" onclick="completeGoal()">✅ ゴール完了 → 次のゴールへ</button>
+      </div>
+      <div class="setting-card full" id="archive-section" style="display:none;">
+        <h3>📚 過去のゴール</h3>
+        <p>達成済みのゴールスナップショット。クリックで詳細を確認、「復元」で現在のゴールに上書きします。</p>
+        <div class="archive-list" id="archive-list"></div>
+      </div>
       <div class="setting-card">
         <h3>📤 エクスポート</h3>
         <p>全データを JSON ファイルとしてダウンロードします。バックアップや別端末への移行に。</p>
@@ -1415,6 +1521,7 @@ async function loadFromCloud() {
     if (!state.reflections) state.reflections = [];
     if (!state.meta) state.meta = { version: 1 };
     if (!state.kpiLabels) state.kpiLabels = { ...DEFAULT_KPI_LABELS };
+    if (!Array.isArray(state.archive)) state.archive = [];
     migrateKpiWeeks();
   } else {
     state = emptyData();
@@ -1464,6 +1571,7 @@ function shellState(goal, kpi, kpiLabels = DEFAULT_KPI_LABELS, reflections = [])
     kpi: kpi || { [monthKeyToday()]: { main: [], breakdown: [], activity: [] } },
     kpiLabels: { ...DEFAULT_KPI_LABELS, ...(kpiLabels || {}) },
     reflections,
+    archive: [],
     meta: { lastUpdated: Date.now(), version: 1 }
   };
 }
@@ -1775,6 +1883,7 @@ function load() {
       if (!state.reflections) state.reflections = [];
       if (!state.meta) state.meta = { version: 1 };
       if (!state.kpiLabels) state.kpiLabels = { ...DEFAULT_KPI_LABELS };
+    if (!Array.isArray(state.archive)) state.archive = [];
       migrateKpiWeeks();
     } else {
       state = sampleData();
@@ -2603,6 +2712,8 @@ document.querySelectorAll('.tab').forEach(t => {
     if (t.dataset.panel === 'week') renderWeek();
     if (t.dataset.panel === 'kpi') renderKpi();
     if (t.dataset.panel === 'reflect') renderReflect();
+    if (t.dataset.panel === 'overview') renderOverview();
+    if (t.dataset.panel === 'settings') renderArchives();
   });
 });
 document.querySelectorAll('.ref-tab').forEach(t => {
@@ -2640,16 +2751,230 @@ document.getElementById('kpi-month').addEventListener('change', e => {
   renderKpi();
 });
 
+// ============================================================
+// Overview panel (全体像) — vertical indented hierarchy
+// ============================================================
+function ovPctClass(p) { return p >= 70 ? 'high' : p >= 30 ? 'mid' : 'low'; }
+function ovBarColor(p) {
+  return p >= 70 ? 'linear-gradient(90deg, var(--green), var(--green-text, var(--green)))'
+       : p >= 30 ? 'linear-gradient(90deg, var(--orange), var(--orange-deep))'
+                 : 'linear-gradient(90deg, var(--red), var(--red-deep))';
+}
+function ovRow(depth, emoji, title, pct, lvClass, path) {
+  const indent = depth * 22;
+  const showPct = (typeof pct === 'number') ? Math.round(pct) + '%' : '';
+  const cls = ovPctClass(pct);
+  return `<div class="ov-row ${lvClass || ''}" onclick="jumpToNode('${path||''}')">
+    <div class="ov-title" style="padding-left:${indent}px;"><span class="ov-emoji">${emoji}</span> ${escapeHtml(title || '無題')}</div>
+    <div class="ov-bar"><span style="width:${pct}%; background:${ovBarColor(pct)};"></span></div>
+    <div class="ov-pct ${cls}">${showPct}</div>
+  </div>`;
+}
+
+function renderOverview() {
+  const root = document.getElementById('overview-root');
+  if (!root) return;
+  if (!state.goal.elements.length) {
+    root.innerHTML = `<div class="cascade-empty" style="margin: 30px 0; padding: 50px 20px;">まだ何も登録されていません。「🌳 ツリー」タブから始めましょう。</div>`;
+    return;
+  }
+
+  // Summary stats
+  let totalEls = 0, totalMs = 0, totalGaps = 0, totalActs = 0, doneActs = 0, stuckActs = 0, highMs = 0, lowMs = 0;
+  state.goal.elements.forEach(e => {
+    totalEls++;
+    (e.milestones || []).forEach(m => {
+      totalMs++;
+      const mp = milestonePct(m);
+      if (mp >= 70) highMs++;
+      if (mp < 30) lowMs++;
+      (m.gaps || []).forEach(g => {
+        totalGaps++;
+        (g.commitments || []).forEach(c => {
+          (c.actions || []).forEach(a => {
+            totalActs++;
+            if (a.status === 'done') doneActs++;
+            if (isOverdue(a.due) && a.status !== 'done') stuckActs++;
+          });
+        });
+      });
+    });
+  });
+
+  let html = `<div class="ov-summary">
+    <div class="ov-stat"><div class="lbl">ゴール進捗</div><div class="num" style="color:var(--orange);">${Math.round(goalPct())}%</div></div>
+    <div class="ov-stat"><div class="lbl">要素 / マイルストーン</div><div class="num" style="color:var(--lv-element);">${totalEls} / ${totalMs}</div></div>
+    <div class="ov-stat"><div class="lbl">アクション (済 / 全)</div><div class="num" style="color:var(--green);">${doneActs} / ${totalActs}</div></div>
+    <div class="ov-stat"><div class="lbl">滞留アクション</div><div class="num" style="color:${stuckActs > 0 ? 'var(--red)' : 'var(--muted)'};">${stuckActs}</div></div>
+  </div>`;
+
+  html += '<div class="overview-list">';
+  // Goal row at top
+  html += ovRow(0, '🎯', state.goal.title || 'ゴール未設定', goalPct(), 'lv-goal', '');
+  state.goal.elements.forEach((e, ei) => {
+    html += ovRow(1, '🧩', e.title, elementPct(e), 'lv-element', `${ei}`);
+    (e.milestones || []).forEach((m, mi) => {
+      html += ovRow(2, '📍', m.title, milestonePct(m), 'lv-milestone', `${ei}.${mi}`);
+      (m.gaps || []).forEach((g, gi) => {
+        html += ovRow(3, '📐', g.title, gapPct(g), 'lv-gap', `${ei}.${mi}.${gi}`);
+        (g.commitments || []).forEach((c, ci) => {
+          html += ovRow(4, '🤝', c.title, commitPct(c), 'lv-commit', `${ei}.${mi}.${gi}.${ci}`);
+          (c.actions || []).forEach((a, ai) => {
+            const status = a.status || 'todo';
+            const overdue = isOverdue(a.due) && status !== 'done';
+            const pct = status === 'done' ? 100 : status === 'doing' ? 50 : (overdue ? 0 : 10);
+            const titleWithStatus = (overdue ? '⚠ ' : '') + a.title + (status === 'done' ? ' ✓' : '');
+            html += ovRow(5, '⚡', titleWithStatus, pct, 'lv-action', `${ei}.${mi}.${gi}.${ci}.${ai}`);
+          });
+        });
+      });
+    });
+  });
+  html += '</div>';
+  root.innerHTML = html;
+}
+
+function jumpToNode(path) {
+  // Switch to ツリー tab
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.tab[data-panel="tree"]').classList.add('active');
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-tree').classList.add('active');
+
+  if (!path) {
+    openPath = [];
+  } else {
+    const parts = path.split('.').map(Number);
+    openPath = parts.slice(0, Math.min(parts.length, 4));
+  }
+  renderTree();
+  document.getElementById('panel-tree').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ============================================================
+// Goal archive (①A) — complete current goal → snapshot → reset
+// ============================================================
+function completeGoal() {
+  if (!state.goal.title && !state.goal.elements.length) {
+    toast('ゴールが空のためアーカイブできません');
+    return;
+  }
+  const finalPct = Math.round(goalPct());
+  const summary = prompt(
+    `現在のゴール「${state.goal.title || '無題'}」（達成率 ${finalPct}%）をアーカイブし、新しいゴールを始めます。\n\n` +
+    `振り返りメモ（任意・後から編集不可）：`,
+    ''
+  );
+  if (summary === null) return; // cancelled
+  if (!confirm(`本当にアーカイブしますか？\n\n現在の要素ツリー・KPI・振り返りはすべて「過去のゴール」として保管され、新しい空のゴールから始まります。`)) return;
+
+  if (!Array.isArray(state.archive)) state.archive = [];
+  state.archive.push({
+    id: uid(),
+    archivedAt: Date.now(),
+    finalPct,
+    summary: (summary || '').trim(),
+    snapshot: {
+      goal: JSON.parse(JSON.stringify(state.goal)),
+      kpi: JSON.parse(JSON.stringify(state.kpi || {})),
+      kpiLabels: JSON.parse(JSON.stringify(state.kpiLabels || DEFAULT_KPI_LABELS)),
+      reflections: JSON.parse(JSON.stringify(state.reflections || []))
+    }
+  });
+
+  // Reset to fresh blank goal (preserve archive + theme)
+  state.goal = { title: '', deadline: '', elements: [] };
+  state.kpi = { [monthKeyToday()]: { main: [], breakdown: [], activity: [] } };
+  state.kpiLabels = { ...DEFAULT_KPI_LABELS };
+  state.reflections = [];
+  openPath = [];
+  save();
+  renderAll();
+  toast('🎉 ゴールをアーカイブしました。新しいゴールを設定してください。');
+}
+
+function restoreArchive(id) {
+  const ar = (state.archive || []).find(a => a.id === id);
+  if (!ar) return;
+  if (!confirm(`「${ar.snapshot.goal.title || '無題'}」を復元しますか？\n\n現在の作業中ゴール（保存されていない場合は失われます）は新たにアーカイブされます。`)) return;
+
+  // First archive current as automatic snapshot
+  if (state.goal.title || state.goal.elements.length) {
+    state.archive.push({
+      id: uid(),
+      archivedAt: Date.now(),
+      finalPct: Math.round(goalPct()),
+      summary: '（復元前の自動アーカイブ）',
+      snapshot: {
+        goal: JSON.parse(JSON.stringify(state.goal)),
+        kpi: JSON.parse(JSON.stringify(state.kpi || {})),
+        kpiLabels: JSON.parse(JSON.stringify(state.kpiLabels || DEFAULT_KPI_LABELS)),
+        reflections: JSON.parse(JSON.stringify(state.reflections || []))
+      }
+    });
+  }
+
+  // Restore
+  state.goal = JSON.parse(JSON.stringify(ar.snapshot.goal));
+  state.kpi = JSON.parse(JSON.stringify(ar.snapshot.kpi || {}));
+  state.kpiLabels = JSON.parse(JSON.stringify(ar.snapshot.kpiLabels || DEFAULT_KPI_LABELS));
+  state.reflections = JSON.parse(JSON.stringify(ar.snapshot.reflections || []));
+  // Remove the restored entry from archive (now back as current)
+  state.archive = state.archive.filter(a => a.id !== id);
+  openPath = [];
+  save();
+  renderAll();
+  toast('過去のゴールを復元しました');
+}
+
+function deleteArchive(id) {
+  if (!confirm('このアーカイブを完全に削除します。元に戻せません。よろしいですか？')) return;
+  state.archive = (state.archive || []).filter(a => a.id !== id);
+  save();
+  renderArchives();
+  toast('アーカイブを削除しました');
+}
+
+function renderArchives() {
+  const sec = document.getElementById('archive-section');
+  const list = document.getElementById('archive-list');
+  if (!sec || !list) return;
+  const archives = (state.archive || []).slice().sort((a, b) => b.archivedAt - a.archivedAt);
+  if (archives.length === 0) {
+    sec.style.display = 'none';
+    return;
+  }
+  sec.style.display = '';
+  list.innerHTML = archives.map(a => {
+    const date = new Date(a.archivedAt).toLocaleDateString('ja-JP', { year: 'numeric', month: 'numeric', day: 'numeric' });
+    const elCount = (a.snapshot.goal.elements || []).length;
+    return `<div class="archive-item">
+      <div class="ai-head">
+        <div class="ai-title">${escapeHtml(a.snapshot.goal.title || '無題')}</div>
+        <div class="ai-date">${date}</div>
+      </div>
+      <div class="ai-meta">最終達成率 <b style="color:${a.finalPct >= 70 ? 'var(--green-text, var(--green))' : a.finalPct >= 30 ? 'var(--orange)' : 'var(--red-text, var(--red))'};">${a.finalPct}%</b> · 要素 ${elCount} 個</div>
+      ${a.summary ? `<div class="ai-summary">${escapeHtml(a.summary)}</div>` : ''}
+      <div class="ai-actions">
+        <button class="btn outline" onclick="restoreArchive('${a.id}')">↩ 復元する</button>
+        <button class="btn danger" onclick="deleteArchive('${a.id}')">🗑 削除</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 // Render all
 function renderAll() {
   renderHeader();
   renderFlowCounts();
   renderTree();
+  renderArchives();
   // Conditional: only re-render visible panel
   const active = document.querySelector('.panel.active').id;
   if (active === 'panel-week') renderWeek();
   if (active === 'panel-kpi') renderKpi();
   if (active === 'panel-reflect') renderReflect();
+  if (active === 'panel-overview') renderOverview();
 }
 
 // ============================================================

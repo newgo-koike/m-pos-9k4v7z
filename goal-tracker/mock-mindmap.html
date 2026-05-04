@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Goal Tracker — Mindmap Mock (②B案)</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --paper: #1a2028;
+    --ink: #e8eef4;
+    --muted: #94a3b8;
+    --line: rgba(255,255,255,0.12);
+    --gold: #d4a341;
+    --green: #22c55e;
+    --orange: #f59e0b;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --purple: #a78bfa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+    background: radial-gradient(circle at center, #1a2028 0%, #0f1419 100%);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow: hidden;
+  }
+  .label {
+    position: fixed; top: 18px; left: 24px; z-index: 10;
+    font-size: 12px; color: var(--muted); letter-spacing: 0.06em;
+  }
+  .label b { color: var(--gold); }
+  .legend {
+    position: fixed; bottom: 18px; right: 24px; z-index: 10;
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 8px; padding: 10px 14px;
+    font-size: 11px; color: var(--muted);
+    display: flex; gap: 14px; align-items: center;
+  }
+  .legend .swatch {
+    display: inline-block; width: 12px; height: 12px;
+    border-radius: 3px; vertical-align: middle; margin-right: 4px;
+  }
+  .controls {
+    position: fixed; top: 18px; right: 24px; z-index: 10;
+    display: flex; gap: 8px;
+  }
+  .controls button {
+    background: var(--paper); border: 1px solid var(--line);
+    color: var(--ink); padding: 5px 12px; border-radius: 6px;
+    font-size: 11px; cursor: pointer; font-family: inherit;
+  }
+  .controls button:hover { background: rgba(212,163,65,0.15); border-color: var(--gold); }
+
+  svg { display: block; cursor: grab; }
+  svg:active { cursor: grabbing; }
+
+  .node-bg {
+    fill: var(--paper);
+    stroke: var(--line);
+    stroke-width: 1.5;
+    transition: all 0.2s;
+  }
+  .node-bg.lv-goal { stroke: var(--gold); stroke-width: 3; fill: rgba(212,163,65,0.1); }
+  .node-bg.lv-element { stroke-width: 2; }
+  .node-bg.lv-element.pct-high { stroke: var(--green); }
+  .node-bg.lv-element.pct-mid { stroke: var(--orange); }
+  .node-bg.lv-element.pct-low { stroke: var(--red); }
+  .node-bg.lv-milestone.pct-high { stroke: rgba(34,197,94,0.6); }
+  .node-bg.lv-milestone.pct-mid { stroke: rgba(245,158,11,0.6); }
+  .node-bg.lv-milestone.pct-low { stroke: rgba(239,68,68,0.6); }
+  .node-bg.lv-gap { stroke: rgba(255,255,255,0.18); }
+  .node-bg:hover { stroke-width: 3; filter: drop-shadow(0 0 8px rgba(255,255,255,0.2)); }
+
+  .node-label {
+    fill: var(--ink); font-size: 13px;
+    font-family: inherit; pointer-events: none;
+    text-anchor: middle; dominant-baseline: middle;
+  }
+  .node-label.lv-goal { font-size: 15px; font-weight: 800; fill: var(--gold); }
+  .node-label.lv-element { font-size: 13px; font-weight: 700; }
+  .node-label.lv-milestone { font-size: 11px; fill: #cbd5e1; }
+  .node-label.lv-gap { font-size: 10px; fill: var(--muted); }
+
+  .node-pct {
+    fill: var(--muted); font-size: 10px; font-weight: 700;
+    text-anchor: middle; dominant-baseline: middle;
+    pointer-events: none;
+  }
+  .node-pct.high { fill: var(--green); }
+  .node-pct.mid { fill: var(--orange); }
+  .node-pct.low { fill: var(--red); }
+
+  .link { fill: none; stroke-width: 1.5; opacity: 0.4; }
+  .link.lv-element { stroke: var(--gold); opacity: 0.5; }
+  .link.lv-milestone { stroke: rgba(255,255,255,0.25); }
+  .link.lv-gap { stroke: rgba(255,255,255,0.15); }
+
+  .tooltip {
+    position: fixed; pointer-events: none;
+    background: rgba(0,0,0,0.92); border: 1px solid var(--line);
+    color: var(--ink); padding: 8px 12px; border-radius: 6px;
+    font-size: 12px; line-height: 1.5;
+    max-width: 260px;
+    opacity: 0; transition: opacity 0.15s;
+    z-index: 100;
+  }
+  .tooltip.show { opacity: 1; }
+  .tooltip .tip-title { font-weight: 700; margin-bottom: 4px; color: var(--gold); }
+  .tooltip .tip-meta { color: var(--muted); font-size: 11px; }
+</style>
+</head>
+<body>
+
+<div class="label">🗺 <b>マインドマップ案 (②B)</b> — 中央＝ゴール、放射状に要素・MS・ギャップが展開</div>
+
+<div class="controls">
+  <button onclick="resetView()">↺ リセット</button>
+  <button onclick="zoom(1.2)">＋</button>
+  <button onclick="zoom(0.8)">−</button>
+</div>
+
+<div class="legend">
+  <span><i class="swatch" style="background:var(--green);"></i>進捗 70%+</span>
+  <span><i class="swatch" style="background:var(--orange);"></i>30-70%</span>
+  <span><i class="swatch" style="background:var(--red);"></i>30%-</span>
+</div>
+
+<svg id="canvas" width="100%" height="100vh"></svg>
+
+<div class="tooltip" id="tip"></div>
+
+<script>
+// ========== Sample data ==========
+const sampleGoal = {
+  title: '月商300万を3ヶ月連続達成',
+  pct: 48,
+  elements: [
+    { title: '見込み客導線', pct: 65, milestones: [
+      { title: '見込み7名・商談15件', pct: 70, gaps: [
+        { title: '+4名 リスト化', pct: 80 },
+        { title: '+7件 商談化', pct: 60 }
+      ]},
+      { title: 'クロージング率30%', pct: 60, gaps: [
+        { title: '提案資料更新', pct: 75 }
+      ]}
+    ]},
+    { title: '成約率改善', pct: 35, milestones: [
+      { title: '50%到達', pct: 35, gaps: [
+        { title: 'ヒアリング深掘り', pct: 40 },
+        { title: '価格表現の見直し', pct: 30 }
+      ]}
+    ]},
+    { title: '紹介ルート', pct: 78, milestones: [
+      { title: '月6名安定', pct: 80, gaps: [
+        { title: '紹介依頼トーク', pct: 85 },
+        { title: '紹介者へのお礼', pct: 75 }
+      ]}
+    ]},
+    { title: 'リピート単価', pct: 25, milestones: [
+      { title: '2案目導線', pct: 25, gaps: [
+        { title: 'フォロー設計', pct: 25 }
+      ]}
+    ]},
+    { title: 'ブランディング', pct: 50, milestones: [
+      { title: 'SNS導線', pct: 55, gaps: [
+        { title: '週3投稿', pct: 60 },
+        { title: 'プロフ最適化', pct: 50 }
+      ]}
+    ]}
+  ]
+};
+
+// ========== Layout ==========
+const W = window.innerWidth;
+const H = window.innerHeight;
+const CX = W / 2;
+const CY = H / 2;
+const RING1 = 200;   // elements
+const RING2 = 360;   // milestones
+const RING3 = 500;   // gaps
+
+const svg = document.getElementById('canvas');
+svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+let viewBox = { x: 0, y: 0, w: W, h: H };
+
+function pctClass(p) { return p >= 70 ? 'high' : p >= 30 ? 'mid' : 'low'; }
+function pctClassBg(p) { return p >= 70 ? 'pct-high' : p >= 30 ? 'pct-mid' : 'pct-low'; }
+
+function escape(s) { return (s || '').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+
+function build() {
+  let html = '';
+  // Goal at center
+  html += renderNode(CX, CY, 64, sampleGoal.title, sampleGoal.pct, 'lv-goal', `🎯 ${sampleGoal.title}\n進捗 ${sampleGoal.pct}%`);
+
+  // Elements around in ring1
+  const els = sampleGoal.elements;
+  els.forEach((el, i) => {
+    const angle = (i / els.length) * Math.PI * 2 - Math.PI / 2;
+    const ex = CX + Math.cos(angle) * RING1;
+    const ey = CY + Math.sin(angle) * RING1;
+    html += renderLink(CX, CY, ex, ey, 'lv-element');
+    html += renderNode(ex, ey, 50, el.title, el.pct, 'lv-element', `🧩 ${el.title}\n進捗 ${el.pct}%`);
+
+    // Milestones for this element
+    const ms = el.milestones || [];
+    const angSpan = (Math.PI * 2 / els.length) * 0.6;  // milestones spread within their element's slice
+    const angStart = angle - angSpan / 2;
+    ms.forEach((m, j) => {
+      const ratio = ms.length === 1 ? 0.5 : j / (ms.length - 1);
+      const ma = angStart + angSpan * ratio;
+      const mx = CX + Math.cos(ma) * RING2;
+      const my = CY + Math.sin(ma) * RING2;
+      html += renderLink(ex, ey, mx, my, 'lv-milestone');
+      html += renderNode(mx, my, 38, m.title, m.pct, 'lv-milestone', `📍 ${m.title}\n進捗 ${m.pct}%`);
+
+      // Gaps for this milestone
+      const gs = m.gaps || [];
+      const gapSpan = angSpan / ms.length * 0.7;
+      const gapStart = ma - gapSpan / 2;
+      gs.forEach((g, k) => {
+        const ratio2 = gs.length === 1 ? 0.5 : k / (gs.length - 1);
+        const ga = gapStart + gapSpan * ratio2;
+        const gx = CX + Math.cos(ga) * RING3;
+        const gy = CY + Math.sin(ga) * RING3;
+        html += renderLink(mx, my, gx, gy, 'lv-gap');
+        html += renderNode(gx, gy, 28, g.title, g.pct, 'lv-gap', `📐 ${g.title}\n進捗 ${g.pct}%`);
+      });
+    });
+  });
+  svg.innerHTML = html;
+  bindHover();
+}
+
+function renderLink(x1, y1, x2, y2, cls) {
+  const cx = (x1 + x2) / 2;
+  const cy = (y1 + y2) / 2;
+  // Curve slightly toward center
+  return `<path class="link ${cls}" d="M${x1},${y1} Q${cx},${cy} ${x2},${y2}"/>`;
+}
+
+function renderNode(x, y, r, title, pct, cls, tip) {
+  const trimmed = title.length > 14 ? title.slice(0, 13) + '…' : title;
+  const pcs = pctClass(pct);
+  const bgClass = cls === 'lv-goal' ? cls : cls + ' ' + pctClassBg(pct);
+  return `<g data-tip="${escape(tip)}">
+    <ellipse class="node-bg ${bgClass}" cx="${x}" cy="${y}" rx="${r * 1.15}" ry="${r * 0.7}"/>
+    <text class="node-label ${cls}" x="${x}" y="${y - 4}">${escape(trimmed)}</text>
+    <text class="node-pct ${pcs}" x="${x}" y="${y + r * 0.4}">${pct}%</text>
+  </g>`;
+}
+
+function bindHover() {
+  const tip = document.getElementById('tip');
+  document.querySelectorAll('[data-tip]').forEach(g => {
+    g.addEventListener('mouseenter', () => {
+      const text = g.dataset.tip.replace(/\\n/g, '\n').split('\n');
+      tip.innerHTML = `<div class="tip-title">${escape(text[0])}</div><div class="tip-meta">${escape(text.slice(1).join(' / '))}</div>`;
+      tip.classList.add('show');
+    });
+    g.addEventListener('mouseleave', () => tip.classList.remove('show'));
+    g.addEventListener('mousemove', e => {
+      tip.style.left = (e.clientX + 14) + 'px';
+      tip.style.top = (e.clientY + 14) + 'px';
+    });
+  });
+}
+
+// Pan
+let panning = false, panStart = null;
+svg.addEventListener('mousedown', e => { panning = true; panStart = { x: e.clientX, y: e.clientY, vbx: viewBox.x, vby: viewBox.y }; });
+window.addEventListener('mouseup', () => panning = false);
+window.addEventListener('mousemove', e => {
+  if (!panning) return;
+  const dx = (panStart.x - e.clientX) * (viewBox.w / window.innerWidth);
+  const dy = (panStart.y - e.clientY) * (viewBox.h / window.innerHeight);
+  viewBox.x = panStart.vbx + dx;
+  viewBox.y = panStart.vby + dy;
+  svg.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+});
+function zoom(factor) {
+  const cx = viewBox.x + viewBox.w / 2;
+  const cy = viewBox.y + viewBox.h / 2;
+  viewBox.w /= factor;
+  viewBox.h /= factor;
+  viewBox.x = cx - viewBox.w / 2;
+  viewBox.y = cy - viewBox.h / 2;
+  svg.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+}
+function resetView() {
+  viewBox = { x: 0, y: 0, w: W, h: H };
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+}
+// Wheel zoom
+svg.addEventListener('wheel', e => {
+  e.preventDefault();
+  zoom(e.deltaY < 0 ? 1.1 : 0.9);
+}, { passive: false });
+
+build();
+</script>
+</body>
+</html>
