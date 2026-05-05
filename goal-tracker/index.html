@@ -1200,6 +1200,34 @@
   }
   .mm-node.lv-goal .mm-node-title { font-size: 14px; font-weight: 800; fill: var(--orange); }
   .mm-node.lv-element .mm-node-title { font-size: 13px; font-weight: 700; }
+  /* foreignObject-wrapped titles for proper word-wrap */
+  .mm-title-html {
+    font-size: 12.5px; font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+    color: var(--ink);
+    line-height: 1.35;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+    pointer-events: none;
+  }
+  .mm-node.lv-goal .mm-title-html { font-size: 13.5px; font-weight: 800; color: var(--orange); }
+  .mm-node.lv-element .mm-title-html { font-size: 13px; font-weight: 700; }
+  .mm-node.lv-milestone .mm-title-html { font-size: 12.5px; font-weight: 600; }
+  .mm-node.lv-gap .mm-title-html { font-size: 12px; font-weight: 600; }
+  .mm-node.lv-commit .mm-title-html { font-size: 12px; font-weight: 600; }
+  .mm-action-title-html {
+    font-size: 11.5px; font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+    color: var(--ink);
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    pointer-events: none;
+  }
   .mm-node-pct {
     fill: var(--muted); font-size: 10.5px; font-weight: 700;
     text-anchor: end;
@@ -3389,9 +3417,10 @@ function setDesignView(name) {
 // ============================================================
 // Mindmap renderer — horizontal LR hierarchical tree (SVG)
 // ============================================================
-const MM_COL_W = 230;
-const MM_NODE_W = 200;
-const MM_NODE_H = 50;
+const MM_COL_W = 300;
+const MM_NODE_W = 260;
+const MM_NODE_H = 68;
+const MM_ACTION_H = 36;
 const MM_VGAP = 14;
 const MM_PADDING = 30;
 
@@ -3426,18 +3455,23 @@ function mmBuildHierarchy() {
   return root;
 }
 
-function mmLayout(node, depth = 0, leafIdxRef = { i: 0 }) {
+function mmHeightOf(n) { return n.type === 'action' ? MM_ACTION_H : MM_NODE_H; }
+
+function mmLayout(node, depth = 0, ctx = { y: 0 }) {
   node.depth = depth;
-  if (!node.children || node.children.length === 0) {
-    node.y = leafIdxRef.i * (MM_NODE_H + MM_VGAP);
-    leafIdxRef.i++;
-  } else {
-    node.children.forEach(c => mmLayout(c, depth + 1, leafIdxRef));
-    const first = node.children[0].y;
-    const last = node.children[node.children.length - 1].y;
-    node.y = (first + last) / 2;
-  }
   node.x = depth * MM_COL_W;
+  if (!node.children || node.children.length === 0) {
+    node.y = ctx.y;
+    ctx.y += mmHeightOf(node) + MM_VGAP;
+  } else {
+    node.children.forEach(c => mmLayout(c, depth + 1, ctx));
+    const first = node.children[0];
+    const last = node.children[node.children.length - 1];
+    const firstCenter = first.y + mmHeightOf(first) / 2;
+    const lastCenter = last.y + mmHeightOf(last) / 2;
+    const center = (firstCenter + lastCenter) / 2;
+    node.y = center - mmHeightOf(node) / 2;
+  }
 }
 
 function mmCountLeaves(node) {
@@ -3454,14 +3488,15 @@ function mmRenderNode(n) {
   const cls = `lv-${n.type}`;
   const pctCls = (typeof n.pct === 'number') ? mmPctClass(n.pct) : '';
   const sel = (mmSelectedPath === n.path) ? 'selected' : '';
-  let badge = '';
   if (n.type === 'action') {
     const colorMap = { done: 'var(--green)', doing: 'var(--orange)', stuck: 'var(--red)', todo: 'var(--lv-gap)' };
     const fill = colorMap[n.status] || colorMap.todo;
     return `<g class="mm-node ${cls} ${sel}" transform="translate(${n.x},${n.y})" data-path="${n.path}" onclick="onMmNodeClick('${n.path}')">
-      <rect class="mm-node-bg" x="0" y="0" width="${MM_NODE_W}" height="${MM_NODE_H - 14}" rx="8" ry="8" style="fill:${fill};opacity:0.18;stroke:${fill};stroke-width:1.5;"/>
-      <circle cx="14" cy="${(MM_NODE_H - 14)/2}" r="5" fill="${fill}"/>
-      <text class="mm-node-title" x="26" y="${(MM_NODE_H - 14)/2 + 4}" style="fill:var(--ink);">${escapeXml(mmTrunc(n.title, 20))}</text>
+      <rect class="mm-node-bg" x="0" y="0" width="${MM_NODE_W}" height="${MM_ACTION_H}" rx="8" ry="8" style="fill:${fill};opacity:0.18;stroke:${fill};stroke-width:1.5;"/>
+      <circle cx="14" cy="${MM_ACTION_H/2}" r="5" fill="${fill}"/>
+      <foreignObject x="24" y="4" width="${MM_NODE_W - 32}" height="${MM_ACTION_H - 8}">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="mm-action-title-html">${escapeXml(n.title || '無題')}</div>
+      </foreignObject>
     </g>`;
   }
   const tagText = ({goal:'🎯 ゴール',element:'🧩 要素',milestone:'📍 MS',gap:'📐 ギャップ',commit:'🤝 コミット'}[n.type]) || n.type;
@@ -3476,18 +3511,22 @@ function mmRenderNode(n) {
   }
   return `<g class="mm-node ${cls} ${pctCls} ${sel}" transform="translate(${n.x},${n.y})" data-path="${n.path}" onclick="onMmNodeClick('${n.path}')">
     <rect class="mm-node-bg" x="0" y="0" width="${MM_NODE_W}" height="${MM_NODE_H}" rx="9" ry="9"/>
-    <text class="mm-node-tag" x="11" y="14">${escapeXml(tagText)}</text>
-    <text class="mm-node-pct ${mmPctTextClass(n.pct || 0)}" x="${MM_NODE_W - 11}" y="14">${pctText}</text>
-    <text class="mm-node-title" x="11" y="32">${escapeXml(mmTrunc(n.title || '無題', 22))}</text>
+    <text class="mm-node-tag" x="12" y="16">${escapeXml(tagText)}</text>
+    <text class="mm-node-pct ${mmPctTextClass(n.pct || 0)}" x="${MM_NODE_W - 12}" y="16">${pctText}</text>
+    <foreignObject x="12" y="22" width="${MM_NODE_W - 24}" height="${MM_NODE_H - 32}">
+      <div xmlns="http://www.w3.org/1999/xhtml" class="mm-title-html">${escapeXml(n.title || '無題')}</div>
+    </foreignObject>
     ${actionStrip}
   </g>`;
 }
 
 function mmRenderLink(parent, child) {
   const x1 = parent.x + MM_NODE_W;
-  const y1 = parent.y + MM_NODE_H / 2;
+  const childH = child.type === 'action' ? MM_ACTION_H : MM_NODE_H;
+  const parentH = parent.type === 'action' ? MM_ACTION_H : MM_NODE_H;
+  const y1 = parent.y + parentH / 2;
   const x2 = child.x;
-  const y2 = child.y + (child.type === 'action' ? (MM_NODE_H - 14) / 2 : MM_NODE_H / 2);
+  const y2 = child.y + childH / 2;
   const midX = (x1 + x2) / 2;
   return `<path class="mm-link lv-${child.type}" d="M${x1},${y1} C${midX},${y1} ${midX},${y2} ${x2},${y2}"/>`;
 }
@@ -3496,14 +3535,16 @@ function mmRenderAddBtn(parent) {
   // Add a "＋ 追加" button as a leaf-like node after the last child
   const x = parent.x + MM_COL_W;
   const lastChild = parent.children && parent.children.length ? parent.children[parent.children.length - 1] : null;
-  const y = lastChild ? lastChild.y + MM_NODE_H + MM_VGAP : parent.y;
   const childKindMap = { goal: 'element', element: 'milestone', milestone: 'gap', gap: 'commit', commit: 'action' };
   const kind = childKindMap[parent.type];
   if (!kind) return '';
+  const lastH = lastChild ? (lastChild.type === 'action' ? MM_ACTION_H : MM_NODE_H) : MM_NODE_H;
+  const y = lastChild ? lastChild.y + lastH + MM_VGAP : parent.y;
   const labelMap = { element: '＋ 要素', milestone: '＋ MS', gap: '＋ ギャップ', commit: '＋ コミット', action: '＋ アクション' };
+  const btnH = kind === 'action' ? MM_ACTION_H : 40;
   return `<g class="mm-add-btn" transform="translate(${x},${y})" onclick="addChild('${parent.path}','${kind}'); setDesignView('mindmap');">
-    <rect class="mm-add-btn-bg" x="0" y="0" width="${MM_NODE_W}" height="${MM_NODE_H - 16}" rx="8" ry="8"/>
-    <text class="mm-add-btn-text" x="${MM_NODE_W/2}" y="${(MM_NODE_H - 16)/2 + 4}" text-anchor="middle">${escapeXml(labelMap[kind])}</text>
+    <rect class="mm-add-btn-bg" x="0" y="0" width="${MM_NODE_W}" height="${btnH}" rx="8" ry="8"/>
+    <text class="mm-add-btn-text" x="${MM_NODE_W/2}" y="${btnH/2 + 4}" text-anchor="middle">${escapeXml(labelMap[kind])}</text>
   </g>`;
 }
 
@@ -3528,8 +3569,9 @@ function renderMindmap() {
   // Compute total bounds
   let maxX = 0, maxY = 0, minY = 0;
   function walk(n) {
+    const h = mmHeightOf(n);
     if (n.x + MM_NODE_W > maxX) maxX = n.x + MM_NODE_W;
-    if (n.y + MM_NODE_H > maxY) maxY = n.y + MM_NODE_H;
+    if (n.y + h > maxY) maxY = n.y + h;
     if (n.y < minY) minY = n.y;
     (n.children || []).forEach(walk);
   }
