@@ -3515,42 +3515,58 @@ const MM_VGAP = 14;
 const MM_PADDING = 30;
 
 function mmBuildHierarchy() {
-  // Build a tree structure where root = goal
-  const root = {
-    type: 'goal', path: '',
-    title: state.goal.title || 'ゴール未設定',
-    pct: goalPct(),
-    children: [
-      // 要素を1グループとして表示
-      ...(state.goal.elements || []).map((e, ei) => ({
+  const elements = state.goal.elements || [];
+  const milestones = state.goal.milestones || [];
+  const children = [];
+
+  // 要素は「要素グループ」中間ノードとしてまとめる（要素がある場合のみ）
+  if (elements.length > 0) {
+    children.push({
+      type: 'element-group', path: '',
+      title: '要素リスト',
+      pct: null,
+      children: elements.map(e => ({
         type: 'element', path: '',
-        title: e.title, pct: 0, node: e,
+        title: e.title, pct: null, node: e,
         children: []
-      })),
-      // マイルストーン以降
-      ...(state.goal.milestones || []).map((m, mi) => ({
-        type: 'milestone', path: `${mi}`,
-        title: m.title, pct: milestonePct(m), deadline: m.deadline, node: m,
-        children: (m.gaps || []).map((g, gi) => ({
-          type: 'gap', path: `${mi}.${gi}`,
-          title: g.title, pct: gapPct(g), node: g,
-          children: (g.commitments || []).map((c, ci) => ({
-            type: 'commit', path: `${mi}.${gi}.${ci}`,
-            title: c.title, pct: commitPct(c), node: c,
-            children: (c.actions || []).map((a, ai) => ({
-              type: 'action', path: `${mi}.${gi}.${ci}.${ai}`,
-              title: a.title, status: a.status || 'todo', node: a,
-              children: []
-            }))
+      }))
+    });
+  }
+
+  // マイルストーン以降（ゴールに直接紐づく）
+  milestones.forEach((m, mi) => {
+    children.push({
+      type: 'milestone', path: `${mi}`,
+      title: m.title, pct: milestonePct(m), deadline: m.deadline, node: m,
+      children: (m.gaps || []).map((g, gi) => ({
+        type: 'gap', path: `${mi}.${gi}`,
+        title: g.title, pct: gapPct(g), node: g,
+        children: (g.commitments || []).map((c, ci) => ({
+          type: 'commit', path: `${mi}.${gi}.${ci}`,
+          title: c.title, pct: commitPct(c), node: c,
+          children: (c.actions || []).map((a, ai) => ({
+            type: 'action', path: `${mi}.${gi}.${ci}.${ai}`,
+            title: a.title, status: a.status || 'todo', node: a,
+            children: []
           }))
         }))
       }))
-    ]
+    });
+  });
+
+  return {
+    type: 'goal', path: '',
+    title: state.goal.title || 'ゴール未設定',
+    pct: goalPct(),
+    children
   };
-  return root;
 }
 
-function mmHeightOf(n) { return n.type === 'action' ? MM_ACTION_H : MM_NODE_H; }
+function mmHeightOf(n) {
+  if (n.type === 'action') return MM_ACTION_H;
+  if (n.type === 'element') return MM_ACTION_H; // 要素はコンパクトに
+  return MM_NODE_H;
+}
 
 function mmLayout(node, depth = 0, ctx = { y: 0 }) {
   node.depth = depth;
@@ -3594,7 +3610,13 @@ function mmRenderNode(n) {
       </foreignObject>
     </g>`;
   }
-  const tagText = ({goal:'🎯 ゴール',element:'🧩 要素',milestone:'📍 MS',gap:'📐 ギャップ',commit:'🤝 コミット'}[n.type]) || n.type;
+  if (n.type === 'element') {
+    return `<g class="mm-node lv-element ${sel}" transform="translate(${n.x},${n.y})" data-path="${n.path}">
+      <rect class="mm-node-bg" x="0" y="0" width="${MM_NODE_W}" height="${MM_ACTION_H}" rx="8" ry="8" style="fill:var(--lv-element-soft);stroke:var(--lv-element);stroke-width:1.5;"/>
+      <text x="12" y="${MM_ACTION_H/2 + 5}" style="font-size:13px;fill:var(--lv-element);font-weight:600;">${escapeXml(mmTrunc(n.title, 28))}</text>
+    </g>`;
+  }
+  const tagText = ({goal:'🎯 ゴール','element-group':'🧩 要素',element:'🧩 要素',milestone:'📍 MS',gap:'📐 ギャップ',commit:'🤝 コミット'}[n.type]) || n.type;
   const pctText = (typeof n.pct === 'number') ? Math.round(n.pct) + '%' : '';
   let actionStrip = '';
   if (n.type === 'commit' && n.children && n.children.length) {
