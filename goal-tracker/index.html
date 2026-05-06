@@ -1643,6 +1643,107 @@
   }
   .elem-card:hover .elem-delete { opacity: 1; }
 
+  /* ===== Milestone Bar ===== */
+  .ms-bar {
+    margin-bottom: 14px;
+    padding: 12px 16px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .ms-bar-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .ms-bar-items { display: flex; flex-direction: column; gap: 6px; }
+  .ms-bar-item {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    padding: 6px 10px;
+    background: var(--lv-milestone-soft);
+    border: 1px solid var(--lv-milestone);
+    border-radius: 8px;
+  }
+  .ms-bar-title {
+    flex: 1; min-width: 120px; font-size: 13px; font-weight: 600;
+    padding: 2px 4px; border-radius: 3px;
+  }
+  .ms-bar-title:focus { outline: none; background: var(--orange-soft); }
+  .ms-bar-date { border: 1px solid var(--line); border-radius: 4px; padding: 2px 6px; font-size: 12px; background: var(--paper); color: var(--ink); }
+  .ms-bar-badge { font-size: 11px; padding: 2px 6px; border-radius: 3px; background: var(--green-soft); color: var(--green-text); font-weight: 600; }
+  .ms-bar-badge.warn { background: var(--red-soft); color: var(--red-text); }
+
+  /* ===== Element Cards v2 ===== */
+  .elements-section { margin-bottom: 16px; }
+  .elem-card-v2 {
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s;
+  }
+  .elem-card-v2.focused {
+    border-color: var(--orange);
+    background: var(--orange-soft);
+  }
+  .elem-card-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .elem-priority-badge {
+    font-size: 11px; font-weight: 700; padding: 2px 7px;
+    border-radius: 3px; background: var(--lv-element-soft); color: var(--lv-element);
+    min-width: 24px; text-align: center;
+  }
+  .elem-title-edit {
+    flex: 1; min-width: 100px; font-size: 15px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px;
+    border: 1px solid transparent;
+  }
+  .elem-title-edit:focus { outline: none; border-color: var(--orange); background: var(--card); }
+  .elem-focus-btn {
+    padding: 5px 12px; border-radius: 6px; border: 1.5px solid var(--line);
+    background: var(--card); color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s; white-space: nowrap;
+  }
+  .elem-focus-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .elem-focus-btn.active { background: var(--orange); border-color: var(--orange); color: var(--accent-fg); }
+  .elem-numbers {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 10px 0; border-top: 1px solid var(--line);
+  }
+  .elem-num-item { display: flex; align-items: center; gap: 5px; }
+  .elem-num-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+  .elem-num-item input[type="number"] {
+    width: 70px; border: 1px solid var(--line); border-radius: 4px;
+    padding: 4px 7px; font-size: 13px; background: var(--paper); color: var(--ink);
+  }
+  .elem-num-item input[type="text"] {
+    border: 1px solid var(--line); border-radius: 4px;
+    padding: 4px 7px; font-size: 13px; background: var(--paper); color: var(--ink);
+  }
+  .elem-num-item input:focus { outline: none; border-color: var(--orange); }
+  .elem-gap-val { font-size: 14px; min-width: 50px; }
+
+  /* ===== Commit section (inside focused element) ===== */
+  .commit-section {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--orange);
+  }
+  .commit-block {
+    background: var(--paper);
+    border: 1px solid var(--lv-commit-soft);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .commit-header {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;
+  }
+  .commit-title-edit {
+    flex: 1; min-width: 100px; font-size: 14px; font-weight: 600;
+    padding: 3px 6px; border-radius: 4px; border: 1px solid transparent;
+  }
+  .commit-title-edit:focus { outline: none; border-color: var(--lv-commit); }
+  .action-list { display: flex; flex-direction: column; gap: 6px; }
+
   /* ========== Footer ========== */
   footer {
     text-align: center; color: var(--muted); font-size: 11px;
@@ -2084,6 +2185,17 @@ async function loadFromCloud() {
     if (!state.meta) state.meta = { version: 1 };
     if (!state.kpiLabels) state.kpiLabels = { ...DEFAULT_KPI_LABELS };
     if (!Array.isArray(state.archive)) state.archive = [];
+    // migration v2
+    (state.goal.milestones || []).forEach(m => { delete m.gaps; delete m.commitments; delete m.actions; });
+    (state.goal.elements || []).forEach(e => {
+      if (!Array.isArray(e.commitments)) e.commitments = [];
+      if (typeof e.isFocused === 'undefined') e.isFocused = false;
+      if (typeof e.priority === 'undefined') e.priority = null;
+      if (!e.unit) e.unit = '';
+      if (!e.gapNote) e.gapNote = '';
+      if (typeof e.current === 'string') e.current = parseFloat(e.current) || 0;
+      if (typeof e.target === 'string') e.target = parseFloat(e.target) || 0;
+    });
     migrateKpiWeeks();
   } else {
     state = emptyData();
@@ -2144,30 +2256,27 @@ function presetSales() {
   const goal = {
     title: '2026年12月までに月商300万を3ヶ月連続で達成する',
     deadline: '2026-12-31',
-    elements: [
-      { id: uid(), title: '見込み客10名で30件の商談導線', current: '3名', target: '10名' },
-      { id: uid(), title: '成約率 50%', current: '0%', target: '50%' },
-      { id: uid(), title: '紹介ルート構築（月6名）', current: '0名', target: '6名/月' }
-    ],
     milestones: [
-      { id: uid(), title: '見込み客7名・商談15件', deadline: '2026-06-30',
-        gaps: [
-          { id: uid(), title: '見込み客 +4名 必要', deltaText: '+4名',
-            commitments: [
-              { id: uid(), title: '毎月10件の紹介依頼面談を実施', actions: [
-                { id: uid(), title: '既存顧客リストから紹介候補をリストアップ', status: 'done', due: addDays(-12), week: thisWeekKey(-1) },
-                { id: uid(), title: '紹介依頼トーク台本のロープレ', status: 'doing', due: addDays(2), week: thisWeekKey() },
-                { id: uid(), title: '月10件の紹介依頼面談を実施', status: 'todo', due: addDays(14), week: thisWeekKey(1), targetNum: 10, actualNum: 6 }
-              ]}
-            ]},
-          { id: uid(), title: '商談 +7件 必要', deltaText: '+7件',
-            commitments: [
-              { id: uid(), title: '月3件の商談クローズ実施', actions: [
-                { id: uid(), title: '商談フローのテンプレ整備', status: 'done', due: addDays(-20), week: thisWeekKey(-3) },
-                { id: uid(), title: '提案資料を最新版に更新', status: 'doing', due: addDays(5), week: thisWeekKey() }
-              ]}
-            ]}
-        ]}
+      { id: uid(), title: '6月末: 月商200万突破', deadline: '2026-06-30' },
+      { id: uid(), title: '9月末: 月商250万安定', deadline: '2026-09-30' }
+    ],
+    elements: [
+      {
+        id: uid(), title: '見込み客数', current: 3, target: 10, unit: '名',
+        gapNote: '紹介ルートが弱い', isFocused: true, priority: 1,
+        commitments: [
+          { id: uid(), title: '毎月10件の紹介依頼面談を実施', deadline: addDays(30), actions: [
+            { id: uid(), title: '既存顧客リストから紹介候補をリストアップ', status: 'done', due: addDays(-12), week: thisWeekKey(-1) },
+            { id: uid(), title: '紹介依頼トーク台本のロープレ', status: 'doing', due: addDays(2), week: thisWeekKey() },
+            { id: uid(), title: '月10件の紹介依頼面談を実施', status: 'todo', due: addDays(14), week: thisWeekKey(1), targetNum: 10, actualNum: 6 }
+          ]},
+          { id: uid(), title: 'SNS経由の流入を月5件作る', deadline: addDays(60), actions: [
+            { id: uid(), title: 'プロフィール改善', status: 'todo', due: addDays(5), week: thisWeekKey() }
+          ]}
+        ]
+      },
+      { id: uid(), title: '成約率', current: 20, target: 50, unit: '%', gapNote: '', isFocused: false, priority: 2, commitments: [] },
+      { id: uid(), title: '紹介ルート', current: 0, target: 6, unit: '件/月', gapNote: '仕組みがない', isFocused: false, priority: 3, commitments: [] }
     ]
   };
   const w = (c, e=0) => ({ c, e });
@@ -2204,22 +2313,23 @@ function presetCreator() {
   const goal = {
     title: '2026年中に「指名で受ける」状態になり、月収80万を安定化する',
     deadline: '2026-12-31',
-    elements: [
-      { id: uid(), title: 'ポートフォリオの更新と発信', current: '更新止まり', target: '月2作品 + 週3投稿' },
-      { id: uid(), title: 'リピート率を上げる', current: '40%', target: '70%' },
-      { id: uid(), title: '単価アップ（10万→18万）', current: '10万', target: '18万' }
-    ],
     milestones: [
-      { id: uid(), title: '夏までに代表作3つ完成', deadline: '2026-08-31',
-        gaps: [
-          { id: uid(), title: '代表作 +2件', deltaText: '+2件',
-            commitments: [
-              { id: uid(), title: '隔週で1作品をリリース', actions: [
-                { id: uid(), title: '次作のコンセプト3案出し', status: 'doing', due: addDays(3), week: thisWeekKey() },
-                { id: uid(), title: '取材・素材集め', status: 'todo', due: addDays(10), week: thisWeekKey(1) }
-              ]}
-            ]}
-        ]}
+      { id: uid(), title: '夏までに代表作3つ完成', deadline: '2026-08-31' },
+      { id: uid(), title: '年末に月収80万達成', deadline: '2026-12-31' }
+    ],
+    elements: [
+      {
+        id: uid(), title: 'ポートフォリオ更新・発信', current: 0, target: 6, unit: '作品',
+        gapNote: '更新が止まっている', isFocused: true, priority: 1,
+        commitments: [
+          { id: uid(), title: '隔週で1作品をリリース', deadline: addDays(60), actions: [
+            { id: uid(), title: '次作のコンセプト3案出し', status: 'doing', due: addDays(3), week: thisWeekKey() },
+            { id: uid(), title: '取材・素材集め', status: 'todo', due: addDays(10), week: thisWeekKey(1) }
+          ]}
+        ]
+      },
+      { id: uid(), title: 'リピート率', current: 40, target: 70, unit: '%', gapNote: '', isFocused: false, priority: 2, commitments: [] },
+      { id: uid(), title: '単価', current: 10, target: 18, unit: '万円', gapNote: '単価改定未実施', isFocused: false, priority: 3, commitments: [] }
     ]
   };
   const kpi = { [m]: {
@@ -2248,22 +2358,23 @@ function presetOwner() {
   const goal = {
     title: '2027年3月までに営業利益率15%を達成し、社員一人当たり生産性を1.5倍にする',
     deadline: '2027-03-31',
-    elements: [
-      { id: uid(), title: '主力事業の粗利改善', current: '粗利率28%', target: '粗利率35%' },
-      { id: uid(), title: '採用と育成（1名/四半期）', current: '空き2席', target: '採用4名/年' },
-      { id: uid(), title: '新規事業の柱（年商3000万）', current: '構想段階', target: 'PoC→ローンチ' }
-    ],
     milestones: [
-      { id: uid(), title: '原価構造の可視化', deadline: '2026-07-31',
-        gaps: [
-          { id: uid(), title: '高原価案件の比率を半減', deltaText: '20%→10%',
-            commitments: [
-              { id: uid(), title: '案件採算を毎週レビュー', actions: [
-                { id: uid(), title: '案件別PLレポートを作成', status: 'doing', due: addDays(5), week: thisWeekKey() },
-                { id: uid(), title: '受注基準（最低粗利率）を定義', status: 'todo', due: addDays(12), week: thisWeekKey(1) }
-              ]}
-            ]}
-        ]}
+      { id: uid(), title: '原価構造の可視化完了', deadline: '2026-07-31' },
+      { id: uid(), title: '採用2名完了・育成開始', deadline: '2026-12-31' }
+    ],
+    elements: [
+      {
+        id: uid(), title: '粗利率', current: 28, target: 35, unit: '%',
+        gapNote: '高原価案件の比率が高い', isFocused: true, priority: 1,
+        commitments: [
+          { id: uid(), title: '案件採算を毎週レビュー', deadline: addDays(30), actions: [
+            { id: uid(), title: '案件別PLレポートを作成', status: 'doing', due: addDays(5), week: thisWeekKey() },
+            { id: uid(), title: '受注基準（最低粗利率）を定義', status: 'todo', due: addDays(12), week: thisWeekKey(1) }
+          ]}
+        ]
+      },
+      { id: uid(), title: '採用数', current: 0, target: 4, unit: '名/年', gapNote: '採用フロー未整備', isFocused: false, priority: 2, commitments: [] },
+      { id: uid(), title: '新規事業売上', current: 0, target: 3000, unit: '万円', gapNote: '構想段階', isFocused: false, priority: 3, commitments: [] }
     ]
   };
   const kpi = { [m]: {
@@ -2292,31 +2403,31 @@ function presetPersonal() {
   const goal = {
     title: '2026年内に体重65kg・本30冊・家族との対話時間を週5h確保する',
     deadline: '2026-12-31',
-    elements: [
-      { id: uid(), title: '健康（体重 -7kg）', current: '72kg', target: '65kg' },
-      { id: uid(), title: '学び（読書30冊）', current: '5冊', target: '30冊' },
-      { id: uid(), title: '家族時間（週5h）', current: '週2h', target: '週5h' }
-    ],
     milestones: [
-      { id: uid(), title: '夏までに -4kg（68kg）', deadline: '2026-07-31',
-        gaps: [
-          { id: uid(), title: '週次で -300g ペース', deltaText: '-300g/週',
-            commitments: [
-              { id: uid(), title: '夜の炭水化物を半量にする', actions: [
-                { id: uid(), title: '夜炭水化物の量を写真記録（毎日）', status: 'doing', due: addDays(7), week: thisWeekKey(), targetNum: 7, actualNum: 4 },
-                { id: uid(), title: '週3回 30分ウォーキング', status: 'todo', due: addDays(7), week: thisWeekKey(), targetNum: 3, actualNum: 1 }
-              ]}
-            ]}
-        ]},
-      { id: uid(), title: '上半期15冊', deadline: '2026-06-30',
-        gaps: [
-          { id: uid(), title: '残り 10冊', deltaText: '+10冊',
-            commitments: [
-              { id: uid(), title: '毎朝30分の読書時間を確保', actions: [
-                { id: uid(), title: '次の課題図書を3冊選定', status: 'todo', due: addDays(3), week: thisWeekKey() }
-              ]}
-            ]}
-        ]}
+      { id: uid(), title: '夏までに -4kg（68kg）', deadline: '2026-07-31' },
+      { id: uid(), title: '上半期15冊読破', deadline: '2026-06-30' }
+    ],
+    elements: [
+      {
+        id: uid(), title: '体重', current: 72, target: 65, unit: 'kg',
+        gapNote: '夜食・運動不足', isFocused: true, priority: 1,
+        commitments: [
+          { id: uid(), title: '夜の炭水化物を半量にする', deadline: addDays(30), actions: [
+            { id: uid(), title: '夜炭水化物の量を写真記録（毎日）', status: 'doing', due: addDays(7), week: thisWeekKey(), targetNum: 7, actualNum: 4 },
+            { id: uid(), title: '週3回 30分ウォーキング', status: 'todo', due: addDays(7), week: thisWeekKey(), targetNum: 3, actualNum: 1 }
+          ]}
+        ]
+      },
+      {
+        id: uid(), title: '読書冊数', current: 5, target: 30, unit: '冊',
+        gapNote: '', isFocused: false, priority: 2,
+        commitments: [
+          { id: uid(), title: '毎朝30分の読書時間を確保', deadline: addDays(60), actions: [
+            { id: uid(), title: '次の課題図書を3冊選定', status: 'todo', due: addDays(3), week: thisWeekKey() }
+          ]}
+        ]
+      },
+      { id: uid(), title: '家族時間', current: 2, target: 5, unit: 'h/週', gapNote: '', isFocused: false, priority: 3, commitments: [] }
     ]
   };
   const kpi = { [m]: {
@@ -2445,7 +2556,7 @@ function load() {
       if (!state.reflections) state.reflections = [];
       if (!state.meta) state.meta = { version: 1 };
       if (!state.kpiLabels) state.kpiLabels = { ...DEFAULT_KPI_LABELS };
-    if (!Array.isArray(state.archive)) state.archive = [];
+      if (!Array.isArray(state.archive)) state.archive = [];
       // migration: flatten milestones from elements to goal level
       if (!state.goal.milestones) {
         state.goal.milestones = [];
@@ -2454,6 +2565,22 @@ function load() {
           delete e.milestones;
         });
       }
+      // migration v2: milestones をシンプル化（gaps以降を削除）
+      (state.goal.milestones || []).forEach(m => {
+        delete m.gaps;
+        delete m.commitments;
+        delete m.actions;
+      });
+      // migration v2: elements にフィールド補完
+      (state.goal.elements || []).forEach(e => {
+        if (!Array.isArray(e.commitments)) e.commitments = [];
+        if (typeof e.isFocused === 'undefined') e.isFocused = false;
+        if (typeof e.priority === 'undefined') e.priority = null;
+        if (!e.unit) e.unit = '';
+        if (!e.gapNote) e.gapNote = '';
+        if (typeof e.current === 'string') e.current = parseFloat(e.current) || 0;
+        if (typeof e.target === 'string') e.target = parseFloat(e.target) || 0;
+      });
       migrateKpiWeeks();
     } else {
       state = sampleData();
@@ -2513,23 +2640,24 @@ function milestonePct(m) {
   if (!m.gaps || m.gaps.length === 0) return 0;
   return avg(m.gaps.map(gapPct));
 }
-function elementPct(e) { return 0; }
+function elementPct(e) {
+  if (!e.commitments || e.commitments.length === 0) return 0;
+  return avg(e.commitments.map(commitPct));
+}
 function goalPct() {
-  if (!state.goal.milestones || state.goal.milestones.length === 0) return 0;
-  return avg(state.goal.milestones.map(milestonePct));
+  const els = state.goal.elements || [];
+  if (!els.length) return 0;
+  return avg(els.map(elementPct));
 }
 
 function counts() {
-  let c = { goal: 1, element: 0, milestone: 0, gap: 0, commit: 0, action: 0 };
-  c.element = (state.goal.elements || []).length;
-  (state.goal.milestones || []).forEach(m => {
-    c.milestone++;
-    (m.gaps || []).forEach(g => {
-      c.gap++;
-      (g.commitments || []).forEach(cm => {
-        c.commit++;
-        c.action += (cm.actions || []).length;
-      });
+  const c = { goal: 1, element: 0, milestone: 0, commit: 0, action: 0 };
+  c.milestone = (state.goal.milestones || []).length;
+  (state.goal.elements || []).forEach(e => {
+    c.element++;
+    (e.commitments || []).forEach(cm => {
+      c.commit++;
+      c.action += (cm.actions || []).length;
     });
   });
   return c;
@@ -2556,14 +2684,14 @@ function renderHeader() {
 function renderFlowCounts() {
   const c = counts();
   const items = [
-    { ic: '🎯', lbl: 'GOAL', n: c.goal },
-    { ic: '🧩', lbl: '要素', n: c.element },
+    { ic: '🎯', lbl: 'GOAL', n: 1 },
     { ic: '📍', lbl: 'マイルストーン', n: c.milestone },
-    { ic: '📐', lbl: 'ギャップ', n: c.gap },
+    { ic: '🧩', lbl: '要素', n: c.element },
     { ic: '🤝', lbl: 'コミット', n: c.commit },
     { ic: '⚡', lbl: 'アクション', n: c.action }
   ];
   const el = document.getElementById('flow-counts');
+  if (!el) return;
   el.innerHTML = items.map((it, i) =>
     `<div class="flow-chip"><div class="ic">${it.ic}</div><div class="lbl">${it.lbl}</div><div class="num">${it.n}</div></div>` +
     (i < items.length - 1 ? '<div class="flow-arrow">›</div>' : '')
@@ -2583,9 +2711,7 @@ function rollUpHtml(pct) {
 
 // ----- Horizontal cascade tree -----
 const LEVEL_DEFS = [
-  { key: 'milestones',  tagClass: 'milestone', tagEmoji: '📍', tagLabel: 'マイルストーン', addLabel: '＋ マイルストーン追加', kind: 'milestone', pctFn: 'milestonePct' },
-  { key: 'gaps',        tagClass: 'gap',       tagEmoji: '📐', tagLabel: 'ギャップ',       addLabel: '＋ ギャップ追加',       kind: 'gap', pctFn: 'gapPct' },
-  { key: 'commitments', tagClass: 'commit',    tagEmoji: '🤝', tagLabel: 'コミット',       addLabel: '＋ コミット追加',       kind: 'commit', pctFn: 'commitPct' },
+  { key: 'commitments', tagClass: 'commit', tagEmoji: '🤝', tagLabel: 'コミット', addLabel: '＋ コミット追加', kind: 'commitment', pctFn: 'commitPct' },
 ];
 
 function setOpenPath(arr) {
@@ -2708,86 +2834,131 @@ function renderActionLevel(commitNode, parentPathArr) {
   </div>`;
 }
 
-function renderElementSection() {
-  const elements = state.goal.elements || [];
-  const cards = elements.map((e, ei) => `
-    <div class="elem-card" data-elem-idx="${ei}">
-      <button class="elem-delete btn-mini danger" onclick="removeElement(${ei})">🗑</button>
-      <div class="elem-title" contenteditable="true" data-elem-field="title" data-elem-idx="${ei}">${escapeHtml(e.title || '')}</div>
-      <div class="elem-meta">
-        <span class="meta-label">現状</span>
-        <input type="text" data-elem-field="current" data-elem-idx="${ei}" value="${escapeHtml(e.current || '')}" placeholder="例: 月商300万">
-        <span class="meta-label">目標</span>
-        <input type="text" data-elem-field="target" data-elem-idx="${ei}" value="${escapeHtml(e.target || '')}" placeholder="例: 月商500万">
+function renderMilestoneBar() {
+  const ms = state.goal.milestones || [];
+  const items = ms.map((m, i) => {
+    const dl = daysLeft(m.deadline);
+    const dlText = dl === null ? '' : (dl >= 0 ? `残${dl}日` : `${Math.abs(dl)}日経過`);
+    return `<div class="ms-bar-item">
+      <span class="ms-bar-title" contenteditable="true" data-ms-idx="${i}" data-ms-field="title">${escapeHtml(m.title || 'マイルストーン')}</span>
+      <input type="date" class="ms-bar-date" data-ms-idx="${i}" data-ms-field="deadline" value="${m.deadline || ''}">
+      ${dlText ? `<span class="ms-bar-badge ${dl < 0 ? 'warn' : ''}">${dlText}</span>` : ''}
+      <button class="btn-mini danger ms-bar-del" onclick="removeMilestone(${i})">🗑</button>
+    </div>`;
+  }).join('');
+  return `<div class="ms-bar">
+    <div class="ms-bar-header">
+      <span class="lv-tag milestone">📍 マイルストーン</span>
+      <button class="add-btn" onclick="addMilestone()">＋ 追加</button>
+    </div>
+    <div class="ms-bar-items">${items || '<span style="color:var(--muted);font-size:12px;">まだマイルストーンがありません</span>'}</div>
+  </div>`;
+}
+
+function renderElementsSection() {
+  const els = state.goal.elements || [];
+
+  const elementCards = els.map((e, ei) => {
+    const gap = (typeof e.target === 'number' && typeof e.current === 'number')
+      ? e.target - e.current : null;
+    const gapText = gap !== null
+      ? (gap > 0 ? `+${gap}` : String(gap)) + (e.unit ? ' ' + e.unit : '')
+      : '—';
+    const gapColor = gap === null ? 'var(--muted)' : gap > 0 ? 'var(--red)' : 'var(--green)';
+    const pct = elementPct(e);
+    const isFocused = e.isFocused;
+
+    let commitSection = '';
+    if (isFocused) {
+      const commits = (e.commitments || []).map((c, ci) => {
+        const cPct = commitPct(c);
+        const actions = (c.actions || []).map((a, ai) => actionHtml(a, ei, ci, ai)).join('');
+        const dl = daysLeft(c.deadline);
+        const dlBadge = dl !== null ? `<span class="badge ${dl < 0 ? 'warn' : ''}">${dl >= 0 ? '残' + dl + '日' : Math.abs(dl) + '日経過'}</span>` : '';
+        return `<div class="commit-block" data-path="${ei}.${ci}">
+          <div class="commit-header">
+            <span class="lv-tag commit" style="font-size:11px;">🤝 コミット</span>
+            <span class="commit-title-edit" contenteditable="true" data-field="title">${escapeHtml(c.title)}</span>
+            <input type="date" data-field="deadline" value="${c.deadline || ''}">
+            ${dlBadge}
+            ${rollUpHtml(cPct)}
+            <button class="btn-mini danger" onclick="removeNode('${ei}.${ci}')">🗑</button>
+          </div>
+          <div class="action-list">${actions}</div>
+          <button class="add-btn" style="margin-top:6px;" onclick="addChild('${ei}','action')">＋ アクション追加</button>
+        </div>`;
+      }).join('');
+      commitSection = `<div class="commit-section">
+        ${commits}
+        <button class="add-btn" onclick="addChild('${ei}','commitment')">＋ コミット追加</button>
+      </div>`;
+    }
+
+    return `<div class="elem-card-v2 ${isFocused ? 'focused' : ''}" data-elem-idx="${ei}">
+      <div class="elem-card-header">
+        <div class="elem-priority-badge">${e.priority ? 'P' + e.priority : '—'}</div>
+        <span class="elem-title-edit" contenteditable="true" data-elem-field="title" data-elem-idx="${ei}">${escapeHtml(e.title || '')}</span>
+        ${rollUpHtml(pct)}
+        <button class="elem-focus-btn ${isFocused ? 'active' : ''}" onclick="toggleFocus(${ei})">${isFocused ? '✦ フォーカス中' : 'フォーカス'}</button>
+        <button class="btn-mini danger" onclick="removeElement(${ei})">🗑</button>
       </div>
-    </div>`).join('');
-  return `<div class="element-section">
+      <div class="elem-numbers">
+        <div class="elem-num-item">
+          <span class="elem-num-label">現状</span>
+          <input type="number" data-elem-field="current" data-elem-idx="${ei}" value="${e.current ?? ''}" placeholder="0">
+        </div>
+        <div class="elem-num-item">
+          <span class="elem-num-label">目標</span>
+          <input type="number" data-elem-field="target" data-elem-idx="${ei}" value="${e.target ?? ''}" placeholder="0">
+        </div>
+        <div class="elem-num-item">
+          <span class="elem-num-label">単位</span>
+          <input type="text" data-elem-field="unit" data-elem-idx="${ei}" value="${escapeHtml(e.unit || '')}" placeholder="名/件/%" style="width:60px;">
+        </div>
+        <div class="elem-num-item">
+          <span class="elem-num-label">ギャップ</span>
+          <span class="elem-gap-val" style="color:${gapColor};font-weight:700;">${gapText}</span>
+        </div>
+        <div class="elem-num-item" style="flex:2;">
+          <span class="elem-num-label">メモ</span>
+          <input type="text" data-elem-field="gapNote" data-elem-idx="${ei}" value="${escapeHtml(e.gapNote || '')}" placeholder="ギャップの理由など">
+        </div>
+      </div>
+      ${commitSection}
+    </div>`;
+  }).join('');
+
+  return `<div class="elements-section">
     <div class="elem-section-header">
       <span class="lv-tag element">🧩 要素</span>
       <button class="add-btn" onclick="addElement()">＋ 要素を追加</button>
     </div>
-    <div class="elem-cards">${cards || '<div class="cascade-empty" style="padding:16px 0;">要素がありません。「＋ 要素を追加」から始めましょう。</div>'}</div>
+    ${elementCards || '<div class="cascade-empty" style="padding:20px 0;">要素がありません。「＋ 要素を追加」から始めましょう。</div>'}
   </div>`;
 }
 
 function renderTree() {
   const root = document.getElementById('tree-root');
   let html = '';
-
-  // ---- Breadcrumb ----
-  const goalTitle = state.goal.title || '';
-  let bc = `<span class="bc-item bc-root" data-edit-bc="goal.title" contenteditable="true" spellcheck="false">${escapeHtml(goalTitle)}</span>`;
-  let trace = state.goal;
-  for (let lv = 0; lv < openPath.length; lv++) {
-    const def = LEVEL_DEFS[lv];
-    if (!def) break;
-    trace = (trace[def.key] || [])[openPath[lv]];
-    if (!trace) break;
-    const upTo = openPath.slice(0, lv + 1).join(',');
-    bc += `<span class="bc-sep">›</span>
-      <span class="bc-item" onclick="setOpenPath([${upTo}])">${def.tagEmoji} ${escapeHtml((trace.title || '').slice(0, 18) || '…')}</span>`;
-  }
-  html += `<div class="cascade-bread">${bc}</div>`;
-
-  // ---- 要素セクション（フラットリスト、展開なし）----
-  html += renderElementSection();
-
-  // ---- マイルストーンカスケード (lv=0はgoal直下) ----
-  html += renderCascadeRow(0, state.goal, []);
-
-  // ---- Drill-down rows ----
-  let parent = state.goal;
-  const traversed = [];
-  for (let lv = 0; lv < openPath.length && lv < LEVEL_DEFS.length; lv++) {
-    const def = LEVEL_DEFS[lv];
-    parent = (parent[def.key] || [])[openPath[lv]];
-    if (!parent) break;
-    traversed.push(openPath[lv]);
-
-    if (lv + 1 < LEVEL_DEFS.length) {
-      html += renderCascadeRow(lv + 1, parent, traversed.slice());
-    } else {
-      html += renderActionLevel(parent, traversed.slice());
-    }
-  }
-
+  html += renderMilestoneBar();
+  html += renderElementsSection();
   root.innerHTML = html;
   bindTreeEvents();
 }
 
-function actionHtml(a, mi, gi, ci, ai) {
+function actionHtml(a, ei, ci, ai) {
   const overdue = isOverdue(a.due) && a.status !== 'done';
-  const computedStatus = overdue && a.status !== 'done' ? 'stuck' : (a.status || 'todo');
-  return `<div class="action-row ${computedStatus}" data-path="${mi}.${gi}.${ci}.${ai}">
-    <span class="action-check ${a.status === 'done' ? 'checked' : (a.status === 'doing' ? 'doing' : '')}" onclick="cycleStatus('${mi}.${gi}.${ci}.${ai}')">${a.status === 'done' ? '✓' : (a.status === 'doing' ? '◐' : '')}</span>
+  const computedStatus = overdue ? 'stuck' : (a.status || 'todo');
+  return `<div class="action-row ${computedStatus}" data-path="${ei}.${ci}.${ai}">
+    <span class="action-check ${a.status === 'done' ? 'checked' : (a.status === 'doing' ? 'doing' : '')}" onclick="cycleStatus('${ei}.${ci}.${ai}')">${a.status === 'done' ? '✓' : (a.status === 'doing' ? '◐' : '')}</span>
     <span class="action-title-edit" contenteditable="true" data-field="title">${escapeHtml(a.title)}</span>
     <span class="action-status-pill ${computedStatus}">${statusLabel(computedStatus)}</span>
     <input type="date" data-field="due" value="${a.due || ''}" title="期日">
-    <input type="text" data-field="week" value="${a.week || ''}" title="週(YYYY-Www)" placeholder="${thisWeekKey()}" style="width:90px;">
-    <input type="number" data-field="actualNum" value="${a.actualNum ?? ''}" placeholder="実績" title="実績数">
+    <input type="text" data-field="week" value="${a.week || ''}" placeholder="${thisWeekKey()}" style="width:90px;">
+    <input type="number" data-field="actualNum" value="${a.actualNum ?? ''}" placeholder="実績">
     <span style="color:#9ca3af;">/</span>
-    <input type="number" data-field="targetNum" value="${a.targetNum ?? ''}" placeholder="目標" title="目標数">
-    <button class="btn-mini danger" onclick="removeNode('${mi}.${gi}.${ci}.${ai}')">🗑</button>
+    <input type="number" data-field="targetNum" value="${a.targetNum ?? ''}" placeholder="目標">
+    <button class="btn-mini danger" onclick="removeNode('${ei}.${ci}.${ai}')">🗑</button>
   </div>`;
 }
 
@@ -2798,41 +2969,33 @@ function escapeHtml(s) {
   return (s == null ? '' : String(s)).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-// Path utilities: 'mi' / 'mi.gi' / 'mi.gi.ci' / 'mi.gi.ci.ai'
+// Path utilities: 'ei' / 'ei.ci' / 'ei.ci.ai'
 function getNodeByPath(path) {
-  if (!path) return null;
-  const parts = path.split('.').map(Number);
-  const ms = state.goal.milestones || [];
-  let n = ms[parts[0]];
+  if (!path && path !== 0) return null;
+  const parts = String(path).split('.').map(Number);
+  const els = state.goal.elements || [];
+  let n = els[parts[0]];
   if (!n || parts.length === 1) return n;
-  n = (n.gaps || [])[parts[1]];
+  n = (n.commitments || [])[parts[1]];
   if (!n || parts.length === 2) return n;
-  n = (n.commitments || [])[parts[2]];
-  if (!n || parts.length === 3) return n;
-  n = (n.actions || [])[parts[3]];
+  n = (n.actions || [])[parts[2]];
   return n;
 }
 function removeNode(path) {
   if (!confirm('このノードを削除しますか？子要素も全部消えます。')) return;
-  const parts = path.split('.').map(Number);
+  const parts = String(path).split('.').map(Number);
   let arr;
-  if (parts.length === 1) arr = state.goal.milestones;
-  else {
-    const parent = getNodeByPath(parts.slice(0, -1).join('.'));
-    const keys = ['gaps','commitments','actions'];
-    arr = parent[keys[parts.length - 2]];
-  }
+  if (parts.length === 1) arr = state.goal.elements;
+  else if (parts.length === 2) arr = (state.goal.elements[parts[0]] || {}).commitments;
+  else arr = ((state.goal.elements[parts[0]] || {}).commitments || [])[parts[1]]?.actions;
+  if (!arr) return;
   arr.splice(parts[parts.length - 1], 1);
-  // Maintain openPath: collapse if this node was open, shift if a sibling before it was deleted
   const lvDeleted = parts.length - 1;
-  if (parts.length <= 3 && openPath.length > lvDeleted) {
+  if (openPath.length > lvDeleted) {
     const ancestorsMatch = parts.slice(0, lvDeleted).every((p, k) => openPath[k] === p);
     if (ancestorsMatch) {
-      if (openPath[lvDeleted] === parts[lvDeleted]) {
-        openPath = openPath.slice(0, lvDeleted);
-      } else if (openPath[lvDeleted] > parts[lvDeleted]) {
-        openPath[lvDeleted]--;
-      }
+      if (openPath[lvDeleted] === parts[lvDeleted]) openPath = openPath.slice(0, lvDeleted);
+      else if (openPath[lvDeleted] > parts[lvDeleted]) openPath[lvDeleted]--;
     }
   }
   save(); renderAll();
@@ -2843,34 +3006,46 @@ function removeElement(idx) {
   save(); renderAll();
 }
 function addChild(parentPath, kind) {
-  const parent = parentPath ? getNodeByPath(parentPath) : state.goal;
   let newIdx = -1;
-  if (kind === 'milestone') {
-    state.goal.milestones = state.goal.milestones || [];
-    state.goal.milestones.push({ id: uid(), title: '新しいマイルストーン', deadline: '', gaps: [] });
-    newIdx = state.goal.milestones.length - 1;
-  } else if (kind === 'gap') {
-    parent.gaps = parent.gaps || [];
-    parent.gaps.push({ id: uid(), title: '新しいギャップ', deltaText: '', commitments: [] });
-    newIdx = parent.gaps.length - 1;
-  } else if (kind === 'commit') {
+  if (kind === 'element') {
+    state.goal.elements.push({ id: uid(), title: '新しい要素', current: 0, target: 0, unit: '', gapNote: '', isFocused: false, priority: null, commitments: [] });
+    newIdx = state.goal.elements.length - 1;
+    save(); renderAll(); return;
+  }
+  const parent = getNodeByPath(parentPath);
+  if (!parent) { save(); renderAll(); return; }
+  if (kind === 'commitment') {
     parent.commitments = parent.commitments || [];
-    parent.commitments.push({ id: uid(), title: '新しいコミットメント', actions: [] });
+    parent.commitments.push({ id: uid(), title: '新しいコミットメント', deadline: '', actions: [] });
     newIdx = parent.commitments.length - 1;
+    const ei = Number(String(parentPath).split('.')[0]);
+    openPath = [ei, newIdx];
   } else if (kind === 'action') {
     parent.actions = parent.actions || [];
     parent.actions.push({ id: uid(), title: '新しいアクション', status: 'todo', due: '', week: thisWeekKey() });
-  }
-  // Auto-select the newly added node so its child row appears immediately
-  if (kind !== 'action' && newIdx >= 0) {
-    const parentParts = parentPath ? parentPath.split('.').map(Number) : [];
-    openPath = [...parentParts, newIdx];
   }
   save(); renderAll();
 }
 function addElement() {
   state.goal.elements = state.goal.elements || [];
-  state.goal.elements.push({ id: uid(), title: '新しい要素', current: '', target: '' });
+  state.goal.elements.push({ id: uid(), title: '新しい要素', current: 0, target: 0, unit: '', gapNote: '', isFocused: false, priority: null, commitments: [] });
+  save(); renderAll();
+}
+function addMilestone() {
+  state.goal.milestones = state.goal.milestones || [];
+  state.goal.milestones.push({ id: uid(), title: '新しいマイルストーン', deadline: '' });
+  save(); renderAll();
+}
+function removeMilestone(idx) {
+  if (!confirm('このマイルストーンを削除しますか？')) return;
+  state.goal.milestones.splice(idx, 1);
+  save(); renderAll();
+}
+function toggleFocus(idx) {
+  const els = state.goal.elements || [];
+  const isAlreadyFocused = els[idx] && els[idx].isFocused;
+  els.forEach(e => { e.isFocused = false; });
+  if (!isAlreadyFocused && els[idx]) els[idx].isFocused = true;
   save(); renderAll();
 }
 function cycleStatus(path) {
@@ -2883,44 +3058,40 @@ function cycleStatus(path) {
 }
 
 function bindTreeEvents() {
-  // contenteditable + inputs
-  document.querySelectorAll('#tree-root [data-path]').forEach(el => {
-    const path = el.dataset.path;
-    el.querySelectorAll('[data-field]').forEach(field => {
-      const fname = field.dataset.field;
-      if (field.tagName === 'INPUT') {
-        field.addEventListener('change', () => {
-          const node = getNodeByPath(path);
-          let v = field.value;
-          if (field.type === 'number') v = v === '' ? undefined : Number(v);
-          node[fname] = v;
-          save(); renderHeader(); renderFlowCounts(); updateRollups();
-        });
-      } else {
-        field.addEventListener('blur', () => {
-          const node = getNodeByPath(path);
-          node[fname] = field.innerText.trim();
-          save();
-        });
-        field.addEventListener('keydown', e => {
-          // Skip while IME is composing — Enter during 変換確定 must not trigger blur
-          if (e.isComposing || e.keyCode === 229) return;
-          if (e.key === 'Enter') { e.preventDefault(); field.blur(); }
-        });
-      }
-    });
+  // マイルストーンバー編集
+  document.querySelectorAll('[data-ms-idx]').forEach(el => {
+    const idx = +el.dataset.msIdx;
+    const field = el.dataset.msField;
+    if (el.tagName === 'INPUT') {
+      el.addEventListener('change', () => {
+        if (!state.goal.milestones[idx]) return;
+        state.goal.milestones[idx][field] = el.value;
+        save(); renderAll();
+      });
+    } else {
+      el.addEventListener('blur', () => {
+        if (!state.goal.milestones[idx]) return;
+        state.goal.milestones[idx][field] = el.innerText.trim();
+        save();
+      });
+      el.addEventListener('keydown', e => {
+        if (e.isComposing || e.keyCode === 229) return;
+        if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+      });
+    }
   });
 
-  // 要素編集イベント
-  document.querySelectorAll('#tree-root [data-elem-idx]').forEach(el => {
+  // 要素フィールド編集
+  document.querySelectorAll('[data-elem-idx]').forEach(el => {
     const idx = +el.dataset.elemIdx;
     const field = el.dataset.elemField;
     if (!field) return;
     if (el.tagName === 'INPUT') {
       el.addEventListener('change', () => {
         if (!state.goal.elements[idx]) return;
-        state.goal.elements[idx][field] = el.value;
-        save();
+        const v = el.type === 'number' ? (el.value === '' ? null : Number(el.value)) : el.value;
+        state.goal.elements[idx][field] = v;
+        save(); renderAll();
       });
     } else {
       el.addEventListener('blur', () => {
@@ -2935,35 +3106,73 @@ function bindTreeEvents() {
     }
   });
 
-  // Breadcrumb root pill — live two-way sync with header h-goal
-  const bcRoot = document.querySelector('[data-edit-bc="goal.title"]');
-  if (bcRoot && typeof syncGoalTitleFrom === 'function') {
-    bcRoot.addEventListener('input', () => syncGoalTitleFrom(bcRoot));
-    bcRoot.addEventListener('blur', () => syncGoalTitleFrom(bcRoot));
-    bcRoot.addEventListener('keydown', e => {
-      if (e.isComposing || e.keyCode === 229) return;
-      if (e.key === 'Enter') { e.preventDefault(); bcRoot.blur(); }
+  // コミットブロック内のフィールド編集
+  document.querySelectorAll('.commit-block[data-path]').forEach(block => {
+    const path = block.dataset.path;
+    const [ei, ci] = path.split('.').map(Number);
+    block.querySelectorAll('[data-field]').forEach(field => {
+      const fname = field.dataset.field;
+      if (field.tagName === 'INPUT') {
+        field.addEventListener('change', () => {
+          const commit = ((state.goal.elements[ei] || {}).commitments || [])[ci];
+          if (!commit) return;
+          commit[fname] = field.value;
+          save();
+        });
+      } else {
+        field.addEventListener('blur', () => {
+          const commit = ((state.goal.elements[ei] || {}).commitments || [])[ci];
+          if (!commit) return;
+          commit[fname] = field.innerText.trim();
+          save();
+        });
+        field.addEventListener('keydown', e => {
+          if (e.isComposing || e.keyCode === 229) return;
+          if (e.key === 'Enter') { e.preventDefault(); field.blur(); }
+        });
+      }
     });
-  }
+    // アクション行の編集イベント
+    block.querySelectorAll('.action-row[data-path]').forEach(row => {
+      const apath = row.dataset.path;
+      row.querySelectorAll('[data-field]').forEach(field => {
+        const fname = field.dataset.field;
+        if (field.tagName === 'INPUT') {
+          field.addEventListener('change', () => {
+            const node = getNodeByPath(apath);
+            if (!node) return;
+            let v = field.value;
+            if (field.type === 'number') v = v === '' ? null : Number(v);
+            node[fname] = v;
+            save(); renderHeader(); renderFlowCounts(); updateRollups();
+          });
+        } else {
+          field.addEventListener('blur', () => {
+            const node = getNodeByPath(apath);
+            if (!node) return;
+            node[fname] = field.innerText.trim();
+            save();
+          });
+          field.addEventListener('keydown', e => {
+            if (e.isComposing || e.keyCode === 229) return;
+            if (e.key === 'Enter') { e.preventDefault(); field.blur(); }
+          });
+        }
+      });
+    });
+  });
 }
 
 function updateRollups() {
-  // Recalculate roll-up bars without full re-render (cheap)
-  document.querySelectorAll('#tree-root .card[data-path]').forEach(cardEl => {
-    const path = cardEl.dataset.path;
-    const node = getNodeByPath(path);
-    if (!node) return;
-    const parts = path.split('.').length;
-    let pct = 0;
-    if (parts === 1) pct = milestonePct(node);
-    else if (parts === 2) pct = gapPct(node);
-    else if (parts === 3) pct = commitPct(node);
-    const bar = cardEl.querySelector('.roll-up-fill');
-    const lbl = cardEl.querySelector('.roll-up-pct');
-    if (bar) {
-      bar.style.width = pct + '%';
-      bar.className = 'roll-up-fill ' + pctClass(pct);
-    }
+  // 要素カードのロールアップ更新
+  document.querySelectorAll('.elem-card-v2[data-elem-idx]').forEach(card => {
+    const idx = +card.dataset.elemIdx;
+    const e = (state.goal.elements || [])[idx];
+    if (!e) return;
+    const pct = elementPct(e);
+    const bar = card.querySelector('.roll-up-fill');
+    const lbl = card.querySelector('.roll-up-pct');
+    if (bar) { bar.style.width = pct + '%'; bar.className = 'roll-up-fill ' + pctClass(pct); }
     if (lbl) lbl.textContent = Math.round(pct) + '%';
   });
   renderHeader();
@@ -2974,11 +3183,11 @@ function updateRollups() {
 // ============================================================
 function collectActionsByWeek() {
   const map = {};
-  (state.goal.milestones || []).forEach((m, mi) => (m.gaps || []).forEach((g, gi) => (g.commitments || []).forEach((c, ci) => (c.actions || []).forEach((a, ai) => {
+  (state.goal.elements || []).forEach((e, ei) => (e.commitments || []).forEach((c, ci) => (c.actions || []).forEach((a, ai) => {
     const k = a.week || 'unscheduled';
     if (!map[k]) map[k] = [];
-    map[k].push({ a, path: `${mi}.${gi}.${ci}.${ai}`, parent: { gap: g, commit: c } });
-  }))));
+    map[k].push({ a, path: `${ei}.${ci}.${ai}`, parent: { commit: c, element: e } });
+  })));
   return map;
 }
 
@@ -3034,7 +3243,7 @@ function renderWeek() {
         <span class="action-check ${a.status === 'done' ? 'checked' : (a.status === 'doing' ? 'doing' : '')}" onclick="cycleStatus('${path}')">${a.status === 'done' ? '✓' : (a.status === 'doing' ? '◐' : '')}</span>
         <span class="action-title-edit" contenteditable="true" data-week-edit="${path}|title">${escapeHtml(a.title)}</span>
         <span class="action-status-pill ${computedStatus}">${statusLabel(computedStatus)}</span>
-        <span class="lv-tag gap" style="font-size:9.5px;">📐 ${escapeHtml(parent.gap?.title?.slice(0,20) || '')}</span>
+        <span class="lv-tag element" style="font-size:9.5px;">🧩 ${escapeHtml(parent.element?.title?.slice(0,20) || '')}</span>
         ${a.due ? `<span class="week-due ${overdue?'warn':''}">📅 ${a.due}</span>` : ''}
       </div>`;
     }).join('')}
@@ -3056,19 +3265,19 @@ function renderWeek() {
 }
 
 function quickAddActionForWeek() {
-  state.goal.milestones = state.goal.milestones || [];
-  let qcMs = state.goal.milestones.find(m => m.title === '⚡ Quick Capture');
-  if (!qcMs) {
-    qcMs = { id: uid(), title: '⚡ Quick Capture', deadline: '', gaps: [
-      { id: uid(), title: '未分類', deltaText: '', commitments: [
-        { id: uid(), title: '未分類', actions: [] }
-      ]}
-    ]};
-    state.goal.milestones.push(qcMs);
+  state.goal.elements = state.goal.elements || [];
+  let qcEl = state.goal.elements.find(e => e.title === '⚡ Quick Capture');
+  if (!qcEl) {
+    qcEl = { id: uid(), title: '⚡ Quick Capture', current: 0, target: 0, unit: '', gapNote: '', isFocused: false, priority: null,
+      commitments: [{ id: uid(), title: '未分類', deadline: '', actions: [] }]
+    };
+    state.goal.elements.push(qcEl);
   }
-  const c = qcMs.gaps[0].commitments[0];
+  if (!qcEl.commitments || !qcEl.commitments.length) {
+    qcEl.commitments = [{ id: uid(), title: '未分類', deadline: '', actions: [] }];
+  }
   const week = activeWeek === 'unscheduled' ? '' : activeWeek;
-  c.actions.push({ id: uid(), title: '新しいアクション', status: 'todo', due: '', week });
+  qcEl.commitments[0].actions.push({ id: uid(), title: '新しいアクション', status: 'todo', due: '', week });
   save(); renderAll();
 }
 
@@ -3410,56 +3619,34 @@ function ovRow(depth, emoji, title, pct, lvClass, path) {
 function renderOverview() {
   const root = document.getElementById('overview-root');
   if (!root) return;
-  const milestones = state.goal.milestones || [];
-  if (!(state.goal.elements || []).length && !milestones.length) {
-    root.innerHTML = `<div class="cascade-empty" style="margin: 30px 0; padding: 50px 20px;">まだ何も登録されていません。「🌳 設計」ビューから始めましょう。</div>`;
+  const els = state.goal.elements || [];
+  const ms = state.goal.milestones || [];
+  if (!els.length && !ms.length) {
+    root.innerHTML = `<div class="cascade-empty" style="padding:50px 20px;">まだ何も登録されていません。「🌳 設計」ビューから始めましょう。</div>`;
     return;
   }
-
-  // Summary stats
-  let totalEls = (state.goal.elements || []).length;
-  let totalMs = 0, totalGaps = 0, totalActs = 0, doneActs = 0, stuckActs = 0;
-  milestones.forEach(m => {
-    totalMs++;
-    (m.gaps || []).forEach(g => {
-      totalGaps++;
-      (g.commitments || []).forEach(c => {
-        (c.actions || []).forEach(a => {
-          totalActs++;
-          if (a.status === 'done') doneActs++;
-          if (isOverdue(a.due) && a.status !== 'done') stuckActs++;
-        });
-      });
-    });
-  });
-
+  let totalActs = 0, doneActs = 0, stuckActs = 0;
+  els.forEach(e => (e.commitments || []).forEach(c => (c.actions || []).forEach(a => {
+    totalActs++;
+    if (a.status === 'done') doneActs++;
+    if (isOverdue(a.due) && a.status !== 'done') stuckActs++;
+  })));
   let html = `<div class="ov-summary">
     <div class="ov-stat"><div class="lbl">ゴール進捗</div><div class="num" style="color:var(--orange);">${Math.round(goalPct())}%</div></div>
-    <div class="ov-stat"><div class="lbl">要素 / マイルストーン</div><div class="num" style="color:var(--lv-element);">${totalEls} / ${totalMs}</div></div>
+    <div class="ov-stat"><div class="lbl">要素 / マイルストーン</div><div class="num">${els.length} / ${ms.length}</div></div>
     <div class="ov-stat"><div class="lbl">アクション (済 / 全)</div><div class="num" style="color:var(--green);">${doneActs} / ${totalActs}</div></div>
-    <div class="ov-stat"><div class="lbl">滞留アクション</div><div class="num" style="color:${stuckActs > 0 ? 'var(--red)' : 'var(--muted)'};">${stuckActs}</div></div>
-  </div>`;
-
-  html += '<div class="overview-list">';
+    <div class="ov-stat"><div class="lbl">滞留</div><div class="num" style="color:${stuckActs > 0 ? 'var(--red)' : 'var(--muted)'};">${stuckActs}</div></div>
+  </div><div class="overview-list">`;
   html += ovRow(0, '🎯', state.goal.title || 'ゴール未設定', goalPct(), 'lv-goal', '');
-  // 要素は1段目にフラット表示（クリック不可）
-  (state.goal.elements || []).forEach((e, ei) => {
-    html += ovRow(1, '🧩', e.title, 0, 'lv-element', '');
-  });
-  // マイルストーン以降
-  milestones.forEach((m, mi) => {
-    html += ovRow(1, '📍', m.title, milestonePct(m), 'lv-milestone', `${mi}`);
-    (m.gaps || []).forEach((g, gi) => {
-      html += ovRow(2, '📐', g.title, gapPct(g), 'lv-gap', `${mi}.${gi}`);
-      (g.commitments || []).forEach((c, ci) => {
-        html += ovRow(3, '🤝', c.title, commitPct(c), 'lv-commit', `${mi}.${gi}.${ci}`);
-        (c.actions || []).forEach((a, ai) => {
-          const status = a.status || 'todo';
-          const overdue = isOverdue(a.due) && status !== 'done';
-          const pct = status === 'done' ? 100 : status === 'doing' ? 50 : (overdue ? 0 : 10);
-          const titleWithStatus = (overdue ? '⚠ ' : '') + a.title + (status === 'done' ? ' ✓' : '');
-          html += ovRow(4, '⚡', titleWithStatus, pct, 'lv-action', `${mi}.${gi}.${ci}.${ai}`);
-        });
+  ms.forEach(m => { html += ovRow(1, '📍', m.title, null, 'lv-milestone', ''); });
+  els.forEach((e, ei) => {
+    html += ovRow(1, '🧩', e.title + (e.isFocused ? ' ✦' : ''), elementPct(e), 'lv-element', '');
+    (e.commitments || []).forEach((c, ci) => {
+      html += ovRow(2, '🤝', c.title, commitPct(c), 'lv-commit', `${ei}.${ci}`);
+      (c.actions || []).forEach((a, ai) => {
+        const st = a.status || 'todo';
+        const ov = isOverdue(a.due) && st !== 'done';
+        html += ovRow(3, '⚡', (ov ? '⚠ ' : '') + a.title + (st === 'done' ? ' ✓' : ''), st === 'done' ? 100 : st === 'doing' ? 50 : 0, 'lv-action', `${ei}.${ci}.${ai}`);
       });
     });
   });
@@ -3479,7 +3666,17 @@ function jumpToNode(path) {
     openPath = [];
   } else {
     const parts = path.split('.').map(Number);
-    openPath = parts.slice(0, Math.min(parts.length, 3));
+    openPath = parts.slice(0, Math.min(parts.length, 2));
+    // フォーカス要素を設定
+    if (parts.length >= 1) {
+      const ei = parts[0];
+      const els = state.goal.elements || [];
+      if (els[ei]) {
+        els.forEach(e => { e.isFocused = false; });
+        els[ei].isFocused = true;
+        save();
+      }
+    }
   }
   renderTree();
   document.getElementById('panel-design').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -3515,56 +3712,32 @@ const MM_VGAP = 14;
 const MM_PADDING = 30;
 
 function mmBuildHierarchy() {
-  const elements = state.goal.elements || [];
-  const milestones = state.goal.milestones || [];
+  const els = state.goal.elements || [];
+  const ms = state.goal.milestones || [];
   const children = [];
-
-  // 要素は「要素グループ」中間ノードとしてまとめる（要素がある場合のみ）
-  if (elements.length > 0) {
+  if (ms.length > 0) {
     children.push({
-      type: 'element-group', path: '',
-      title: '要素リスト',
-      pct: null,
-      children: elements.map(e => ({
-        type: 'element', path: '',
-        title: e.title, pct: null, node: e,
-        children: []
-      }))
+      type: 'element-group', path: '', title: 'マイルストーン', pct: null,
+      children: ms.map(m => ({ type: 'milestone', path: '', title: m.title, pct: null, deadline: m.deadline, children: [] }))
     });
   }
-
-  // マイルストーン以降（ゴールに直接紐づく）
-  milestones.forEach((m, mi) => {
+  els.forEach((e, ei) => {
     children.push({
-      type: 'milestone', path: `${mi}`,
-      title: m.title, pct: milestonePct(m), deadline: m.deadline, node: m,
-      children: (m.gaps || []).map((g, gi) => ({
-        type: 'gap', path: `${mi}.${gi}`,
-        title: g.title, pct: gapPct(g), node: g,
-        children: (g.commitments || []).map((c, ci) => ({
-          type: 'commit', path: `${mi}.${gi}.${ci}`,
-          title: c.title, pct: commitPct(c), node: c,
-          children: (c.actions || []).map((a, ai) => ({
-            type: 'action', path: `${mi}.${gi}.${ci}.${ai}`,
-            title: a.title, status: a.status || 'todo', node: a,
-            children: []
-          }))
+      type: 'element', path: `${ei}`, title: e.title,
+      pct: elementPct(e), node: e,
+      children: (e.commitments || []).map((c, ci) => ({
+        type: 'commit', path: `${ei}.${ci}`, title: c.title, pct: commitPct(c), node: c,
+        children: (c.actions || []).map((a, ai) => ({
+          type: 'action', path: `${ei}.${ci}.${ai}`, title: a.title, status: a.status || 'todo', node: a, children: []
         }))
       }))
     });
   });
-
-  return {
-    type: 'goal', path: '',
-    title: state.goal.title || 'ゴール未設定',
-    pct: goalPct(),
-    children
-  };
+  return { type: 'goal', path: '', title: state.goal.title || 'ゴール未設定', pct: goalPct(), children };
 }
 
 function mmHeightOf(n) {
   if (n.type === 'action') return MM_ACTION_H;
-  if (n.type === 'element') return MM_ACTION_H; // 要素はコンパクトに
   return MM_NODE_H;
 }
 
@@ -3611,12 +3784,18 @@ function mmRenderNode(n) {
     </g>`;
   }
   if (n.type === 'element') {
-    return `<g class="mm-node lv-element ${sel}" transform="translate(${n.x},${n.y})" data-path="${n.path}">
-      <rect class="mm-node-bg" x="0" y="0" width="${MM_NODE_W}" height="${MM_ACTION_H}" rx="8" ry="8" style="fill:var(--lv-element-soft);stroke:var(--lv-element);stroke-width:1.5;"/>
-      <text x="12" y="${MM_ACTION_H/2 + 5}" style="font-size:13px;fill:var(--lv-element);font-weight:600;">${escapeXml(mmTrunc(n.title, 28))}</text>
+    const pct = typeof n.pct === 'number' ? n.pct : 0;
+    const pctTxt = Math.round(pct) + '%';
+    return `<g class="mm-node lv-element ${pctCls} ${sel}" transform="translate(${n.x},${n.y})" data-path="${n.path}" onclick="onMmNodeClick('${n.path}')">
+      <rect class="mm-node-bg" x="0" y="0" width="${MM_NODE_W}" height="${MM_NODE_H}" rx="9" ry="9" style="fill:var(--lv-element-soft);stroke:var(--lv-element);stroke-width:2;"/>
+      <text class="mm-node-tag" x="12" y="16" style="fill:var(--lv-element);">🧩 要素</text>
+      <text class="mm-node-pct ${mmPctTextClass(pct)}" x="${MM_NODE_W - 12}" y="16">${pctTxt}</text>
+      <foreignObject x="12" y="22" width="${MM_NODE_W - 24}" height="${MM_NODE_H - 32}">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="mm-title-html" style="font-weight:700;">${escapeXml(n.title || '無題')}</div>
+      </foreignObject>
     </g>`;
   }
-  const tagText = ({goal:'🎯 ゴール','element-group':'🧩 要素',element:'🧩 要素',milestone:'📍 MS',gap:'📐 ギャップ',commit:'🤝 コミット'}[n.type]) || n.type;
+  const tagText = ({goal:'🎯 ゴール','element-group':'📍 マイルストーン',milestone:'📍 MS',commit:'🤝 コミット'}[n.type]) || n.type;
   const pctText = (typeof n.pct === 'number') ? Math.round(n.pct) + '%' : '';
   let actionStrip = '';
   if (n.type === 'commit' && n.children && n.children.length) {
@@ -3652,12 +3831,12 @@ function mmRenderAddBtn(parent) {
   // Add a "＋ 追加" button as a leaf-like node after the last child
   const x = parent.x + MM_COL_W;
   const lastChild = parent.children && parent.children.length ? parent.children[parent.children.length - 1] : null;
-  const childKindMap = { goal: 'milestone', milestone: 'gap', gap: 'commit', commit: 'action' };
+  const childKindMap = { goal: 'element', element: 'commitment', commit: 'action' };
   const kind = childKindMap[parent.type];
   if (!kind) return '';
   const lastH = lastChild ? (lastChild.type === 'action' ? MM_ACTION_H : MM_NODE_H) : MM_NODE_H;
   const y = lastChild ? lastChild.y + lastH + MM_VGAP : parent.y;
-  const labelMap = { milestone: '＋ MS', gap: '＋ ギャップ', commit: '＋ コミット', action: '＋ アクション' };
+  const labelMap = { element: '＋ 要素', commitment: '＋ コミット', action: '＋ アクション' };
   const btnH = kind === 'action' ? MM_ACTION_H : 40;
   return `<g class="mm-add-btn" transform="translate(${x},${y})" onclick="addChild('${parent.path}','${kind}'); setDesignView('mindmap');">
     <rect class="mm-add-btn-bg" x="0" y="0" width="${MM_NODE_W}" height="${btnH}" rx="8" ry="8"/>
@@ -3806,114 +3985,87 @@ function hmBarColor(p) {
 function renderHeatmap() {
   const root = document.getElementById('heatmap-root');
   if (!root) return;
-  const milestones = state.goal.milestones || [];
-  if (!(state.goal.elements || []).length && !milestones.length) {
+  const els = state.goal.elements || [];
+  const ms = state.goal.milestones || [];
+  if (!els.length && !ms.length) {
     root.innerHTML = `<div class="hm-empty">まだ何も登録されていません。「設計」ビューから始めましょう。</div>`;
     return;
   }
 
-  // Stats
-  let elN = (state.goal.elements || []).length;
-  let msN = 0, gapN = 0, cN = 0, aN = 0, doneN = 0, stuckN = 0;
-  milestones.forEach(m => {
-    msN++;
-    (m.gaps || []).forEach(g => {
-      gapN++;
-      (g.commitments || []).forEach(c => {
-        cN++;
-        (c.actions || []).forEach(a => {
-          aN++;
-          if (a.status === 'done') doneN++;
-          if (isOverdue(a.due) && a.status !== 'done') stuckN++;
-        });
-      });
+  let cN = 0, aN = 0, doneN = 0, stuckN = 0;
+  els.forEach(e => (e.commitments || []).forEach(c => {
+    cN++;
+    (c.actions || []).forEach(a => {
+      aN++;
+      if (a.status === 'done') doneN++;
+      if (isOverdue(a.due) && a.status !== 'done') stuckN++;
     });
-  });
+  }));
 
   let html = `<div class="heatmap-summary">
     <div class="hm-stat"><div class="lbl">ゴール進捗</div><div class="num" style="color:var(--orange);">${Math.round(goalPct())}%</div></div>
-    <div class="hm-stat"><div class="lbl">要素 / MS</div><div class="num" style="color:var(--lv-element);">${elN} / ${msN}</div></div>
-    <div class="hm-stat"><div class="lbl">ギャップ / コミット</div><div class="num" style="color:var(--lv-commit);">${gapN} / ${cN}</div></div>
+    <div class="hm-stat"><div class="lbl">要素 / MS</div><div class="num" style="color:var(--lv-element);">${els.length} / ${ms.length}</div></div>
+    <div class="hm-stat"><div class="lbl">コミット</div><div class="num" style="color:var(--lv-commit);">${cN}</div></div>
     <div class="hm-stat"><div class="lbl">アクション 完 / 全</div><div class="num" style="color:var(--green);">${doneN} / ${aN}</div></div>
     <div class="hm-stat"><div class="lbl">滞留</div><div class="num" style="color:${stuckN > 0 ? 'var(--red)' : 'var(--muted)'};">${stuckN}</div></div>
   </div>`;
 
-  // 要素フラット表示
-  if ((state.goal.elements || []).length) {
+  // マイルストーン表示
+  if (ms.length) {
     html += `<div class="hm-element-row">
       <div class="hm-el-info" style="cursor:default;">
-        <span class="hm-tag">🧩 要素</span>
-        <span class="hm-title" style="font-size:12px; color:var(--muted);">目標構成要素（${elN}件）</span>
+        <span class="hm-tag">📍 マイルストーン</span>
+        <span class="hm-title" style="font-size:12px; color:var(--muted);">（${ms.length}件）</span>
       </div>
       <div class="hm-ms-grid">
-        ${(state.goal.elements || []).map((el, ei) => `
-          <div class="hm-ms-cell" style="border-color:var(--lv-element);">
-            <div class="hm-ms-head">
-              <span class="ms-tag" style="color:var(--lv-element);">🧩 要素</span>
-            </div>
-            <div class="ms-title">${escapeHtml(el.title || '無題')}</div>
-            <div style="font-size:11px; color:var(--muted); margin-top:4px;">現状 ${escapeHtml(el.current||'-')} → 目標 ${escapeHtml(el.target||'-')}</div>
-          </div>`).join('')}
+        ${ms.map(m => {
+          const dl = daysLeft(m.deadline);
+          const dlBadge = dl !== null ? `<div class="ms-deadline ${dl < 0 ? 'warn' : ''}">${dl >= 0 ? '残'+dl+'日' : Math.abs(dl)+'日経過'} （${m.deadline||'-'}）</div>` : '';
+          return `<div class="hm-ms-cell" style="border-color:var(--lv-milestone);">
+            <div class="hm-ms-head"><span class="ms-tag" style="color:var(--lv-milestone);">📍 MS</span></div>
+            <div class="ms-title">${escapeHtml(m.title || '無題')}</div>${dlBadge}
+          </div>`;
+        }).join('')}
       </div>
     </div>`;
   }
 
-  // マイルストーングリッド
-  if (milestones.length) {
-    html += `<div class="hm-element-row">
-      <div class="hm-el-info" style="cursor:default;">
-        <span class="hm-tag">📍 MS</span>
-        <span class="hm-title" style="font-size:12px; color:var(--muted);">マイルストーン（${msN}件）</span>
-        <div class="hm-meta">
-          <span class="hm-pct ${hmPctTextClass(goalPct())}">${Math.round(goalPct())}%</span>
-          <span class="hm-bar"><span style="width:${goalPct()}%; background:${hmBarColor(goalPct())};"></span></span>
+  // 要素グリッド
+  els.forEach((e, ei) => {
+    const pct = elementPct(e);
+    const commits = (e.commitments || []).map((c, ci) => {
+      const cPct = commitPct(c);
+      const actions = [];
+      (c.actions || []).forEach(a => actions.push(a));
+      const pips = actions.slice(0, 30).map(a => {
+        const overdue = isOverdue(a.due) && a.status !== 'done';
+        const cls = overdue ? 'stuck' : (a.status || 'todo');
+        return `<span class="hm-action-pip ${cls}" title="${escapeHtml(a.title)} (${cls})"></span>`;
+      }).join('');
+      return `<div class="hm-gap-item">
+        <div>
+          <div class="hm-gap-title">🤝 ${escapeHtml(c.title || '無題')}</div>
+          ${pips ? `<div class="hm-action-strip">${pips}</div>` : ''}
         </div>
-      </div>
-      <div class="hm-ms-grid">
-        ${milestones.map((m, mi) => msCell(m, mi)).join('')}
-      </div>
-    </div>`;
-  }
+        <div class="hm-gap-pct ${hmPctTextClass(cPct)}">${Math.round(cPct)}%</div>
+      </div>`;
+    }).join('') || '<div style="color:var(--muted); font-size:11px;">コミット未登録</div>';
 
-  function msCell(m, mi) {
-    const pct = milestonePct(m);
-    const path = `${mi}`;
-    const dl = daysLeft(m.deadline);
-    const dlBadge = dl !== null
-      ? `<div class="ms-deadline ${dl < 0 ? 'warn' : ''}">${dl >= 0 ? '残'+dl+'日' : Math.abs(dl)+'日経過'} （${m.deadline||'-'}）</div>`
-      : '';
-    return `<div class="hm-ms-cell ${hmPctClass(pct)}" onclick="event.stopPropagation(); openEditDrawer('${path}')">
-      <div class="hm-ms-head">
-        <span class="ms-tag">📍 MS</span>
-        <span class="ms-pct ${hmPctTextClass(pct)}">${Math.round(pct)}%</span>
+    const gap = typeof e.target === 'number' && typeof e.current === 'number' ? e.target - e.current : null;
+    const gapStr = gap !== null ? (gap > 0 ? `+${gap}` : String(gap)) + (e.unit ? ' ' + e.unit : '') : '';
+    html += `<div class="hm-element-row">
+      <div class="hm-el-info" onclick="toggleFocus(${ei})">
+        <span class="hm-tag">🧩 要素${e.isFocused ? ' ✦' : ''}</span>
+        <span class="hm-title">${escapeHtml(e.title || '無題')}</span>
+        <div class="hm-meta">
+          <span class="hm-pct ${hmPctTextClass(pct)}">${Math.round(pct)}%</span>
+          <span class="hm-bar"><span style="width:${pct}%; background:${hmBarColor(pct)};"></span></span>
+        </div>
+        <div style="font-size:11px; color:var(--muted);">現状 ${e.current ?? '-'} → 目標 ${e.target ?? '-'} ${e.unit || ''} ${gapStr ? '| Gap: ' + gapStr : ''}</div>
       </div>
-      <div class="ms-title">${escapeHtml(m.title || '無題')}</div>
-      ${dlBadge}
-      <div class="hm-gap-list">
-        ${(m.gaps || []).map((g, gi) => gapItem(g, mi, gi)).join('') || '<div style="color:var(--muted); font-size:11px;">ギャップ未登録</div>'}
-      </div>
+      <div class="hm-gap-list">${commits}</div>
     </div>`;
-  }
-
-  function gapItem(g, mi, gi) {
-    const pct = gapPct(g);
-    const path = `${mi}.${gi}`;
-    // Collect all actions across commitments
-    const actions = [];
-    (g.commitments || []).forEach(c => (c.actions || []).forEach(a => actions.push(a)));
-    const pips = actions.slice(0, 30).map(a => {
-      const overdue = isOverdue(a.due) && a.status !== 'done';
-      const cls = overdue ? 'stuck' : (a.status || 'todo');
-      return `<span class="hm-action-pip ${cls}" title="${escapeHtml(a.title)} (${cls})"></span>`;
-    }).join('');
-    return `<div class="hm-gap-item" onclick="event.stopPropagation(); openEditDrawer('${path}')">
-      <div>
-        <div class="hm-gap-title">📐 ${escapeHtml(g.title || '無題')}${g.deltaText ? ` <span style="color:var(--muted); font-size:10px;">(${escapeHtml(g.deltaText)})</span>` : ''}</div>
-        ${pips ? `<div class="hm-action-strip">${pips}</div>` : ''}
-      </div>
-      <div class="hm-gap-pct ${hmPctTextClass(pct)}">${Math.round(pct)}%</div>
-    </div>`;
-  }
+  });
 
   root.innerHTML = html;
 }
@@ -3926,15 +4078,14 @@ function openEditDrawer(path) {
   editDrawerPath = path;
   const node = getNodeByPath(path);
   if (!node) return;
-  const parts = path.split('.').map(Number);
-  const lv = parts.length;  // 1=milestone, 2=gap, 3=commit, 4=action
+  const parts = String(path).split('.').map(Number);
+  const lv = parts.length; // 1=element, 2=commit, 3=action
   const lvInfo = [
     null,
-    { tag: '📍 マイルストーン', emoji: '📍' },
-    { tag: '📐 ギャップ', emoji: '📐' },
+    { tag: '🧩 要素', emoji: '🧩' },
     { tag: '🤝 コミットメント', emoji: '🤝' },
     { tag: '⚡ アクション', emoji: '⚡' }
-  ][lv];
+  ][lv] || { tag: '📝', emoji: '📝' };
   document.getElementById('ed-tag').textContent = lvInfo.emoji;
   document.getElementById('ed-level-label').textContent = lvInfo.tag;
 
@@ -3943,10 +4094,13 @@ function openEditDrawer(path) {
     <input type="text" id="ed-title" value="${escapeHtml(node.title || '')}" placeholder="名前を入力">`;
 
   if (lv === 1) {
-    html += `<label>期日</label><input type="date" id="ed-deadline" value="${node.deadline||''}">`;
+    html += `<label>現状</label><input type="number" id="ed-current" value="${node.current ?? ''}" placeholder="0">
+    <label>目標</label><input type="number" id="ed-target" value="${node.target ?? ''}" placeholder="0">
+    <label>単位</label><input type="text" id="ed-unit" value="${escapeHtml(node.unit||'')}" placeholder="名/件/%">
+    <label>ギャップメモ</label><input type="text" id="ed-gapNote" value="${escapeHtml(node.gapNote||'')}" placeholder="ギャップの理由">`;
   } else if (lv === 2) {
-    html += `<label>差分（埋めるべきギャップ）</label><input type="text" id="ed-deltaText" value="${escapeHtml(node.deltaText||'')}" placeholder="例: +200万">`;
-  } else if (lv === 4) {
+    html += `<label>期日</label><input type="date" id="ed-deadline" value="${node.deadline||''}">`;
+  } else if (lv === 3) {
     const status = node.status || 'todo';
     html += `<label>ステータス</label>
       <select id="ed-status">
@@ -3961,12 +4115,20 @@ function openEditDrawer(path) {
   }
 
   // Progress display
-  const pcts = [null, milestonePct, gapPct, commitPct, null];
-  if (pcts[lv]) {
-    const p = pcts[lv](node);
+  if (lv === 1) {
+    const p = elementPct(node);
     html += `<div class="ed-progress">
       <div style="display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-size:11px; color:var(--muted); font-weight:700; letter-spacing:0.06em;">配下からの集計進捗</span>
+        <span style="font-size:11px; color:var(--muted); font-weight:700; letter-spacing:0.06em;">コミット集計進捗</span>
+        <span style="font-weight:800; font-size:16px; color:${p>=70?'var(--green-text, var(--green))':p>=30?'var(--orange)':'var(--red-text, var(--red))'};">${Math.round(p)}%</span>
+      </div>
+      <div class="pbar"><span style="width:${p}%; background:${p>=70?'var(--green)':p>=30?'var(--orange)':'var(--red)'};"></span></div>
+    </div>`;
+  } else if (lv === 2) {
+    const p = commitPct(node);
+    html += `<div class="ed-progress">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:11px; color:var(--muted); font-weight:700; letter-spacing:0.06em;">アクション集計進捗</span>
         <span style="font-weight:800; font-size:16px; color:${p>=70?'var(--green-text, var(--green))':p>=30?'var(--orange)':'var(--red-text, var(--red))'};">${Math.round(p)}%</span>
       </div>
       <div class="pbar"><span style="width:${p}%; background:${p>=70?'var(--green)':p>=30?'var(--orange)':'var(--red)'};"></span></div>
@@ -3976,10 +4138,10 @@ function openEditDrawer(path) {
   body.innerHTML = html;
 
   // Action buttons
-  const actions = document.getElementById('ed-actions');
-  const childKindMap = { 1: 'gap', 2: 'commit', 3: 'action' };
+  const actionsEl = document.getElementById('ed-actions');
+  const childKindMap = { 1: 'commitment', 2: 'action' };
   const childKind = childKindMap[lv];
-  const childLabelMap = { gap: '📐 ギャップ', commit: '🤝 コミット', action: '⚡ アクション' };
+  const childLabelMap = { commitment: '🤝 コミット', action: '⚡ アクション' };
   let aHtml = '';
   if (childKind) {
     aHtml += `<button class="btn" onclick="edAddChild('${path}','${childKind}')">＋ ${childLabelMap[childKind]}を追加</button>`;
@@ -3988,12 +4150,11 @@ function openEditDrawer(path) {
     <button class="btn outline" onclick="edSave()">💾 保存</button>
     <button class="btn danger" onclick="edDelete('${path}')">🗑 削除</button>
   </div>`;
-  actions.innerHTML = aHtml;
+  actionsEl.innerHTML = aHtml;
 
   document.getElementById('edit-drawer').classList.add('open');
   document.getElementById('edit-drawer').setAttribute('aria-hidden', 'false');
   document.getElementById('ed-overlay').classList.add('open');
-  // Focus title
   setTimeout(() => { const t = document.getElementById('ed-title'); if (t) t.focus(); }, 100);
 }
 
@@ -4008,24 +4169,32 @@ function edSave() {
   if (!editDrawerPath) return;
   const node = getNodeByPath(editDrawerPath);
   if (!node) return;
-  const parts = editDrawerPath.split('.').map(Number);
+  const parts = String(editDrawerPath).split('.').map(Number);
   const lv = parts.length;
 
   const title = document.getElementById('ed-title');
   if (title) node.title = title.value.trim();
 
   if (lv === 1) {
-    node.deadline = document.getElementById('ed-deadline').value;
+    const cur = document.getElementById('ed-current');
+    const tgt = document.getElementById('ed-target');
+    const unit = document.getElementById('ed-unit');
+    const gn = document.getElementById('ed-gapNote');
+    if (cur) node.current = cur.value === '' ? null : Number(cur.value);
+    if (tgt) node.target = tgt.value === '' ? null : Number(tgt.value);
+    if (unit) node.unit = unit.value;
+    if (gn) node.gapNote = gn.value;
   } else if (lv === 2) {
-    node.deltaText = document.getElementById('ed-deltaText').value;
-  } else if (lv === 4) {
+    const dl = document.getElementById('ed-deadline');
+    if (dl) node.deadline = dl.value;
+  } else if (lv === 3) {
     node.status = document.getElementById('ed-status').value;
     node.due = document.getElementById('ed-due').value;
     node.week = document.getElementById('ed-week').value;
     const an = document.getElementById('ed-actualNum').value;
     const tn = document.getElementById('ed-targetNum').value;
-    node.actualNum = an === '' ? undefined : Number(an);
-    node.targetNum = tn === '' ? undefined : Number(tn);
+    node.actualNum = an === '' ? null : Number(an);
+    node.targetNum = tn === '' ? null : Number(tn);
   }
 
   save(); renderAll();
@@ -4045,26 +4214,8 @@ function edAddChild(parentPath, kind) {
 
 function edDelete(path) {
   if (!confirm('このノードを削除しますか？子要素も全部消えます。')) return;
-  const parts = path.split('.').map(Number);
-  let arr;
-  if (parts.length === 1) arr = state.goal.milestones;
-  else {
-    const parent = getNodeByPath(parts.slice(0, -1).join('.'));
-    const keys = ['gaps','commitments','actions'];
-    arr = parent[keys[parts.length - 2]];
-  }
-  arr.splice(parts[parts.length - 1], 1);
-  // openPath truncate
-  const lvDeleted = parts.length - 1;
-  if (parts.length <= 3 && openPath.length > lvDeleted) {
-    const ancestorsMatch = parts.slice(0, lvDeleted).every((p, k) => openPath[k] === p);
-    if (ancestorsMatch) {
-      if (openPath[lvDeleted] === parts[lvDeleted]) openPath = openPath.slice(0, lvDeleted);
-      else if (openPath[lvDeleted] > parts[lvDeleted]) openPath[lvDeleted]--;
-    }
-  }
+  removeNode(path);
   closeEditDrawer();
-  save(); renderAll();
   toast('削除しました');
 }
 
@@ -4100,7 +4251,7 @@ function completeGoal() {
   });
 
   // Reset to fresh blank goal (preserve archive + theme)
-  state.goal = { title: '', deadline: '', elements: [], milestones: [] };
+  state.goal = { title: '', deadline: '', milestones: [], elements: [] };
   state.kpi = { [monthKeyToday()]: { main: [], breakdown: [], activity: [] } };
   state.kpiLabels = { ...DEFAULT_KPI_LABELS };
   state.reflections = [];
