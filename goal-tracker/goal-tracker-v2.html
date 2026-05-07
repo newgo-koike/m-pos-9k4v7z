@@ -158,13 +158,13 @@ input:focus,textarea:focus,select:focus{border-color:var(--cyan);background:var(
 }
 .nav-item:hover{background:var(--cyan-s);color:var(--text);border-color:var(--border)}
 .nav-item.active{background:var(--cyan-s);color:var(--cyan);border-color:var(--border-h);font-weight:700}
-.nav-item .ni{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.nav-item .ni{font-size:20px;width:26px;text-align:center;flex-shrink:0}
 .sidebar-footer{padding:12px 8px;border-top:1px solid var(--border);position:relative;z-index:1}
 .user-row{display:flex;align-items:center;gap:8px;padding:8px 10px}
 .avatar{width:30px;height:30px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-family:var(--font-h);font-weight:800;font-size:12px;color:#fff;flex-shrink:0}
 .user-name{flex:1;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.btn-logout{font-size:13px;color:var(--faint);padding:4px;border-radius:4px;transition:color var(--tr)}
-.btn-logout:hover{color:var(--red)}
+.btn-logout{font-size:11px;font-weight:600;font-family:var(--font-h);color:var(--faint);padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all var(--tr);letter-spacing:.04em}
+.btn-logout:hover{color:var(--red);border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.06)}
 
 /* ── Main ── */
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
@@ -685,6 +685,42 @@ input:focus,textarea:focus,select:focus{border-color:var(--cyan);background:var(
 .dt-block-label{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);font-family:var(--font-h)}
 .dt-goal-display{font-size:18px;font-weight:800;line-height:1.4;margin-bottom:4px;font-family:var(--font-h)}
 .dt-goal-meta{font-size:12px;color:var(--muted)}
+/* ── Design tab subtabs ── */
+.dt-subtabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;max-width:860px}
+.dt-stab{padding:9px 18px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;font-family:var(--font-h);letter-spacing:.02em}
+.dt-stab:hover{color:var(--text)}
+.dt-stab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.dt-spanel{display:none}
+.dt-spanel.active{display:block}
+/* ── Design visualizer ── */
+.dv-wrap{display:flex;flex-direction:column;gap:0}
+.dv-goal-node{background:var(--gradient);color:#fff;border-radius:12px;padding:14px 20px;margin-bottom:6px;font-weight:800;font-size:17px;font-family:var(--font-h);display:flex;align-items:center;gap:10px}
+.dv-goal-icon{font-size:22px}
+.dv-goal-dl{font-size:11px;font-weight:500;opacity:.75;margin-left:auto;font-family:var(--font)}
+.dv-connector{width:2px;height:14px;background:var(--border);margin-left:22px}
+.dv-el-wrap{position:relative;margin-bottom:4px}
+.dv-el{background:var(--paper);border:1px solid var(--border);border-left:4px solid var(--cyan);border-radius:10px;padding:10px 14px;margin-left:18px}
+.dv-el.prio-high{border-left-color:var(--red)}
+.dv-el.prio-mid{border-left-color:var(--gold)}
+.dv-el.prio-low{border-left-color:rgba(93,224,230,0.35)}
+.dv-el-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.dv-el-title{font-weight:700;font-size:14px;flex:1}
+.dv-el-pct{font-family:var(--font-h);font-weight:900;font-size:14px;color:var(--cyan);flex-shrink:0}
+.dv-pbar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:8px}
+.dv-pfill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--cyan),var(--cobalt));transition:width .4s}
+.dv-commits{display:flex;flex-direction:column;gap:6px;padding-left:10px}
+.dv-commit{background:var(--card);border-radius:8px;padding:8px 12px;border-left:2px solid rgba(93,224,230,0.3)}
+.dv-commit-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.dv-commit-icon{font-size:10px;color:var(--cyan);flex-shrink:0}
+.dv-commit-title{font-weight:600;font-size:13px;flex:1}
+.dv-commit-dl{font-size:10px;color:var(--faint);flex-shrink:0}
+.dv-actions{display:flex;flex-wrap:wrap;gap:4px}
+.dv-action{font-size:10px;padding:2px 9px;border-radius:10px;background:var(--cobalt-s);color:var(--cyan);font-weight:600;font-family:var(--font-h)}
+.dv-action.done{background:var(--green-s);color:var(--green);text-decoration:line-through;opacity:.6}
+.dv-action.overdue{background:var(--red-s);color:var(--red)}
+.dv-empty{font-size:13px;color:var(--faint);text-align:center;padding:32px;font-style:italic}
+[data-theme="light"] .dv-el{background:#fff}
+[data-theme="light"] .dv-commit{background:#f8fbff}
 
 /* Works row */
 .dt-works-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -1116,7 +1152,7 @@ table.kpi .col-actions{width:40px}
       <div class="user-row">
         <div class="avatar" id="user-avatar">?</div>
         <span class="user-name" id="user-name">—</span>
-        <button class="btn-logout" onclick="doLogout()" title="ログアウト">⏻</button>
+        <button class="btn-logout" onclick="doLogout()">ログアウト</button>
       </div>
     </div>
   </aside>
@@ -1209,6 +1245,15 @@ table.kpi .col-actions{width:40px}
     <!-- DESIGN -->
     <div class="tab-panel" id="tab-design">
 
+      <!-- サブタブ -->
+      <div class="dt-subtabs">
+        <div class="dt-stab active" id="stab-edit" onclick="switchDesignTab('edit')">📝 設計</div>
+        <div class="dt-stab" id="stab-view" onclick="switchDesignTab('view')">🗺 全体図</div>
+      </div>
+
+      <!-- 設計パネル -->
+      <div class="dt-spanel active" id="spanel-edit">
+
       <!-- ① ワーク連携（最優先） -->
       <div class="dt-block">
         <div class="dt-block-head">
@@ -1256,6 +1301,13 @@ table.kpi .col-actions{width:40px}
           <button class="btn-add" onclick="addElementInline()">＋ 要素追加</button>
         </div>
         <div id="dt-tree"></div>
+      </div>
+
+      </div><!-- /spanel-edit -->
+
+      <!-- 全体図パネル -->
+      <div class="dt-spanel" id="spanel-view">
+        <div id="dv-tree" class="dv-wrap"></div>
       </div>
 
     </div>
@@ -2342,6 +2394,55 @@ function switchTab(tab) {
   document.querySelectorAll('.nav-item,.bnav-item').forEach(n=>n.classList.remove('active'));
   const sn=q(`#nav-${tab}`), bn=q(`#bnav-${tab}`);
   if(sn)sn.classList.add('active'); if(bn)bn.classList.add('active');
+}
+
+function switchDesignTab(tab) {
+  ['edit','view'].forEach(t=>{
+    q(`#stab-${t}`)?.classList.toggle('active', t===tab);
+    q(`#spanel-${t}`)?.classList.toggle('active', t===tab);
+  });
+  if (tab==='view') renderDesignView();
+}
+
+function renderDesignView() {
+  const wrap = q('#dv-tree'); if(!wrap) return;
+  const g = S.goal;
+  const els = g.elements||[];
+  if (!g.title && !els.length) {
+    wrap.innerHTML = '<div class="dv-empty">ゴール・要素をまだ設定していません<br>「設計」タブから入力してください</div>';
+    return;
+  }
+  const today = new Date().toISOString().slice(0,10);
+  let html = '';
+  // Goal node
+  html += `<div class="dv-goal-node"><span class="dv-goal-icon">🎯</span><span>${g.title||'（ゴール未設定）'}</span>${g.deadline?`<span class="dv-goal-dl">期限 ${g.deadline}</span>`:''}</div>`;
+  if (!els.length) { wrap.innerHTML = html + '<div class="dv-empty" style="margin-top:12px">要素がありません</div>'; return; }
+  els.forEach((el,ei)=>{
+    const p = elPct(el);
+    const prioKey = el.priority||'mid';
+    const pf = el.target ? Math.min(100,Math.round((el.current||0)/el.target*100)) : 0;
+    html += `<div class="dv-connector"></div>`;
+    let commitsHtml = '';
+    (el.commitments||[]).forEach((c,ci)=>{
+      const acts = (c.actions||[]).map((a,ai)=>{
+        const ov = a.week&&a.week<today&&a.status!=='done';
+        return `<span class="dv-action${a.status==='done'?' done':ov?' overdue':''}">${esc(a.title)}</span>`;
+      }).join('');
+      commitsHtml += `<div class="dv-commit">
+        <div class="dv-commit-row"><span class="dv-commit-icon">◆</span><span class="dv-commit-title">${esc(c.title||'無題コミット')}</span>${c.deadline?`<span class="dv-commit-dl">${c.deadline}</span>`:''}</div>
+        ${acts?`<div class="dv-actions">${acts}</div>`:''}
+      </div>`;
+    });
+    html += `<div class="dv-el-wrap"><div class="dv-el prio-${prioKey}">
+      <div class="dv-el-row">
+        <span class="dv-el-title">${esc(el.title||`要素${ei+1}`)}</span>
+        ${el.target?`<span class="dv-el-pct">${p}%</span>`:''}
+      </div>
+      ${el.target?`<div class="dv-pbar"><div class="dv-pfill" style="width:${pf}%"></div></div>`:''}
+      ${commitsHtml?`<div class="dv-commits">${commitsHtml}</div>`:''}
+    </div></div>`;
+  });
+  wrap.innerHTML = html;
 }
 
 function setTheme(t) { S.theme=t; applyTheme(t); save(); }
