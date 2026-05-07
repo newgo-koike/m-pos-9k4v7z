@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W20 目標設定 | Goal Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#5de0e6;--gradient:linear-gradient(135deg,#5de0e6 0%,#004aad 100%);
+  --bg-dark:#070d1a;--bg-card:#0f1b2d;--bg-card2:#132035;--bg-input:#0c1626;
+  --border:rgba(93,224,230,0.15);--border-h:rgba(93,224,230,0.35);
+  --text:#fff;--muted:#7a99bb;
+  --em:#10b981;--em-bg:rgba(16,185,129,0.1);--em-border:rgba(16,185,129,0.25);
+  --red:#ef4444;
+}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg-dark);color:var(--text);min-height:100vh}
+
+/* ── Reflect bar ── */
+.reflect-bar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(7,13,26,0.95);border-bottom:1px solid var(--border);
+  padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  backdrop-filter:blur(8px);
+}
+.reflect-bar-info{font-size:12px;color:var(--muted)}
+.reflect-bar-info strong{color:var(--em);font-size:13px;display:block;margin-bottom:1px;max-width:500px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-reflect{
+  display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;
+  background:var(--gradient);color:#fff;font-weight:700;font-size:13px;
+  border:none;cursor:pointer;flex-shrink:0;transition:opacity .2s,transform .15s;font-family:'Noto Sans JP',sans-serif;
+}
+.btn-reflect:hover{opacity:.9;transform:translateY(-1px)}
+.btn-reflect:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+.main{padding:28px 36px 64px;max-width:960px;margin:0 auto}
+
+.work-header{margin-bottom:28px}
+.work-header-top{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.phase-badge{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;background:var(--gradient);color:#fff}
+.work-num{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;color:var(--muted)}
+.save-status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-left:auto}
+.save-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:all .3s}
+.save-dot.saved{background:var(--em)}
+.save-dot.saving{background:#f59e0b}
+.save-dot.error{background:var(--red)}
+.work-title{font-family:'Montserrat',sans-serif;font-size:24px;font-weight:800;margin-bottom:6px}
+.work-title span{background:linear-gradient(135deg,#10b981 0%,#5de0e6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.theory-tag{display:inline-block;background:var(--em-bg);border:1px solid var(--em-border);color:var(--em);font-size:11px;padding:3px 10px;border-radius:12px;margin-right:6px;margin-top:4px}
+
+.section{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px}
+.section-title{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.step-badge{padding:4px 14px;border-radius:20px;background:linear-gradient(135deg,#10b981,#5de0e6);font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;color:#fff}
+.section-title h2{font-size:17px;font-weight:700}
+.section-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;margin-top:-12px}
+
+.cards-wrap{display:flex;flex-direction:column;gap:14px}
+.goal-card{background:var(--bg-card2);border:1px solid var(--border);border-radius:12px;padding:20px}
+.goal-card-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.card-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#10b981,#5de0e6);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:800;font-size:11px;color:#fff;flex-shrink:0}
+.card-label{font-size:13px;font-weight:600;color:var(--muted)}
+.card-delete{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;opacity:.5;transition:opacity .2s;padding:2px 6px}
+.card-delete:hover{opacity:1;color:var(--red)}
+
+.goal-row{display:grid;grid-template-columns:130px 1fr;align-items:start;gap:10px;margin-bottom:10px}
+.goal-row:last-child{margin-bottom:0}
+.row-label{font-size:12px;font-weight:700;color:var(--muted);padding-top:10px}
+.row-label small{display:block;font-size:10px;font-weight:400;opacity:.7;margin-top:1px}
+.row-input{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:'Noto Sans JP',sans-serif;padding:9px 12px;width:100%;resize:none;transition:border-color .2s;line-height:1.6}
+.row-input:focus{outline:none;border-color:var(--em)}
+.row-input::placeholder{color:rgba(122,153,187,.5)}
+.add-card-btn{width:100%;padding:12px;background:none;border:1.5px dashed rgba(16,185,129,.3);border-radius:12px;color:var(--em);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:4px;font-family:'Noto Sans JP',sans-serif}
+.add-card-btn:hover{background:var(--em-bg);border-color:var(--em)}
+
+.combo-section{margin-bottom:24px}
+.combo-section+.combo-section{padding-top:20px;border-top:1px solid var(--border)}
+.combo-label{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.combo-label span{background:var(--em-bg);border:1px solid var(--em-border);color:var(--em);font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px}
+.combo-options{display:flex;flex-direction:column;gap:6px}
+.combo-option{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;background:var(--bg-card2)}
+.combo-option:hover{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.05)}
+.combo-option.selected{border-color:var(--em);background:var(--em-bg)}
+.combo-option.empty{opacity:.4;cursor:default;pointer-events:none}
+.combo-option-num{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;color:var(--muted);flex-shrink:0;padding-top:2px}
+.combo-option-text{font-size:13px;line-height:1.6;flex:1}
+.combo-option.selected .combo-option-text{color:#fff}
+
+.final-goal{background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(93,224,230,.05));border:1px solid var(--em-border);border-radius:12px;padding:20px;margin-top:20px}
+.final-goal-title{font-size:13px;font-weight:700;color:var(--em);margin-bottom:14px}
+.final-row{display:grid;grid-template-columns:110px 1fr;gap:8px;margin-bottom:10px;align-items:start}
+.final-row:last-child{margin-bottom:0}
+.final-row-label{font-size:12px;font-weight:700;color:var(--muted);padding-top:10px}
+.final-row-val{background:rgba(0,0,0,.2);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:9px 12px;font-size:14px;color:var(--text);min-height:40px;line-height:1.6}
+.final-row-val.empty{color:var(--muted);font-style:italic;font-size:13px}
+
+.timeline-wrap{display:flex;flex-direction:column}
+.tl-goal-row{display:flex;gap:0}
+.tl-spine{display:flex;flex-direction:column;align-items:center;width:32px;flex-shrink:0}
+.tl-dot-goal{width:16px;height:16px;border-radius:50%;background:var(--gradient);box-shadow:0 0 12px rgba(93,224,230,.4);flex-shrink:0}
+.tl-dot-ms{width:10px;height:10px;border-radius:50%;background:var(--em);flex-shrink:0}
+.tl-line{width:2px;flex:1;background:linear-gradient(to bottom,rgba(93,224,230,.3),rgba(16,185,129,.2));min-height:24px}
+.tl-line-bottom{width:2px;height:16px;background:rgba(93,224,230,.15)}
+.tl-content{flex:1}
+.tl-goal-card{background:linear-gradient(135deg,rgba(93,224,230,.07),rgba(0,74,173,.1));border:1.5px solid rgba(93,224,230,.35);border-radius:14px;padding:16px 18px;margin-left:12px;margin-bottom:8px}
+.tl-goal-label{font-size:11px;font-weight:700;color:var(--primary);margin-bottom:8px}
+.tl-goal-text{font-size:13px;color:var(--muted);line-height:1.7}
+.tl-goal-text.has-value{color:var(--text)}
+.ms-segment{display:flex;gap:0}
+.ms-card{flex:1;background:var(--bg-card2);border:1px solid var(--em-border);border-radius:12px;padding:14px 18px;margin-left:12px;margin-bottom:8px}
+.ms-card-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ms-card-label{font-size:11px;font-weight:700;color:var(--em)}
+.ms-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;opacity:.4;transition:opacity .2s;padding:2px 4px;margin-left:auto}
+.ms-del:hover{opacity:1;color:var(--red)}
+.tl-field-row{margin-bottom:10px}
+.tl-field-row:last-child{margin-bottom:0}
+.tl-field-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:4px}
+.tl-input{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'Noto Sans JP',sans-serif;padding:7px 10px;transition:border-color .2s}
+.tl-input:focus{outline:none;border-color:var(--em)}
+.tl-input::placeholder{color:var(--muted);opacity:.6}
+.tl-add-wrap{display:flex;gap:0;align-items:center;padding-top:4px}
+.tl-add-spine{display:flex;flex-direction:column;align-items:center;width:32px}
+.tl-add-dot{width:8px;height:8px;border-radius:50%;border:2px dashed rgba(16,185,129,.4)}
+.ms-add-btn{flex:1;margin-left:12px;padding:9px;background:none;border:1.5px dashed var(--em-border);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--em);font-family:'Noto Sans JP',sans-serif}
+.ms-add-btn:hover{background:var(--em-bg);border-color:var(--em)}
+
+@media(max-width:768px){
+  .main{padding:16px 16px 48px}
+  .goal-row{grid-template-columns:1fr}
+  .row-label{padding-top:0}
+  .final-row{grid-template-columns:1fr}
+  .final-row-label{padding-top:0}
+}
+</style>
+</head>
+<body>
+
+<div class="reflect-bar">
+  <div class="reflect-bar-info">
+    <strong id="reflect-label">— STEP2 で目標を選択してください</strong>
+    確定ゴールをダッシュボードに反映する
+  </div>
+  <button class="btn-reflect" id="btn-reflect" onclick="reflectToDashboard()" disabled>↑ ダッシュボードに反映</button>
+</div>
+
+<div class="main">
+  <div class="work-header">
+    <div class="work-header-top">
+      <span class="phase-badge">PHASE 6</span>
+      <span class="work-num">W20</span>
+      <div class="save-status">
+        <div class="save-dot" id="saveDot"></div>
+        <span id="saveText">—</span>
+      </div>
+    </div>
+    <div class="work-title"><span>目標設定 & マイルストーン</span></div>
+    <div>
+      <span class="theory-tag">目標設計</span>
+      <span class="theory-tag">バックキャスト</span>
+      <span class="theory-tag">マイルストーン</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      <span class="step-badge">STEP 1</span>
+      <h2>目標をブレインストームする</h2>
+    </div>
+    <p class="section-desc">思いつく目標を3行で書き出してみましょう。行1「いつまでに」、行2「何を達成するか（定量）」、行3「そうなることでどうなるか（定性）」。複数の候補をどんどん出す。</p>
+    <div class="cards-wrap" id="cardsWrap"></div>
+    <button class="add-card-btn" onclick="addCard()">＋ 目標候補を追加</button>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      <span class="step-badge">STEP 2</span>
+      <h2>一番しっくりくる組み合わせを決定する</h2>
+    </div>
+    <p class="section-desc">STEP1の候補から各行ごとに「これだ」と思うものを選びます。別々のカードから組み合わせてもOK。</p>
+    <div class="combo-section">
+      <div class="combo-label"><span>行1</span>いつまでに（期限）</div>
+      <div class="combo-options" id="deadlineOptions"></div>
+    </div>
+    <div class="combo-section">
+      <div class="combo-label"><span>行2</span>定量目標（計れる達成基準）</div>
+      <div class="combo-options" id="quantOptions"></div>
+    </div>
+    <div class="combo-section">
+      <div class="combo-label"><span>行3</span>定性目標（そうなることで、どうなるか）</div>
+      <div class="combo-options" id="qualOptions"></div>
+    </div>
+    <div class="final-goal">
+      <div class="final-goal-title">🏁 決定した目標</div>
+      <div class="final-row">
+        <div class="final-row-label">いつまでに</div>
+        <div class="final-row-val empty" id="finalDeadline">（未選択）</div>
+      </div>
+      <div class="final-row">
+        <div class="final-row-label">達成すること</div>
+        <div class="final-row-val empty" id="finalQuant">（未選択）</div>
+      </div>
+      <div class="final-row">
+        <div class="final-row-label">そうなると</div>
+        <div class="final-row-val empty" id="finalQual">（未選択）</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      <span class="step-badge">STEP 3</span>
+      <h2>マイルストーン設定</h2>
+    </div>
+    <p class="section-desc">目標から逆算して中間地点を設定します。「ここを超えていれば順調」という目安を時系列で積み上げます（上が目標・下が直近）。</p>
+    <div class="timeline-wrap" id="timelineWrap"></div>
+  </div>
+</div>
+
+<script>
+const LS_KEY = 'gt_w20_goal_ms';
+let saveTimer = null;
+
+let state = {
+  cards: [
+    { deadline:'', quantitative:'', qualitative:'' },
+    { deadline:'', quantitative:'', qualitative:'' },
+  ],
+  selected: { deadlineIdx:-1, quantIdx:-1, qualIdx:-1 },
+  milestones: [{ deadline:'', text:'' }]
+};
+
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function autoResize(el){ el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }
+function setSaveStatus(s){
+  document.getElementById('saveDot').className='save-dot '+s;
+  document.getElementById('saveText').textContent=s==='saved'?'保存済み':s==='saving'?'保存中…':'—';
+}
+function scheduleSave(){ setSaveStatus('saving'); clearTimeout(saveTimer); saveTimer=setTimeout(saveState,800); }
+
+/* ── STEP 1 ── */
+function renderCards(){
+  const wrap=document.getElementById('cardsWrap');
+  wrap.innerHTML='';
+  state.cards.forEach((card,i)=>{
+    const div=document.createElement('div');
+    div.className='goal-card';
+    div.innerHTML=`
+      <div class="goal-card-header">
+        <div class="card-num">${i+1}</div>
+        <div class="card-label">目標候補 ${i+1}</div>
+        ${state.cards.length>1?`<button class="card-delete" onclick="deleteCard(${i})">×</button>`:''}
+      </div>
+      <div class="goal-row">
+        <div class="row-label">行1<small>いつまでに</small></div>
+        <textarea class="row-input" rows="1" spellcheck="false" placeholder="例：2026年12月末までに"
+          oninput="updateCard(${i},'deadline',this.value);autoResize(this)" onfocus="autoResize(this)">${esc(card.deadline)}</textarea>
+      </div>
+      <div class="goal-row">
+        <div class="row-label">行2<small>定量目標</small></div>
+        <textarea class="row-input" rows="1" spellcheck="false" placeholder="例：月商100万円を達成する"
+          oninput="updateCard(${i},'quantitative',this.value);autoResize(this)" onfocus="autoResize(this)">${esc(card.quantitative)}</textarea>
+      </div>
+      <div class="goal-row">
+        <div class="row-label">行3<small>定性目標</small></div>
+        <textarea class="row-input" rows="1" spellcheck="false" placeholder="例：会社に頼らず自分の力で生きていける状態になる"
+          oninput="updateCard(${i},'qualitative',this.value);autoResize(this)" onfocus="autoResize(this)">${esc(card.qualitative)}</textarea>
+      </div>`;
+    wrap.appendChild(div);
+    div.querySelectorAll('textarea').forEach(t=>autoResize(t));
+  });
+}
+function updateCard(i,field,val){ state.cards[i][field]=val; renderCombo(); scheduleSave(); }
+function addCard(){ state.cards.push({deadline:'',quantitative:'',qualitative:''}); renderCards(); renderCombo(); scheduleSave(); }
+function deleteCard(i){
+  state.cards.splice(i,1);
+  ['deadlineIdx','quantIdx','qualIdx'].forEach(k=>{
+    if(state.selected[k]===i) state.selected[k]=-1;
+    else if(state.selected[k]>i) state.selected[k]--;
+  });
+  renderCards(); renderCombo(); scheduleSave();
+}
+
+/* ── STEP 2 ── */
+function renderCombo(){
+  renderComboSection('deadlineOptions','deadline','deadlineIdx');
+  renderComboSection('quantOptions','quantitative','quantIdx');
+  renderComboSection('qualOptions','qualitative','qualIdx');
+  renderFinalGoal();
+  renderTimeline();
+  updateReflectBar();
+}
+function renderComboSection(cid,field,selKey){
+  const c=document.getElementById(cid); c.innerHTML='';
+  state.cards.forEach((card,i)=>{
+    const text=card[field]?.trim();
+    const div=document.createElement('div');
+    if(!text){
+      div.className='combo-option empty';
+      div.innerHTML=`<span class="combo-option-num">候補${i+1}</span><span class="combo-option-text">（未入力）</span>`;
+    } else {
+      const isSel=state.selected[selKey]===i;
+      div.className=`combo-option${isSel?' selected':''}`;
+      div.innerHTML=`<span class="combo-option-num">候補${i+1}</span><span class="combo-option-text">${esc(text)}</span>`;
+      div.onclick=()=>{ state.selected[selKey]=isSel?-1:i; renderCombo(); scheduleSave(); };
+    }
+    c.appendChild(div);
+  });
+}
+function getGoalSummary(){
+  const s=state.selected;
+  const get=(idx,f)=>(idx>=0&&state.cards[idx])?(state.cards[idx][f]?.trim()||''):'';
+  return { deadline:get(s.deadlineIdx,'deadline'), quant:get(s.quantIdx,'quantitative'), qual:get(s.qualIdx,'qualitative') };
+}
+function renderFinalGoal(){
+  const {deadline,quant,qual}=getGoalSummary();
+  const set=(id,val)=>{
+    const el=document.getElementById(id);
+    if(val){ el.textContent=val; el.classList.remove('empty'); }
+    else { el.textContent='（未選択）'; el.classList.add('empty'); }
+  };
+  set('finalDeadline',deadline); set('finalQuant',quant); set('finalQual',qual);
+}
+
+/* ── STEP 3 ── */
+function renderTimeline(){
+  const wrap=document.getElementById('timelineWrap'); wrap.innerHTML='';
+  const {deadline,quant,qual}=getGoalSummary();
+  const goalText=[deadline,quant,qual].filter(Boolean).join('　／　');
+  wrap.insertAdjacentHTML('beforeend',`
+    <div class="tl-goal-row">
+      <div class="tl-spine"><div class="tl-dot-goal"></div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-goal-card">
+          <div class="tl-goal-label">🏁 ゴール（STEP 2 より）</div>
+          <div class="tl-goal-text${goalText?' has-value':''}">${goalText?esc(goalText):'（STEP 2 で目標を選択してください）'}</div>
+        </div>
+      </div>
+    </div>`);
+  [...state.milestones].map((m,i)=>({m,i})).reverse().forEach(({m,i})=>{
+    const isBottom=i===0;
+    wrap.insertAdjacentHTML('beforeend',`
+      <div class="ms-segment">
+        <div class="tl-spine">
+          <div class="tl-dot-ms"></div>
+          ${!isBottom?'<div class="tl-line"></div>':'<div class="tl-line-bottom"></div>'}
+        </div>
+        <div class="tl-content">
+          <div class="ms-card">
+            <div class="ms-card-header">
+              <div class="ms-card-label">マイルストーン ${i+1}</div>
+              ${state.milestones.length>1?`<button class="ms-del" onclick="deleteMilestone(${i})">×</button>`:''}
+            </div>
+            <div class="tl-field-row">
+              <div class="tl-field-label">期限</div>
+              <input class="tl-input" type="text" placeholder="例：2026年6月末" value="${esc(m.deadline)}"
+                oninput="state.milestones[${i}].deadline=this.value;scheduleSave()">
+            </div>
+            <div class="tl-field-row">
+              <div class="tl-field-label">この状態になっていれば順調</div>
+              <input class="tl-input" type="text" placeholder="例：月商50万を初めて達成"
+                value="${esc(m.text)}" oninput="state.milestones[${i}].text=this.value;scheduleSave()">
+            </div>
+          </div>
+        </div>
+      </div>`);
+  });
+  wrap.insertAdjacentHTML('beforeend',`
+    <div class="tl-add-wrap">
+      <div class="tl-add-spine"><div class="tl-add-dot"></div></div>
+      <button class="ms-add-btn" onclick="addMilestone()">＋ マイルストーンを追加</button>
+    </div>`);
+}
+function addMilestone(){ state.milestones.push({deadline:'',text:''}); renderTimeline(); scheduleSave(); }
+function deleteMilestone(i){ state.milestones.splice(i,1); renderTimeline(); scheduleSave(); }
+
+/* ── Reflect ── */
+function updateReflectBar(){
+  const {deadline,quant,qual}=getGoalSummary();
+  const hasGoal=!!(deadline||quant||qual);
+  const label=document.getElementById('reflect-label');
+  label.textContent=hasGoal?[deadline,quant].filter(Boolean).join(' / '):'— STEP2 で目標を選択してください';
+  document.getElementById('btn-reflect').disabled=!hasGoal;
+}
+function reflectToDashboard(){
+  const {deadline,quant,qual}=getGoalSummary();
+  const title=[deadline,quant,qual].filter(Boolean).join(' / ');
+  const msDeadline=state.milestones.length?state.milestones[state.milestones.length-1].deadline:'';
+  window.parent.postMessage({ type:'SET_GOAL', payload:{ title, deadline:msDeadline } }, '*');
+}
+
+/* ── Save / Load ── */
+function saveState(){
+  localStorage.setItem(LS_KEY, JSON.stringify({ cards:state.cards, selected:state.selected, milestones:state.milestones }));
+  setSaveStatus('saved');
+}
+function loadState(){
+  try {
+    const raw=localStorage.getItem(LS_KEY); if(!raw) return;
+    const saved=JSON.parse(raw);
+    if(Array.isArray(saved.cards)&&saved.cards.length) state.cards=saved.cards;
+    if(saved.selected) state.selected={...state.selected,...saved.selected};
+    if(Array.isArray(saved.milestones)&&saved.milestones.length) state.milestones=saved.milestones;
+  } catch(e){}
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  loadState();
+  renderCards(); renderCombo(); setSaveStatus('saved');
+});
+</script>
+</body>
+</html>

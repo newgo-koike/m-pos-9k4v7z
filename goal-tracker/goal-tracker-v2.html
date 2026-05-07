@@ -1382,20 +1382,20 @@ table.kpi .col-actions{width:40px}
           <span class="dt-block-label">⬡ WORKS — ワークで設計して反映</span>
         </div>
         <div class="dt-works-row">
-          <div class="work-card w21" onclick="openWork('w21')">
+          <div class="work-card w21" onclick="openWork('w20')">
             <div class="work-chip">目標設定</div>
-            <div class="work-title">3フォーカス目標設定</div>
-            <div class="work-desc">ゴール・要素をワークで設定 → 自動反映</div>
+            <div class="work-title">目標設定</div>
+            <div class="work-desc">ゴールをブレスト・確定 → マイルストーン設定</div>
           </div>
-          <div class="work-card w20" onclick="openWork('w20')">
+          <div class="work-card w20" onclick="openWork('w21')">
             <div class="work-chip">フロー設計</div>
             <div class="work-title">ビジネスフロー設計</div>
-            <div class="work-desc">ファネル設計 → 構成要素として反映</div>
+            <div class="work-desc">ファネル設計 → 必要な要素を洗い出す</div>
           </div>
           <div class="work-card w22" onclick="openWork('w22')">
             <div class="work-chip">行動設計</div>
             <div class="work-title">アクション設計</div>
-            <div class="work-desc">コミット・アクションを設計 → 要素に反映</div>
+            <div class="work-desc">要素に優先度をつけ → コミット＋アクションを設計</div>
           </div>
         </div>
       </div>
@@ -2447,7 +2447,7 @@ function saveGoalModal() {
 }
 
 const WORK_URLS = { w20:'w20-biz-flow.html', w21:'w21-3focus.html', w22:'w22-action-plan.html' };
-const WORK_TITLES = { w20:'W20 ビジネスフロー設計', w21:'W21 3フォーカス目標設定', w22:'W22 アクション設計' };
+const WORK_TITLES = { w20:'W20 目標設定', w21:'W21 ビジネスフロー設計', w22:'W22 アクション設計' };
 function openWork(k) {
   q('#work-modal-title').textContent = WORK_TITLES[k]||k;
   q('#work-iframe').src = WORK_URLS[k]||'about:blank';

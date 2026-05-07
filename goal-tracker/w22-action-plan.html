@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W22 アクション設計 | Goal Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#5de0e6;--gradient:linear-gradient(135deg,#5de0e6 0%,#004aad 100%);
+  --bg-dark:#070d1a;--bg-card:#0f1b2d;--bg-card2:#132035;--bg-input:rgba(255,255,255,0.04);
+  --border:rgba(93,224,230,0.12);--border-h:rgba(93,224,230,0.3);
+  --text:#fff;--muted:#7a99bb;
+  --em:#10b981;--em-bg:rgba(16,185,129,0.08);--em-border:rgba(16,185,129,0.25);
+  --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.08);--amber-border:rgba(245,158,11,0.3);
+  --indigo:#6366f1;--indigo-bg:rgba(99,102,241,0.08);--indigo-border:rgba(99,102,241,0.25);
+  --red:#ef4444;
+}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg-dark);color:var(--text);min-height:100vh}
+
+.main{padding:28px 36px 64px;max-width:960px;margin:0 auto}
+
+/* Reflect bar */
+.reflect-bar{position:sticky;top:0;z-index:50;background:rgba(7,13,26,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--em-border);margin:-28px -36px 24px;padding:10px 36px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.reflect-bar-info{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--muted)}
+.reflect-bar-info strong{font-size:13px;color:var(--text);font-weight:600}
+.btn-reflect{padding:9px 18px;background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'Noto Sans JP',sans-serif}
+.btn-reflect:hover:not(:disabled){opacity:.85;transform:translateY(-1px)}
+.btn-reflect:disabled{opacity:.35;cursor:default}
+
+.work-header{margin-bottom:28px}
+.work-header-top{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.phase-badge{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;background:var(--gradient);color:#fff}
+.work-num{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;color:var(--muted)}
+.save-status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-left:auto}
+.save-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:all .3s}
+.save-dot.saved{background:var(--em)}
+.save-dot.saving{background:var(--amber);animation:pulse 1s infinite}
+.save-dot.error{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.work-title{font-family:'Montserrat',sans-serif;font-size:24px;font-weight:800;margin-bottom:6px}
+.work-title span{background:linear-gradient(135deg,var(--amber) 0%,#f97316 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.theory-tag{display:inline-block;background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber);font-size:11px;padding:3px 10px;border-radius:12px;margin-right:6px;margin-top:4px}
+
+/* Summaries */
+.summary-bar{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.summary-card{flex:1;min-width:200px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.summary-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.summary-text{font-size:13px;color:var(--text);line-height:1.7}
+.summary-text.empty{color:var(--muted);font-style:italic;font-size:12px}
+.reload-btn{margin-left:auto;background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:11px;cursor:pointer;padding:2px 8px;transition:all .2s;font-family:'Noto Sans JP',sans-serif}
+.reload-btn:hover{border-color:var(--primary);color:var(--primary)}
+
+.section{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px}
+.section-title{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.step-badge{padding:4px 14px;border-radius:20px;background:linear-gradient(135deg,var(--amber),#f97316);font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;color:#fff}
+.section-title h2{font-size:17px;font-weight:700}
+.section-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;margin-top:-12px}
+
+/* Priority */
+.priority-hint{font-size:12px;color:var(--muted);margin-bottom:12px}
+.priority-wrap{display:flex;flex-direction:column;gap:8px}
+.priority-item{background:var(--bg-card2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;transition:border-color .2s}
+.priority-item.rank-1{border-color:var(--amber-border);background:var(--amber-bg)}
+.priority-rank{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:800;min-width:28px;color:var(--muted)}
+.priority-item.rank-1 .priority-rank{color:var(--amber)}
+.priority-name{font-size:14px;flex:1;line-height:1.5}
+.priority-metric{font-size:12px;color:var(--muted)}
+.priority-up,.priority-down{background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--muted);font-size:12px;padding:4px 8px;transition:all .2s}
+.priority-up:hover,.priority-down:hover{border-color:var(--primary);color:var(--primary)}
+.priority-up:disabled,.priority-down:disabled{opacity:.2;cursor:default}
+.no-factors{font-size:13px;color:var(--muted);font-style:italic;padding:12px 0}
+
+/* Commitments */
+.commitment-list{display:flex;flex-direction:column;gap:20px}
+.commit-card{background:linear-gradient(135deg,rgba(245,158,11,.04),rgba(0,74,173,.06));border:1.5px solid var(--amber-border);border-radius:16px;padding:22px 24px}
+.commit-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.commit-num{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;color:var(--amber);background:var(--amber-bg);border:1px solid var(--amber-border);padding:3px 10px;border-radius:20px;flex-shrink:0}
+.commit-factor-tag{font-size:12px;color:var(--muted);background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;padding:3px 10px}
+.commit-factor-tag strong{color:var(--amber)}
+.commit-del{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;opacity:.4;transition:opacity .2s;padding:4px}
+.commit-del:hover{opacity:1;color:var(--red)}
+
+.commit-field{margin-bottom:12px}
+.commit-field:last-child{margin-bottom:0}
+.commit-field-label{font-size:10px;font-weight:700;color:var(--amber);letter-spacing:.5px;margin-bottom:5px}
+.commit-input{width:100%;background:var(--bg-input);border:1px solid rgba(245,158,11,.2);border-radius:8px;color:var(--text);font-size:13px;font-family:'Noto Sans JP',sans-serif;padding:8px 10px;transition:border-color .2s}
+.commit-input:focus{outline:none;border-color:var(--amber)}
+.commit-input::placeholder{color:var(--muted);opacity:.6}
+textarea.commit-input{resize:none;min-height:64px;line-height:1.7}
+.commit-deadline-row{display:grid;grid-template-columns:200px 1fr;gap:10px;align-items:start}
+
+/* Actions */
+.action-section{border-top:1px solid rgba(245,158,11,.15);margin-top:16px;padding-top:16px}
+.action-section-label{font-size:11px;font-weight:700;color:var(--indigo);margin-bottom:10px}
+.action-list{display:flex;flex-direction:column;gap:6px}
+.action-item{display:flex;align-items:center;gap:8px}
+.action-deadline-inp{width:140px;flex-shrink:0;background:var(--bg-input);border:1px solid var(--indigo-border);border-radius:8px;color:var(--text);font-size:12px;font-family:'Noto Sans JP',sans-serif;padding:7px 10px;transition:border-color .2s}
+.action-deadline-inp:focus{outline:none;border-color:var(--indigo)}
+.action-deadline-inp::placeholder{color:var(--muted);opacity:.6}
+.action-what-inp{flex:1;background:var(--bg-input);border:1px solid var(--indigo-border);border-radius:8px;color:var(--text);font-size:13px;font-family:'Noto Sans JP',sans-serif;padding:7px 10px;transition:border-color .2s}
+.action-what-inp:focus{outline:none;border-color:var(--indigo)}
+.action-what-inp::placeholder{color:var(--muted);opacity:.6}
+.action-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;opacity:.4;transition:opacity .2s;padding:4px;flex-shrink:0}
+.action-del:hover{opacity:1;color:var(--red)}
+.action-add-btn{width:100%;padding:8px;background:none;border:1.5px dashed var(--indigo-border);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;margin-top:6px;transition:all .2s;color:var(--indigo);font-family:'Noto Sans JP',sans-serif}
+.action-add-btn:hover{background:var(--indigo-bg);border-color:var(--indigo)}
+
+.commit-add-btn{width:100%;padding:10px;background:none;border:1.5px dashed var(--amber-border);border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;transition:all .2s;color:var(--amber);font-family:'Noto Sans JP',sans-serif}
+.commit-add-btn:hover{background:var(--amber-bg);border-color:var(--amber)}
+
+.nav-row{display:flex;justify-content:space-between;padding:10px 0 30px}
+.btn-nav{padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;background:var(--bg-card);border:1px solid var(--border);color:var(--muted);transition:all .2s}
+.btn-nav:hover{border-color:var(--primary);color:var(--primary)}
+
+@media(max-width:768px){
+  .main{padding:16px 16px 48px}
+  .reflect-bar{margin:-16px -16px 16px;padding:10px 16px}
+  .action-item{flex-wrap:wrap}
+  .action-deadline-inp{width:100%}
+  .commit-deadline-row{grid-template-columns:1fr}
+  .summary-bar{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<main class="main">
+  <div class="reflect-bar">
+    <div class="reflect-bar-info">
+      <strong id="reflect-label">— STEP2 でコミットメントを入力してください</strong>
+      確定した内容をダッシュボードに反映する
+    </div>
+    <button class="btn-reflect" id="btn-reflect" onclick="reflectToDashboard()" disabled>↑ ダッシュボードに反映</button>
+  </div>
+
+  <div class="work-header">
+    <div class="work-header-top">
+      <span class="phase-badge">PHASE 4</span>
+      <span class="work-num">W22</span>
+      <div class="save-status">
+        <div class="save-dot" id="saveDot"></div>
+        <span id="saveText">—</span>
+      </div>
+    </div>
+    <div class="work-title"><span>アクション設計</span></div>
+    <div>
+      <span class="theory-tag">優先度設計</span>
+      <span class="theory-tag">コミットメント</span>
+      <span class="theory-tag">アクションプラン</span>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="summary-card">
+      <div class="summary-label">🏁 W20 目標
+        <button class="reload-btn" onclick="loadFromPrevWorks()">↺ 再読込</button>
+      </div>
+      <div class="summary-text empty" id="goalText">—</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">📊 W21 必要要素</div>
+      <div class="summary-text empty" id="factorCountText">—</div>
+    </div>
+  </div>
+
+  <!-- STEP 1: 優先順位 -->
+  <div class="section">
+    <div class="section-title">
+      <span class="step-badge">STEP 1</span>
+      <h2>優先順位の決定</h2>
+    </div>
+    <p class="section-desc">W21 で洗い出した要素に優先順位をつけます。「まずこれを解決すれば他が動き出す」という最重要要素を1位にしてください。↑↓ で順序を変更できます。</p>
+    <div class="priority-hint">W21 で要素を入力後、↺ 再読込ボタンで読み込んでください。</div>
+    <div class="priority-wrap" id="priorityList"></div>
+  </div>
+
+  <!-- STEP 2: コミットメント & アクション -->
+  <div class="section">
+    <div class="section-title">
+      <span class="step-badge">STEP 2</span>
+      <h2>コミットメント & アクション</h2>
+    </div>
+    <p class="section-desc">各要素に対して「こうなる必要がある」という解決策（コミットメント）を宣言し、そのコミットメントごとに期限付きアクションを設定します。</p>
+    <div class="commitment-list" id="commitmentList"></div>
+    <button class="commit-add-btn" onclick="addCommitment()">＋ コミットメントを追加</button>
+  </div>
+
+  <div class="nav-row">
+    <a href="w21-3focus.html" class="btn-nav">← W21 ビジネスフロー</a>
+    <div></div>
+  </div>
+</main>
+
+<script>
+const LS_KEY = 'gt_w22_priority_action';
+let saveTimer = null;
+
+let w21Factors = [];
+let state = {
+  priority_order: [],
+  commitments: []
+};
+
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function autoResize(el){ el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }
+function setSaveStatus(s){
+  document.getElementById('saveDot').className='save-dot '+s;
+  document.getElementById('saveText').textContent=s==='saved'?'保存済み':s==='saving'?'保存中…':'エラー';
+}
+function scheduleSave(){ setSaveStatus('saving'); clearTimeout(saveTimer); saveTimer=setTimeout(doSave,800); }
+
+/* ── Load from W20 + W21 ── */
+function loadFromPrevWorks(){
+  // W20 goal
+  const raw20=localStorage.getItem('gt_w20_goal_ms');
+  const goalEl=document.getElementById('goalText');
+  if(raw20){
+    let w20; try{ w20=JSON.parse(raw20); }catch(e){ w20=null; }
+    if(w20){
+      const sel=w20.selected||{}, cards=w20.cards||[];
+      const get=(idx,f)=>(idx>=0&&cards[idx])?(cards[idx][f]?.trim()||''):'';
+      const parts=[
+        get(sel.deadlineIdx,'deadline')&&`${get(sel.deadlineIdx,'deadline')}`,
+        get(sel.quantIdx,'quantitative')&&`${get(sel.quantIdx,'quantitative')}`,
+      ].filter(Boolean);
+      goalEl.textContent=parts.join(' / ')||'（W20で目標を設定してください）';
+      goalEl.classList.toggle('empty',!parts.length);
+    } else {
+      goalEl.textContent='W20データを読み込めませんでした。'; goalEl.classList.add('empty');
+    }
+  } else {
+    goalEl.textContent='W20（目標設定）を先に入力してください。'; goalEl.classList.add('empty');
+  }
+
+  // W21 factors
+  const raw21=localStorage.getItem('gt_w21_biz_factors');
+  const fcEl=document.getElementById('factorCountText');
+  let loaded=false;
+  if(raw21){
+    let w21; try{ w21=JSON.parse(raw21); }catch(e){ w21=null; }
+    if(w21?.factors?.length){
+      const named=w21.factors.filter(f=>f.name);
+      if(named.length){
+        w21Factors=named;
+        fcEl.textContent=`${named.length}件の要素が読み込まれています`;
+        fcEl.classList.remove('empty');
+        syncPriorityOrder();
+        renderPriority();
+        loaded=true;
+      }
+    }
+  }
+  if(!loaded){
+    w21Factors=[];
+    fcEl.textContent='W21（ビジネスフロー）で要素を入力してください。';
+    fcEl.classList.add('empty');
+    renderPriority();
+  }
+}
+
+/* ── STEP 1: Priority ── */
+function syncPriorityOrder(){
+  state.priority_order=state.priority_order.filter(i=>i<w21Factors.length);
+  const ex=new Set(state.priority_order);
+  w21Factors.forEach((_,i)=>{ if(!ex.has(i)) state.priority_order.push(i); });
+}
+function renderPriority(){
+  const wrap=document.getElementById('priorityList'); wrap.innerHTML='';
+  if(!w21Factors.length){
+    wrap.innerHTML='<div class="no-factors">W21 で要素を入力し、↺ 再読込ボタンを押してください。</div>';
+    return;
+  }
+  state.priority_order.forEach((fIdx,rank)=>{
+    const f=w21Factors[fIdx]||{};
+    const div=document.createElement('div');
+    div.className=`priority-item${rank===0?' rank-1':''}`;
+    div.innerHTML=`
+      <div class="priority-rank">${rank+1}位</div>
+      <div class="priority-name">${esc(f.name)||'（未入力）'}</div>
+      ${f.metric?`<div class="priority-metric">${esc(f.metric)}</div>`:''}
+      <button class="priority-up" onclick="movePriority(${rank},-1)" ${rank===0?'disabled':''}>↑</button>
+      <button class="priority-down" onclick="movePriority(${rank},1)" ${rank===state.priority_order.length-1?'disabled':''}>↓</button>`;
+    wrap.appendChild(div);
+  });
+}
+function movePriority(rank,dir){
+  const nr=rank+dir;
+  if(nr<0||nr>=state.priority_order.length) return;
+  [state.priority_order[rank],state.priority_order[nr]]=[state.priority_order[nr],state.priority_order[rank]];
+  renderPriority(); scheduleSave();
+}
+
+/* ── STEP 2: Commitments ── */
+function getFactorName(fIdx){
+  return (fIdx!=null&&w21Factors[fIdx])?w21Factors[fIdx].name:'';
+}
+function renderCommitments(){
+  const wrap=document.getElementById('commitmentList'); wrap.innerHTML='';
+  state.commitments.forEach((c,ci)=>{
+    const fname=getFactorName(c.factor_idx)||c.factor_snapshot||'';
+    const card=document.createElement('div'); card.className='commit-card';
+    card.innerHTML=`
+      <div class="commit-header">
+        <div class="commit-num">コミットメント ${ci+1}</div>
+        ${fname?`<div class="commit-factor-tag">対象：<strong>${esc(fname)}</strong></div>`:''}
+        ${state.commitments.length>1?`<button class="commit-del" onclick="deleteCommitment(${ci})">×</button>`:''}
+      </div>
+      <div class="commit-field">
+        <div class="commit-field-label">対象の要素（どの要素に対するコミットメントか）</div>
+        <select class="commit-input" onchange="updateCommitFactor(${ci},this.value)">
+          <option value="">── 選択してください ──</option>
+          ${state.priority_order.map((fIdx,rank)=>{
+            const f=w21Factors[fIdx]||{};
+            const sel=c.factor_idx===fIdx?' selected':'';
+            return f.name?`<option value="${fIdx}"${sel}>${rank+1}位: ${esc(f.name)}</option>`:'';
+          }).join('')}
+          ${!w21Factors.length?'<option disabled>W21 で要素を入力してください</option>':''}
+        </select>
+      </div>
+      <div class="commit-field">
+        <div class="commit-field-label">こうなる必要がある（解決策・コミットメント内容）</div>
+        <textarea class="commit-input" rows="2" placeholder="例：SNSで週3回発信し、体験セッション月10件を獲得できる状態になる"
+          oninput="state.commitments[${ci}].solution=this.value;scheduleSave();autoResize(this)"
+          onfocus="autoResize(this)">${esc(c.solution)}</textarea>
+      </div>
+      <div class="commit-field">
+        <div class="commit-field-label">期限</div>
+        <input class="commit-input" type="text" style="max-width:220px" placeholder="例：2026年8月31日"
+          value="${esc(c.deadline)}" oninput="state.commitments[${ci}].deadline=this.value;scheduleSave()">
+      </div>
+      <div class="action-section">
+        <div class="action-section-label">アクション（期限 → 具体的にやること）</div>
+        <div class="action-list" id="actionList_${ci}"></div>
+        <button class="action-add-btn" onclick="addAction(${ci})">＋ アクションを追加</button>
+      </div>`;
+    wrap.appendChild(card);
+    card.querySelectorAll('textarea').forEach(t=>autoResize(t));
+    renderActions(ci);
+  });
+}
+function updateCommitFactor(ci,val){
+  const idx=val===''?null:parseInt(val);
+  state.commitments[ci].factor_idx=idx;
+  state.commitments[ci].factor_snapshot=idx!=null?(w21Factors[idx]?.name||''):'';
+  renderCommitments(); scheduleSave();
+}
+function renderActions(ci){
+  const wrap=document.getElementById(`actionList_${ci}`); if(!wrap) return;
+  const actions=state.commitments[ci].actions;
+  wrap.innerHTML='';
+  actions.forEach((a,ai)=>{
+    const div=document.createElement('div'); div.className='action-item';
+    div.innerHTML=`
+      <input class="action-deadline-inp" type="text" placeholder="期限（例：6月末）"
+        value="${esc(a.deadline)}" oninput="state.commitments[${ci}].actions[${ai}].deadline=this.value;scheduleSave()">
+      <input class="action-what-inp" type="text" placeholder="具体的にやること"
+        value="${esc(a.what)}" oninput="state.commitments[${ci}].actions[${ai}].what=this.value;scheduleSave()">
+      ${actions.length>1?`<button class="action-del" onclick="deleteAction(${ci},${ai})">×</button>`:''}`;
+    wrap.appendChild(div);
+  });
+}
+function addCommitment(){
+  const topIdx=state.priority_order[state.commitments.length]??null;
+  state.commitments.push({
+    factor_idx:topIdx,
+    factor_snapshot:topIdx!=null?(w21Factors[topIdx]?.name||''):'',
+    solution:'', deadline:'',
+    actions:[{deadline:'',what:''},{deadline:'',what:''}]
+  });
+  renderCommitments(); scheduleSave();
+}
+function deleteCommitment(ci){ state.commitments.splice(ci,1); renderCommitments(); scheduleSave(); }
+function addAction(ci){
+  state.commitments[ci].actions.push({deadline:'',what:''});
+  renderActions(ci);
+  document.getElementById(`actionList_${ci}`)?.lastElementChild?.querySelector('input')?.focus();
+  scheduleSave();
+}
+function deleteAction(ci,ai){ state.commitments[ci].actions.splice(ai,1); renderActions(ci); scheduleSave(); }
+
+/* ── Reflect to Dashboard ── */
+function updateReflectBar(){
+  const filled=state.commitments.filter(c=>c.solution);
+  const has=filled.length>0;
+  document.getElementById('reflect-label').textContent=has?`${filled.length}件のコミットメントをダッシュボードに反映`:'— STEP2 でコミットメントを入力してください';
+  document.getElementById('btn-reflect').disabled=!has;
+}
+function reflectToDashboard(){
+  const raw20=localStorage.getItem('gt_w20_goal_ms');
+  let milestones=[];
+  if(raw20){
+    let w20; try{ w20=JSON.parse(raw20); }catch(e){ w20=null; }
+    if(w20) milestones=(w20.milestones||[]).filter(m=>m.text||m.deadline);
+  }
+  window.parent.postMessage({
+    type:'SET_COMMITMENTS',
+    payload:{
+      commitments:state.commitments.map(c=>({
+        title:c.solution,
+        deadline:c.deadline,
+        actions:c.actions.map(a=>({title:a.what,deadline:a.deadline}))
+      })),
+      milestones
+    }
+  },'*');
+}
+
+/* ── Save / Load ── */
+function doSave(){
+  localStorage.setItem(LS_KEY,JSON.stringify({ priority_order:state.priority_order, commitments:state.commitments }));
+  setSaveStatus('saved');
+  updateReflectBar();
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  const raw=localStorage.getItem(LS_KEY);
+  if(raw){
+    let saved; try{ saved=JSON.parse(raw); }catch(e){ saved=null; }
+    if(saved){
+      if(Array.isArray(saved.priority_order)) state.priority_order=saved.priority_order;
+      if(Array.isArray(saved.commitments)&&saved.commitments.length) state.commitments=saved.commitments;
+    }
+  }
+  if(!state.commitments.length){
+    state.commitments=[{ factor_idx:null, factor_snapshot:'', solution:'', deadline:'', actions:[{deadline:'',what:''},{deadline:'',what:''}] }];
+  }
+  loadFromPrevWorks();
+  renderCommitments();
+  setSaveStatus('saved');
+  updateReflectBar();
+});
+</script>
+</body>
+</html>

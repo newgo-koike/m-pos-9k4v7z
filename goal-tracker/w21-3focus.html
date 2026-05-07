@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W21 ビジネスフロー | Goal Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#5de0e6;--gradient:linear-gradient(135deg,#5de0e6 0%,#004aad 100%);
+  --bg-dark:#070d1a;--bg-card:#0f1b2d;--bg-card2:#132035;--bg-input:#0c1626;
+  --border:rgba(93,224,230,0.15);--border-h:rgba(93,224,230,0.4);
+  --text:#fff;--muted:#7a99bb;
+  --em:#10b981;--em-bg:rgba(16,185,129,0.1);--em-border:rgba(16,185,129,0.25);
+  --biz:#6366f1;--biz2:#818cf8;--biz-s:rgba(99,102,241,0.12);--biz-border:rgba(99,102,241,0.3);
+  --red:#ef4444;
+}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg-dark);color:var(--text);min-height:100vh}
+
+.main{padding:28px 36px 64px;max-width:1100px;margin:0 auto}
+
+/* Reflect bar */
+.reflect-bar{position:sticky;top:0;z-index:50;background:rgba(7,13,26,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--em-border);margin:-28px -36px 24px;padding:10px 36px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.reflect-bar-info{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--muted)}
+.reflect-bar-info strong{font-size:13px;color:var(--text);font-weight:600}
+.btn-reflect{padding:9px 18px;background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'Noto Sans JP',sans-serif}
+.btn-reflect:hover:not(:disabled){opacity:.85;transform:translateY(-1px)}
+.btn-reflect:disabled{opacity:.35;cursor:default}
+
+.work-header{margin-bottom:28px}
+.work-header-top{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.phase-badge{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;background:var(--gradient);color:#fff}
+.work-num{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;color:var(--muted)}
+.save-status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-left:auto}
+.save-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:all .3s}
+.save-dot.saved{background:var(--em)}
+.save-dot.saving{background:#f59e0b}
+.save-dot.error{background:var(--red)}
+.work-title{font-family:'Montserrat',sans-serif;font-size:24px;font-weight:800;margin-bottom:6px}
+.work-title span{background:linear-gradient(135deg,var(--biz2) 0%,var(--primary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.theory-tag{display:inline-block;background:var(--biz-s);border:1px solid var(--biz-border);color:var(--biz2);font-size:11px;padding:3px 10px;border-radius:12px;margin-right:6px;margin-top:4px}
+
+/* Goal summary */
+.goal-summary{background:linear-gradient(135deg,rgba(16,185,129,.06),rgba(0,74,173,.06));border:1px solid var(--em-border);border-radius:12px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:flex-start;gap:12px}
+.goal-summary-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.goal-summary-label{font-size:10px;font-weight:700;color:var(--em);margin-bottom:4px;letter-spacing:.5px;text-transform:uppercase}
+.goal-summary-text{font-size:13px;color:var(--text);line-height:1.7}
+.goal-summary-text.empty{color:var(--muted);font-style:italic}
+
+.section{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px}
+.section-title{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.step-badge{padding:4px 14px;border-radius:20px;background:linear-gradient(135deg,var(--biz),#5de0e6);font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;color:#fff}
+.section-title h2{font-size:17px;font-weight:700}
+.section-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;margin-top:-12px}
+
+/* Funnel */
+.funnel-controls{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.field-group{display:flex;flex-direction:column;gap:4px}
+.field-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.field-inp{background:rgba(93,224,230,.04);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:13px;padding:8px 12px;outline:none;transition:border-color .2s;width:160px}
+.field-inp:focus{border-color:rgba(93,224,230,.35)}
+.field-inp::placeholder{color:rgba(122,153,187,.45)}
+.revenue-display{display:flex;gap:16px;margin-left:auto}
+.rev-item{text-align:center}
+.rev-label{font-size:10px;color:var(--muted);font-weight:600}
+.rev-val{font-family:'Montserrat',sans-serif;font-size:18px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+.calc-toggle-wrap{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.toggle-label{font-size:12px;color:var(--muted)}
+.toggle-switch{position:relative;width:42px;height:22px;cursor:pointer}
+.toggle-switch input{display:none}
+.toggle-track{width:100%;height:100%;background:rgba(122,153,187,.2);border-radius:11px;transition:background .2s}
+.toggle-switch input:checked + .toggle-track{background:var(--biz)}
+.toggle-knob{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s}
+.toggle-switch input:checked ~ .toggle-knob{left:23px}
+.toggle-active{font-size:11px;font-weight:700;color:var(--biz2)}
+
+.funnel-layout{display:grid;grid-template-columns:1fr 260px;gap:20px;align-items:start}
+.stages-list{display:flex;flex-direction:column;gap:10px}
+
+.stage-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s}
+.stage-card:hover{border-color:var(--border-h)}
+.stage-head{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-card2)}
+.stage-num{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:800;color:var(--biz2);width:20px}
+.stage-name-inp{flex:1;background:transparent;border:none;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;outline:none}
+.stage-name-inp::placeholder{color:rgba(122,153,187,.4)}
+.stage-count-val{font-family:'Montserrat',sans-serif;font-size:18px;font-weight:800;color:var(--primary)}
+.stage-unit{font-size:11px;color:var(--muted);margin-left:3px}
+.stage-del{background:none;border:none;color:rgba(122,153,187,.4);font-size:16px;cursor:pointer;padding:2px 6px;border-radius:4px;transition:all .2s}
+.stage-del:hover{color:var(--red);background:rgba(239,68,68,.08)}
+.stage-body{padding:14px 16px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.stage-field-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.count-inp{width:100%;background:rgba(93,224,230,.06);border:1px solid var(--border);border-radius:8px;color:var(--primary);font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;padding:8px 12px;text-align:center;outline:none;transition:border-color .2s}
+.count-inp:focus{border-color:rgba(93,224,230,.4)}
+.count-inp.auto{color:var(--biz2);background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.2)}
+.rate-inp{width:100%;background:rgba(93,224,230,.04);border:1px solid var(--border);border-radius:8px;color:#fcd34d;font-family:'Montserrat',sans-serif;font-size:18px;font-weight:800;padding:8px 12px;text-align:center;outline:none;transition:border-color .2s}
+.rate-inp:focus{border-color:rgba(252,211,77,.3)}
+.rate-inp::placeholder{color:rgba(252,211,77,.25)}
+textarea.action-inp{width:100%;background:rgba(93,224,230,.03);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:12px;padding:8px 12px;resize:none;outline:none;line-height:1.6;min-height:56px;transition:border-color .2s}
+textarea.action-inp:focus{border-color:rgba(93,224,230,.3)}
+.stage-arrow{text-align:center;font-size:11px;padding:2px 0;font-family:'Montserrat',sans-serif;font-weight:700;color:#fcd34d}
+.add-stage-btn{width:100%;padding:11px;border:1px dashed var(--biz-border);border-radius:10px;background:transparent;color:var(--biz2);font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:4px}
+.add-stage-btn:hover{background:var(--biz-s);border-color:rgba(99,102,241,.5)}
+
+.funnel-visual{position:sticky;top:24px}
+.funnel-vis-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;text-align:center}
+.funnel-bars{display:flex;flex-direction:column;align-items:center;gap:0}
+.funnel-bar{display:flex;flex-direction:column;align-items:center;width:100%;transition:all .4s}
+.funnel-bar-inner{height:40px;border-radius:6px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;transition:width .4s;min-width:80px}
+.funnel-bar-name{font-size:11px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+.funnel-bar-num{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:800;color:#fff;flex-shrink:0}
+.funnel-arrow-down{font-size:10px;color:rgba(252,211,77,.6);margin:2px 0;font-weight:700;font-family:'Montserrat',sans-serif}
+
+/* Factors */
+.factor-header-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.import-btn{padding:7px 14px;background:var(--biz-s);border:1px solid var(--biz-border);border-radius:8px;color:var(--biz2);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Noto Sans JP',sans-serif}
+.import-btn:hover{background:rgba(99,102,241,.2);border-color:var(--biz)}
+.factor-list{display:flex;flex-direction:column;gap:8px}
+.factor-item{background:var(--bg-card2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.factor-num{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;color:var(--muted);min-width:22px}
+.factor-fields{flex:1;display:grid;grid-template-columns:1fr 160px;gap:8px;align-items:center}
+.factor-input{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'Noto Sans JP',sans-serif;padding:7px 10px;transition:border-color .2s}
+.factor-input:focus{outline:none;border-color:var(--primary)}
+.factor-input::placeholder{color:var(--muted);opacity:.6}
+.factor-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;opacity:.4;transition:opacity .2s;padding:4px}
+.factor-del:hover{opacity:1;color:var(--red)}
+.add-btn{width:100%;padding:9px;background:none;border:1.5px dashed rgba(93,224,230,.2);border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;transition:all .2s;color:var(--primary);font-family:'Noto Sans JP',sans-serif}
+.add-btn:hover{background:rgba(93,224,230,.04);border-color:var(--border-h)}
+
+.nav-row{display:flex;justify-content:space-between;padding:10px 0 30px}
+.btn-nav{padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;background:var(--bg-card);border:1px solid var(--border);color:var(--muted);transition:all .2s}
+.btn-nav:hover{border-color:var(--primary);color:var(--primary)}
+.btn-nav.primary{background:var(--gradient);color:#fff;border-color:transparent}
+.btn-nav.primary:hover{opacity:.9;transform:translateY(-1px)}
+
+@media(max-width:1024px){.funnel-layout{grid-template-columns:1fr}.funnel-visual{position:static}}
+@media(max-width:768px){
+  .main{padding:16px 16px 48px}
+  .reflect-bar{margin:-16px -16px 16px;padding:10px 16px}
+  .stage-body{grid-template-columns:1fr}
+  .factor-fields{grid-template-columns:1fr}
+  .funnel-controls{flex-direction:column;align-items:flex-start}
+  .revenue-display{margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<main class="main">
+  <div class="reflect-bar">
+    <div class="reflect-bar-info">
+      <strong id="reflect-label">— STEP2 で要素を入力してください</strong>
+      確定した要素をダッシュボードに反映する
+    </div>
+    <button class="btn-reflect" id="btn-reflect" onclick="reflectToDashboard()" disabled>↑ ダッシュボードに反映</button>
+  </div>
+
+  <div class="work-header">
+    <div class="work-header-top">
+      <span class="phase-badge">PHASE 4</span>
+      <span class="work-num">W21</span>
+      <div class="save-status">
+        <div class="save-dot" id="saveDot"></div>
+        <span id="saveText">—</span>
+      </div>
+    </div>
+    <div class="work-title"><span>ビジネスフロー & 必要要素</span></div>
+    <div>
+      <span class="theory-tag">ファネル設計</span>
+      <span class="theory-tag">移行率管理</span>
+      <span class="theory-tag">構成要素洗い出し</span>
+    </div>
+  </div>
+
+  <div class="goal-summary">
+    <div class="goal-summary-icon">🏁</div>
+    <div>
+      <div class="goal-summary-label">W20 で設定した目標</div>
+      <div class="goal-summary-text empty" id="goalSummaryText">W20（目標設定）を先に入力してください。</div>
+    </div>
+  </div>
+
+  <!-- STEP 1: ファネル設計 -->
+  <div class="section">
+    <div class="section-title">
+      <span class="step-badge">STEP 1</span>
+      <h2>ビジネスフロー（ファネル）設計</h2>
+    </div>
+    <p class="section-desc">目標達成に向けたビジネスの流れをファネルで設計します。ゴールから逆算して各ステージの必要数を計算できます。</p>
+
+    <div class="funnel-controls">
+      <div class="field-group">
+        <div class="field-label">商品・サービス名</div>
+        <input type="text" class="field-inp" id="productName" style="width:200px" placeholder="例：副業コーチング" autocomplete="off" oninput="scheduleSave()">
+      </div>
+      <div class="field-group">
+        <div class="field-label">月間目標 成約件数</div>
+        <input type="text" inputmode="numeric" class="field-inp" id="goalCount" placeholder="例：10" autocomplete="off" oninput="onCalcChange()">
+      </div>
+      <div class="field-group">
+        <div class="field-label">単価（円）</div>
+        <input type="text" inputmode="numeric" class="field-inp" id="unitPrice" placeholder="例：198000" autocomplete="off" oninput="onCalcChange()">
+      </div>
+      <div class="revenue-display">
+        <div class="rev-item">
+          <div class="rev-label">月商目標</div>
+          <div class="rev-val" id="monthlyRev">—</div>
+        </div>
+        <div class="rev-item">
+          <div class="rev-label">年商（×12）</div>
+          <div class="rev-val" id="annualRev">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-toggle-wrap">
+      <span class="toggle-label">計算方向：</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="calcModeToggle" onchange="onCalcChange()">
+        <div class="toggle-track"></div>
+        <div class="toggle-knob"></div>
+      </label>
+      <span class="toggle-active" id="calcModeLabel">ゴールから逆算</span>
+      <span style="font-size:11px;color:var(--muted)">&nbsp;← 成約件数からステージを自動計算</span>
+    </div>
+
+    <div class="funnel-layout">
+      <div>
+        <div class="stages-list" id="stagesList"></div>
+        <button class="add-stage-btn" onclick="addStage()">＋ ステージを追加</button>
+      </div>
+      <div class="funnel-visual">
+        <div class="funnel-vis-title">FUNNEL VISUALIZATION</div>
+        <div class="funnel-bars" id="funnelBars"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: 必要要素 -->
+  <div class="section">
+    <div class="section-title">
+      <span class="step-badge">STEP 2</span>
+      <h2>目標達成に必要な要素の洗い出し</h2>
+    </div>
+    <p class="section-desc">「これが○○の数値になっていれば目標を達成できる」という要素を洗い出します。ファネルのステージから読み込むこともできます。</p>
+    <div class="factor-header-row">
+      <button class="import-btn" onclick="importFromFunnel()">↙ ファネルのステージから読み込む</button>
+    </div>
+    <div class="factor-list" id="factorList"></div>
+    <button class="add-btn" onclick="addFactor()">＋ 要素を追加</button>
+  </div>
+
+  <div class="nav-row">
+    <a href="w20-biz-flow.html" class="btn-nav">← W20 目標設定</a>
+    <a href="w22-action-plan.html" class="btn-nav primary">W22 アクション設計 →</a>
+  </div>
+</main>
+
+<script>
+const LS_KEY = 'gt_w21_biz_factors';
+let saveTimer = null;
+
+const DEFAULT_STAGES = [
+  { name:'認知・流入',       action:'SNS投稿/紹介依頼/セミナー開催',              count:'', rate:'20' },
+  { name:'初回接触',         action:'DM返信/問い合わせ対応',                       count:'', rate:'60' },
+  { name:'無料相談（初回）', action:'現状ヒアリング・ビジョン共有',                count:'', rate:'70' },
+  { name:'継続面談（2回目）',action:'プログラム説明・価格提示',                    count:'', rate:'50' },
+  { name:'成約',             action:'契約締結・初回入金・オンボーディング',         count:'', rate:'' },
+];
+let stages = DEFAULT_STAGES.map((s,i)=>({...s,id:Date.now()+i}));
+let calcMode = 'bottom-up';
+let factors = [{ name:'', metric:'' }, { name:'', metric:'' }, { name:'', metric:'' }];
+
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function parseNum(id){ return parseFloat(document.getElementById(id)?.value?.replace(/,/g,''))||0; }
+function setSaveStatus(s){
+  document.getElementById('saveDot').className='save-dot '+s;
+  document.getElementById('saveText').textContent=s==='saved'?'保存済み':s==='saving'?'保存中…':'エラー';
+}
+function scheduleSave(){ setSaveStatus('saving'); clearTimeout(saveTimer); saveTimer=setTimeout(doSave,800); }
+
+/* ── Goal summary from W20 ── */
+function loadGoalSummary(){
+  const raw=localStorage.getItem('gt_w20_goal_ms');
+  const el=document.getElementById('goalSummaryText');
+  if(!raw){ el.textContent='W20（目標設定）を先に入力してください。'; return; }
+  let w20; try{ w20=JSON.parse(raw); }catch(e){ el.textContent='W20データを読み込めませんでした。'; return; }
+  const sel=w20.selected||{}, cards=w20.cards||[];
+  const get=(idx,f)=>(idx>=0&&cards[idx])?(cards[idx][f]?.trim()||''):'';
+  const parts=[
+    get(sel.deadlineIdx,'deadline')&&`期限：${get(sel.deadlineIdx,'deadline')}`,
+    get(sel.quantIdx,'quantitative')&&`定量：${get(sel.quantIdx,'quantitative')}`,
+    get(sel.qualIdx,'qualitative')&&`定性：${get(sel.qualIdx,'qualitative')}`,
+  ].filter(Boolean);
+  el.innerHTML=parts.length?parts.map(p=>`<span>${esc(p)}</span>`).join('　／　'):'W20で目標を選択してください。';
+  el.classList.toggle('empty',!parts.length);
+}
+
+/* ── STEP 1: Funnel ── */
+function onCalcChange(){
+  calcMode=document.getElementById('calcModeToggle').checked?'top-down':'bottom-up';
+  document.getElementById('calcModeLabel').textContent=calcMode==='bottom-up'?'ゴールから逆算':'上から計算';
+  const gc=parseNum('goalCount'), up=parseNum('unitPrice');
+  document.getElementById('monthlyRev').textContent=gc&&up?`${((gc*up)/10000).toFixed(1)}万円`:'—';
+  document.getElementById('annualRev').textContent=gc&&up?`${((gc*up*12)/10000).toFixed(0)}万円`:'—';
+  computeStages(); renderFunnelVis(); scheduleSave();
+}
+function computeStages(){
+  const gc=parseNum('goalCount'), n=stages.length;
+  if(!n) return;
+  if(calcMode==='bottom-up'&&gc>0){
+    stages[n-1].computed=gc;
+    for(let i=n-2;i>=0;i--){
+      const r=parseFloat(stages[i].rate)||0;
+      stages[i].computed=r>0?Math.ceil(stages[i+1].computed/(r/100)):null;
+    }
+  } else {
+    stages.forEach(s=>{ s.computed=parseFloat(s.count)||null; });
+  }
+  stages.forEach(s=>{
+    const el=document.getElementById(`count-${s.id}`);
+    if(!el) return;
+    if(calcMode==='bottom-up'&&s.computed!=null){ el.value=Math.round(s.computed); el.classList.add('auto'); el.readOnly=true; }
+    else { el.classList.remove('auto'); el.readOnly=false; }
+  });
+}
+const FUNNEL_COLORS=['#004aad','#0a5fc0','#1976d2','#2196f3','#42a5f5','#64b5f6','#90caf9','#bbdefb'];
+function renderFunnelVis(){
+  const counts=stages.map(s=>s.computed||parseFloat(s.count)||0);
+  const max=Math.max(...counts,1);
+  const bars=document.getElementById('funnelBars'); bars.innerHTML='';
+  stages.forEach((s,i)=>{
+    const cnt=counts[i], pct=max>0?(cnt/max)*100:100;
+    const w=60+(pct/100)*200;
+    const bar=document.createElement('div'); bar.className='funnel-bar';
+    const rate=i<stages.length-1?(s.rate?s.rate+'%':'—'):'';
+    bar.innerHTML=`
+      <div class="funnel-bar-inner" style="width:${w}px;background:${FUNNEL_COLORS[Math.min(i,7)]}">
+        <span class="funnel-bar-name">${esc(s.name||`S${i+1}`)}</span>
+        <span class="funnel-bar-num">${cnt?Math.round(cnt):'—'}</span>
+      </div>
+      ${i<stages.length-1?`<div class="funnel-arrow-down">↓ ${rate}</div>`:''}`;
+    bars.appendChild(bar);
+  });
+}
+function renderStages(){
+  const list=document.getElementById('stagesList'); list.innerHTML='';
+  stages.forEach((s,i)=>{
+    const div=document.createElement('div');
+    div.innerHTML=`
+      <div class="stage-card">
+        <div class="stage-head">
+          <span class="stage-num">${i+1}</span>
+          <input type="text" autocomplete="off" class="stage-name-inp" placeholder="ステージ名"
+            value="${esc(s.name)}" oninput="onStageChange(${s.id},'name',this.value)">
+          <span class="stage-count-val" id="dispCount-${s.id}">${s.computed!=null?Math.round(s.computed):(s.count||'—')}</span>
+          <span class="stage-unit">件/月</span>
+          ${stages.length>2?`<button class="stage-del" onclick="removeStage(${s.id})">×</button>`:''}
+        </div>
+        <div class="stage-body">
+          <div>
+            <div class="stage-field-label">目標数（件/月）</div>
+            <input type="text" inputmode="numeric" autocomplete="off"
+              class="count-inp ${calcMode==='bottom-up'?'auto':''}" id="count-${s.id}"
+              value="${s.count}" placeholder="件数"
+              ${calcMode==='bottom-up'?'readonly':''}
+              oninput="onStageChange(${s.id},'count',this.value);onCalcChange()">
+          </div>
+          <div>
+            <div class="stage-field-label">次ステージへの移行率（%）${i===stages.length-1?'（最終）':''}</div>
+            <input type="text" inputmode="numeric" autocomplete="off" class="rate-inp"
+              id="rate-${s.id}" value="${s.rate}" placeholder="${i===stages.length-1?'—':'例：50'}"
+              ${i===stages.length-1?'disabled':''}
+              oninput="onStageChange(${s.id},'rate',this.value);onCalcChange()">
+          </div>
+          <div>
+            <div class="stage-field-label">このステージでやること</div>
+            <textarea spellcheck="false" class="action-inp"
+              placeholder="具体的なアクション"
+              oninput="onStageChange(${s.id},'action',this.value)">${esc(s.action)}</textarea>
+          </div>
+        </div>
+      </div>
+      ${i<stages.length-1?`<div class="stage-arrow">↓　${s.rate?s.rate+'%':'移行率未設定'}</div>`:''}`;
+    list.appendChild(div);
+  });
+  computeStages(); renderFunnelVis();
+}
+function onStageChange(id,field,val){
+  const s=stages.find(x=>x.id===id); if(s) s[field]=val; onCalcChange();
+}
+function addStage(){ stages.push({id:Date.now(),name:'',action:'',count:'',rate:'',computed:null}); renderStages(); scheduleSave(); }
+function removeStage(id){ stages=stages.filter(s=>s.id!==id); renderStages(); onCalcChange(); }
+
+/* ── STEP 2: Factors ── */
+function renderFactors(){
+  const wrap=document.getElementById('factorList'); wrap.innerHTML='';
+  factors.forEach((f,i)=>{
+    const div=document.createElement('div'); div.className='factor-item';
+    div.innerHTML=`
+      <div class="factor-num">${i+1}</div>
+      <div class="factor-fields">
+        <input class="factor-input" type="text" placeholder="例：月10件の体験セッションを獲得する"
+          value="${esc(f.name)}" oninput="updateFactor(${i},'name',this.value)">
+        <input class="factor-input" type="text" placeholder="目標数値（例：10件）"
+          value="${esc(f.metric)}" oninput="updateFactor(${i},'metric',this.value)">
+      </div>
+      ${factors.length>1?`<button class="factor-del" onclick="deleteFactor(${i})">×</button>`:''}`;
+    wrap.appendChild(div);
+  });
+}
+function updateFactor(i,field,val){ factors[i][field]=val; scheduleSave(); }
+function addFactor(){ factors.push({name:'',metric:''}); renderFactors(); scheduleSave(); }
+function deleteFactor(i){ factors.splice(i,1); renderFactors(); scheduleSave(); }
+function importFromFunnel(){
+  const imported=stages.filter(s=>s.name).map(s=>({
+    name:s.name+(s.action?`（${s.action}）`:''),
+    metric:s.computed?`${Math.round(s.computed)}件/月`:(s.count?`${s.count}件/月`:'')
+  }));
+  if(!imported.length){ alert('ステージ名を入力してください。'); return; }
+  factors=imported; renderFactors(); scheduleSave();
+}
+
+/* ── Reflect to Dashboard ── */
+function updateReflectBar(){
+  const named=factors.filter(f=>f.name);
+  const hasFactors=named.length>0;
+  document.getElementById('reflect-label').textContent=hasFactors?`${named.length}件の要素をダッシュボードに反映`:'— STEP2 で要素を入力してください';
+  document.getElementById('btn-reflect').disabled=!hasFactors;
+}
+function reflectToDashboard(){
+  const named=factors.filter(f=>f.name);
+  const productName=document.getElementById('productName').value;
+  window.parent.postMessage({ type:'SET_ELEMENTS', payload:{ elements:named.map(f=>({title:f.name,target:f.metric,unit:''})) } },'*');
+  if(productName) window.parent.postMessage({ type:'SET_FLOW', payload:{ title:productName } },'*');
+}
+
+/* ── Save / Load ── */
+function doSave(){
+  const data={
+    productName:document.getElementById('productName').value,
+    goalCount:document.getElementById('goalCount').value,
+    unitPrice:document.getElementById('unitPrice').value,
+    calcMode,
+    stages:stages.map(s=>({id:s.id,name:s.name,action:s.action,count:s.count,rate:s.rate})),
+    factors,
+  };
+  localStorage.setItem(LS_KEY,JSON.stringify(data));
+  setSaveStatus('saved');
+  updateReflectBar();
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  const raw=localStorage.getItem(LS_KEY);
+  if(raw){
+    let saved; try{ saved=JSON.parse(raw); }catch(e){ saved=null; }
+    if(saved){
+      if(saved.productName) document.getElementById('productName').value=saved.productName;
+      if(saved.goalCount)   document.getElementById('goalCount').value=saved.goalCount;
+      if(saved.unitPrice)   document.getElementById('unitPrice').value=saved.unitPrice;
+      if(saved.calcMode){ calcMode=saved.calcMode; document.getElementById('calcModeToggle').checked=calcMode==='top-down'; document.getElementById('calcModeLabel').textContent=calcMode==='bottom-up'?'ゴールから逆算':'上から計算'; }
+      if(Array.isArray(saved.stages)&&saved.stages.length) stages=saved.stages;
+      if(Array.isArray(saved.factors)&&saved.factors.length) factors=saved.factors;
+    }
+  }
+  renderStages(); renderFactors(); onCalcChange();
+  loadGoalSummary();
+  setSaveStatus('saved');
+  updateReflectBar();
+});
+</script>
+</body>
+</html>
