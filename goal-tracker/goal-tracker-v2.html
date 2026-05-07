@@ -560,6 +560,8 @@ input:focus,textarea:focus,select:focus{border-color:var(--cyan);background:var(
 .cv-a-badge.week{background:rgba(16,185,129,.15);color:var(--green)}
 .cv-a-badge.overdue{background:var(--red-s);color:var(--red)}
 .cv-a-badge.future{background:var(--cobalt-s);color:var(--cyan)}
+.cv-legend{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0}
+.cv-legend-item{display:flex;align-items:center;gap:3px;font-size:10px;color:var(--faint)}
 
 .cv-add-ghost{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--faint);padding:4px 8px;border-radius:5px;border:1px dashed var(--border);cursor:pointer;transition:all .12s;background:transparent;margin-top:4px}
 .cv-add-ghost:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-s)}
@@ -1214,6 +1216,11 @@ table.kpi .col-actions{width:40px}
         <span class="dash-sec-num">③</span>
         <span class="dash-sec-title">今週のアクション</span>
         <span class="dash-sec-sub">今週やること・完了したこと</span>
+        <div class="cv-legend">
+          <span class="cv-legend-item"><span class="cv-a-badge week">今週</span></span>
+          <span class="cv-legend-item"><span class="cv-a-badge future">未来</span></span>
+          <span class="cv-legend-item"><span class="cv-a-badge overdue">超過</span></span>
+        </div>
       </div>
       <div class="cv-stats-row">
         <div class="cv-stats-left" id="cv-stats-left">
