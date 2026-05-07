@@ -1736,7 +1736,7 @@ function renderDash() {
   q('#hero-goal').textContent = g.title || 'ゴールを設定してください';
   const deadlineEl = q('#hero-deadline'), daysEl = q('#hero-days');
   if (g.deadline) {
-    deadlineEl.innerHTML = `📅 ${g.deadline}`;
+    deadlineEl.innerHTML = `${g.deadline} までに`;
     const diff = daysDiff(g.deadline);
     if (diff >= 0) {
       daysEl.textContent = `残り ${diff} 日`;
