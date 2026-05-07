@@ -563,14 +563,14 @@ input:focus,textarea:focus,select:focus{border-color:var(--cyan);background:var(
 .cv-legend{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0}
 .cv-legend-item{display:flex;align-items:center;gap:3px;font-size:10px;color:var(--faint)}
 /* ── Mindmap Tree ── */
-.mm-wrap{padding:4px 0 8px}
-.mm-goal-node{display:inline-flex;align-items:center;gap:10px;background:var(--gradient);color:#fff;border-radius:12px;padding:12px 20px;font-weight:800;font-size:16px;font-family:var(--font-h);margin-bottom:0;box-shadow:0 4px 16px rgba(93,224,230,0.2)}
+.mm-wrap{background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:24px 24px 28px;background-image:radial-gradient(circle at 10% 20%,rgba(93,224,230,0.04) 0%,transparent 50%)}
+.mm-goal-node{display:inline-flex;align-items:center;gap:10px;background:var(--gradient);color:#fff;border-radius:12px;padding:13px 22px;font-weight:800;font-size:16px;font-family:var(--font-h);box-shadow:0 4px 16px rgba(93,224,230,0.2)}
 .mm-goal-dl{font-size:11px;font-weight:500;opacity:.75;margin-left:4px}
-.mm-el-list{margin-left:20px;position:relative;margin-top:0}
-.mm-el-list::before{content:'';position:absolute;left:0;top:12px;bottom:16px;width:2px;background:var(--border);border-radius:1px}
-.mm-el-item{position:relative;padding-left:24px;margin-top:10px}
-.mm-el-item::before{content:'';position:absolute;left:0;top:18px;width:22px;height:2px;background:var(--border)}
-.mm-el-node{display:inline-flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:8px;padding:8px 14px;font-weight:700;font-size:14px;margin-bottom:4px;cursor:default}
+.mm-el-list{margin-left:20px;position:relative;margin-top:4px}
+.mm-el-list::before{content:'';position:absolute;left:0;top:16px;bottom:22px;width:2px;background:var(--border);border-radius:1px}
+.mm-el-item{position:relative;padding-left:28px;margin-top:16px}
+.mm-el-item::before{content:'';position:absolute;left:0;top:20px;width:26px;height:2px;background:var(--border)}
+.mm-el-node{display:inline-flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:8px;padding:10px 16px;font-weight:700;font-size:14px;margin-bottom:8px;cursor:default}
 .mm-el-node.prio-high{border-left-color:var(--red)}
 .mm-el-node.prio-mid{border-left-color:var(--gold)}
 .mm-el-node.prio-low{border-left-color:rgba(93,224,230,0.35)}
@@ -581,23 +581,24 @@ input:focus,textarea:focus,select:focus{border-color:var(--cyan);background:var(
 .mm-focus-btn.on{border-color:rgba(93,224,230,0.4);color:var(--cyan);background:rgba(93,224,230,0.08)}
 .mm-pbar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;width:80px;flex-shrink:0}
 .mm-pfill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--cyan),var(--cobalt))}
-.mm-commit-list{margin-left:20px;position:relative;margin-top:4px}
-.mm-commit-list::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:1px;background:rgba(93,224,230,0.18)}
-.mm-commit-item{position:relative;padding-left:18px;margin-bottom:8px}
-.mm-commit-item::before{content:'';position:absolute;left:0;top:13px;width:16px;height:1px;background:rgba(93,224,230,0.18)}
-.mm-commit-node{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:12px;color:var(--text);padding:4px 10px;background:var(--card);border-radius:6px;margin-bottom:4px}
+.mm-commit-list{margin-left:24px;position:relative;margin-top:6px}
+.mm-commit-list::before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:1px;background:rgba(93,224,230,0.2)}
+.mm-commit-item{position:relative;padding-left:20px;margin-bottom:12px}
+.mm-commit-item::before{content:'';position:absolute;left:0;top:14px;width:18px;height:1px;background:rgba(93,224,230,0.2)}
+.mm-commit-node{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:13px;color:var(--text);padding:6px 12px;background:var(--paper);border:1px solid var(--border);border-radius:7px;margin-bottom:6px}
 .mm-commit-icon{font-size:9px;color:var(--cyan);flex-shrink:0}
 .mm-commit-dl{font-size:10px;color:var(--faint);margin-left:4px}
-.mm-action-list{display:flex;flex-wrap:wrap;gap:4px;padding-left:4px}
-.mm-chip{font-size:10px;padding:3px 10px;border-radius:10px;font-weight:600;font-family:var(--font-h);cursor:pointer;transition:opacity .12s;border:1px solid transparent}
+.mm-action-list{display:flex;flex-wrap:wrap;gap:5px;padding-left:4px}
+.mm-chip{font-size:11px;padding:4px 12px;border-radius:10px;font-weight:600;font-family:var(--font-h);cursor:pointer;transition:opacity .12s;border:1px solid transparent}
 .mm-chip:hover{opacity:.75}
 .mm-chip.done{background:var(--green-s);color:var(--green);text-decoration:line-through;opacity:.55}
 .mm-chip.overdue{background:var(--red-s);color:var(--red)}
 .mm-chip.week{background:rgba(16,185,129,.12);color:var(--green)}
 .mm-chip.future{background:var(--cobalt-s);color:var(--cyan)}
 .mm-chip.none{background:var(--card);color:var(--muted);border-color:var(--border)}
-[data-theme="light"] .mm-el-node{background:#fff}
-[data-theme="light"] .mm-commit-node{background:#f8fbff}
+[data-theme="light"] .mm-wrap{background:#fff;background-image:radial-gradient(circle at 10% 20%,rgba(0,74,173,0.03) 0%,transparent 50%)}
+[data-theme="light"] .mm-el-node{background:#f6f9ff}
+[data-theme="light"] .mm-commit-node{background:#fff}
 [data-theme="light"] .mm-chip.none{background:#f0f4fa}
 
 .cv-add-ghost{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--faint);padding:4px 8px;border-radius:5px;border:1px dashed var(--border);cursor:pointer;transition:all .12s;background:transparent;margin-top:4px}
