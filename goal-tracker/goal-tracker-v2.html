@@ -168,6 +168,41 @@ input:focus,textarea:focus,select:focus{border-color:var(--cyan);background:var(
 
 /* ── Main ── */
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+/* ── Right Panel ── */
+.right-panel{width:280px;flex-shrink:0;display:flex;flex-direction:column;height:100vh;overflow:hidden;border-left:1px solid var(--border);background:var(--paper);transition:width var(--tr)}
+.rp-hd{padding:0;border-bottom:1px solid var(--border);flex-shrink:0}
+.rp-tabs{display:flex}
+.rp-tab{flex:1;padding:14px 8px;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;font:inherit;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s}
+.rp-tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.rp-tab:hover:not(.active){color:var(--text)}
+.rp-body{flex:1;display:flex;flex-direction:column;padding:14px;overflow:hidden}
+.rp-ta{flex:1;width:100%;resize:none;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit;font-size:13px;line-height:1.85;padding:12px;transition:border-color .15s}
+.rp-ta:focus{outline:none;border-color:rgba(93,224,230,0.4);background:rgba(93,224,230,0.03)}
+.rp-ta::placeholder{color:var(--faint)}
+.rp-saved{font-size:11px;color:var(--cyan);text-align:right;margin-top:6px;opacity:0;transition:opacity .4s;height:16px}
+.rp-saved.show{opacity:1}
+.rp-add-btn{width:100%;padding:10px;background:none;border:1.5px dashed rgba(93,224,230,0.3);border-radius:10px;font:inherit;font-size:13px;font-weight:700;color:var(--cyan);cursor:pointer;transition:all .15s;margin-bottom:10px;flex-shrink:0}
+.rp-add-btn:hover{background:rgba(93,224,230,0.06);border-color:rgba(93,224,230,0.6)}
+.rp-compose{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;flex-shrink:0}
+.rp-compose-ta{width:100%;background:var(--paper);border:1px solid var(--border);border-radius:8px;color:var(--text);font:inherit;font-size:13px;padding:8px 10px;resize:none;line-height:1.6;transition:border-color .15s}
+.rp-compose-ta:focus{outline:none;border-color:rgba(93,224,230,0.4)}
+.rp-compose-ta::placeholder{color:var(--faint)}
+.rp-compose-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+.rp-cancel{padding:6px 12px;background:none;border:1px solid var(--border);border-radius:7px;color:var(--muted);font:inherit;font-size:12px;cursor:pointer;transition:all .12s}
+.rp-cancel:hover{border-color:var(--border-h);color:var(--text)}
+.rp-send{padding:6px 16px;background:var(--gradient);border:none;border-radius:7px;color:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .12s}
+.rp-send:hover{opacity:.85}
+.rp-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.rp-empty{font-size:13px;color:var(--faint);text-align:center;padding:32px 12px;font-style:italic}
+.rp-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 13px}
+.rp-card-hd{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.rp-av{width:22px;height:22px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-family:var(--font-h);font-size:9px;font-weight:800;color:#fff;flex-shrink:0}
+.rp-author{font-size:12px;font-weight:700;color:var(--cyan);flex:1}
+.rp-time{font-size:10px;color:var(--faint)}
+.rp-del{background:none;border:none;cursor:pointer;color:var(--faint);font-size:13px;padding:2px 5px;opacity:.4;transition:opacity .15s;flex-shrink:0}
+.rp-del:hover{opacity:1;color:var(--red)}
+.rp-card-body{font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap}
+@media(max-width:1100px){.right-panel{display:none}}
 .tab-panel{display:none;flex:1;overflow-y:auto;padding:28px 32px 48px}
 .tab-panel.active{display:block}
 .tab-panel > *{max-width:860px}
@@ -1200,6 +1235,33 @@ table.kpi .col-actions{width:40px}
     </div>
   </aside>
 
+  <!-- Right Panel (moved after main via order) -->
+  <div id="right-panel" class="right-panel" style="order:3">
+    <div class="rp-hd">
+      <div class="rp-tabs">
+        <button class="rp-tab active" id="rp-tab-memo" onclick="rpSwitch('memo')">📝 メモ</button>
+        <button class="rp-tab" id="rp-tab-comment" onclick="rpSwitch('comment')">💬 コメント</button>
+      </div>
+    </div>
+    <!-- メモ -->
+    <div class="rp-body" id="rp-body-memo">
+      <textarea class="rp-ta" id="rp-memo-ta" placeholder="自由にメモを書いてください…"></textarea>
+      <div class="rp-saved" id="rp-saved">保存済み ✓</div>
+    </div>
+    <!-- コメント -->
+    <div class="rp-body" id="rp-body-comment" style="display:none;flex-direction:column">
+      <button class="rp-add-btn" id="rp-add-btn" onclick="rpOpenCompose()">＋ コメントを追加</button>
+      <div class="rp-compose" id="rp-compose" style="display:none">
+        <textarea class="rp-compose-ta" id="rp-compose-ta" placeholder="コメントを入力…" rows="4"></textarea>
+        <div class="rp-compose-actions">
+          <button class="rp-cancel" onclick="rpCloseCompose()">キャンセル</button>
+          <button class="rp-send" onclick="rpSend()">送信</button>
+        </div>
+      </div>
+      <div class="rp-list" id="rp-list"></div>
+    </div>
+  </div>
+
   <!-- Main -->
   <div id="main">
 
@@ -1544,7 +1606,9 @@ const DEF = {
   kpi: {},
   kpiLabels: { ...DEFAULT_KPI_LABELS },
   tracking: { monthly:[], kpt:[] },
-  comments: { dashboard:[], tracking:[] }
+  comments: { dashboard:[], tracking:[] },
+  memo: '',
+  sideComments: []
 };
 let S = JSON.parse(JSON.stringify(DEF));
 
@@ -1608,7 +1672,7 @@ function loadDemo() {
   q('#login-overlay').classList.add('hidden');
   q('#app').classList.add('ready');
   q('#user-name').textContent = 'demo';
-  updateAvatar(); kpiMonth = monthKeyToday(); renderAll();
+  updateAvatar(); kpiMonth = monthKeyToday(); renderAll(); rpInit();
 }
 
 async function doLogin() {
@@ -1655,7 +1719,7 @@ async function onSignIn(sess) {
   q('#login-overlay').classList.add('hidden');
   q('#app').classList.add('ready');
   q('#user-name').textContent = (currentUser.email || '').split('@')[0];
-  updateAvatar(); kpiMonth = monthKeyToday(); renderAll();
+  updateAvatar(); kpiMonth = monthKeyToday(); renderAll(); rpInit();
 }
 /* セッション復元（ページロード時） */
 (async () => {
@@ -2464,6 +2528,83 @@ function switchTab(tab) {
   document.querySelectorAll('.nav-item,.bnav-item').forEach(n=>n.classList.remove('active'));
   const sn=q(`#nav-${tab}`), bn=q(`#bnav-${tab}`);
   if(sn)sn.classList.add('active'); if(bn)bn.classList.add('active');
+}
+
+/* ── Right Panel ── */
+let rpMemoTimer = null;
+
+function rpInit() {
+  const ta = q('#rp-memo-ta');
+  if (!ta) return;
+  ta.value = S.memo || '';
+  ta.oninput = () => {
+    S.memo = ta.value;
+    clearTimeout(rpMemoTimer);
+    rpMemoTimer = setTimeout(() => {
+      save();
+      const s = q('#rp-saved'); if(s){s.classList.add('show'); setTimeout(()=>s.classList.remove('show'),2000);}
+    }, 800);
+  };
+  rpRenderComments();
+}
+
+function rpSwitch(tab) {
+  ['memo','comment'].forEach(t => {
+    q(`#rp-tab-${t}`)?.classList.toggle('active', t===tab);
+    q(`#rp-body-${t}`)?.style.setProperty('display', t===tab ? 'flex' : 'none');
+  });
+}
+
+function rpOpenCompose() {
+  const c = q('#rp-compose'); if(c) c.style.display='block';
+  q('#rp-compose-ta')?.focus();
+}
+function rpCloseCompose() {
+  const c = q('#rp-compose'); if(c) c.style.display='none';
+  const ta = q('#rp-compose-ta'); if(ta) ta.value='';
+}
+
+function rpSend() {
+  const ta = q('#rp-compose-ta'); if(!ta) return;
+  const body = ta.value.trim(); if(!body) return;
+  const name = (currentUser?.email||'').split('@')[0]||'ユーザー';
+  if(!S.sideComments) S.sideComments=[];
+  S.sideComments.unshift({ id:uid(), author:name, ts:new Date().toISOString(), body });
+  rpCloseCompose();
+  rpRenderComments();
+  save();
+}
+
+function rpDeleteComment(id) {
+  S.sideComments = (S.sideComments||[]).filter(c=>c.id!==id);
+  rpRenderComments();
+  save();
+}
+
+function rpRenderComments() {
+  const list = q('#rp-list'); if(!list) return;
+  const comments = S.sideComments||[];
+  if (!comments.length) { list.innerHTML='<div class="rp-empty">コメントはまだありません</div>'; return; }
+  list.innerHTML = comments.map(c=>`
+    <div class="rp-card">
+      <div class="rp-card-hd">
+        <div class="rp-av">${esc(c.author[0]?.toUpperCase()||'?')}</div>
+        <div class="rp-author">${esc(c.author)}</div>
+        <div class="rp-time">${rpRelTime(c.ts)}</div>
+        <button class="rp-del" onclick="rpDeleteComment('${c.id}')">×</button>
+      </div>
+      <div class="rp-card-body">${esc(c.body)}</div>
+    </div>`).join('');
+}
+
+function rpRelTime(iso) {
+  try {
+    const diff = (Date.now()-new Date(iso).getTime())/1000;
+    if(diff<60) return 'たった今';
+    if(diff<3600) return Math.floor(diff/60)+'分前';
+    if(diff<86400) return Math.floor(diff/3600)+'時間前';
+    const d=new Date(iso); return `${d.getMonth()+1}/${d.getDate()}`;
+  } catch{ return ''; }
 }
 
 function switchDesignTab(tab) {
