@@ -300,7 +300,12 @@ input:focus,textarea:focus,select:focus{border-color:var(--cyan);background:var(
 
 .cp-hero-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;position:relative;z-index:1}
 .cp-hero-left{flex:1;min-width:0}
-.cp-hero-right{flex-shrink:0;text-align:right;min-width:180px}
+.cp-hero-right{flex-shrink:0;text-align:center;min-width:160px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.cp-ring-wrap{position:relative;display:flex;align-items:center;justify-content:center;width:140px;height:140px}
+.cp-ring{position:absolute;top:0;left:0;transform:rotate(-90deg)}
+.cp-ring-bg{fill:none;stroke:rgba(93,224,230,0.1);stroke-width:9}
+.cp-ring-fill{fill:none;stroke:url(#ring-grad);stroke-width:9;stroke-linecap:round;stroke-dasharray:339.3;stroke-dashoffset:339.3;transition:stroke-dashoffset 1s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 0 6px rgba(93,224,230,0.5))}
+.cp-ring-inner{position:relative;z-index:1;text-align:center}
 
 .cp-eyebrow{display:flex;align-items:center;gap:7px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--cyan);font-family:var(--font-h);font-weight:700;margin-bottom:10px;opacity:.8}
 .cp-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);flex-shrink:0;box-shadow:0 0 6px var(--cyan);animation:cp-pulse 2s ease-in-out infinite}
@@ -308,7 +313,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--cyan);background:var(
 
 .cp-goal-title{font-family:var(--font-h);font-weight:900;font-size:28px;line-height:1.3;margin-bottom:10px;word-break:break-word;color:var(--text);text-shadow:0 0 20px rgba(93,224,230,0.12)}
 .cp-deadline-meta{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;font-family:var(--font-h);color:var(--cyan);background:rgba(93,224,230,0.1);border:1px solid rgba(93,224,230,0.25);border-radius:8px;padding:4px 12px;margin-bottom:12px;letter-spacing:.03em}
-.cp-days-big{font-family:var(--font-h);font-weight:900;font-size:26px;line-height:1.2;letter-spacing:-0.01em;color:var(--gold);text-shadow:0 0 16px rgba(251,191,36,0.35);margin-top:10px;text-align:right}
+.cp-days-big{font-family:var(--font-h);font-weight:900;font-size:22px;line-height:1.2;letter-spacing:-0.01em;color:var(--gold);text-shadow:0 0 16px rgba(251,191,36,0.35);text-align:center}
 .cp-days-big.danger{color:var(--red);text-shadow:0 0 16px rgba(239,68,68,0.35)}
 
 .cp-edit-btn{
@@ -320,11 +325,9 @@ input:focus,textarea:focus,select:focus{border-color:var(--cyan);background:var(
 }
 .cp-edit-btn:hover{border-color:var(--cyan);background:rgba(93,224,230,0.14);box-shadow:0 0 12px rgba(93,224,230,0.2)}
 
-.cp-gauge-label{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-family:var(--font-h);font-weight:700;margin-bottom:6px}
-.cp-gauge-num{font-family:var(--font-h);font-weight:900;font-size:48px;line-height:1;background:linear-gradient(135deg,#5de0e6,#004aad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 0 12px rgba(93,224,230,0.4))}
-.cp-gauge-bar{width:180px;height:5px;background:rgba(93,224,230,0.12);border-radius:3px;margin-top:10px;overflow:hidden;margin-left:auto}
-.cp-gauge-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#5de0e6,#004aad);transition:width .6s ease;box-shadow:0 0 8px rgba(93,224,230,0.5)}
-.cp-gauge-sub{font-size:11px;color:var(--faint);margin-top:5px}
+.cp-gauge-label{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-family:var(--font-h);font-weight:700;margin-top:2px}
+.cp-gauge-num{font-family:var(--font-h);font-weight:900;font-size:36px;line-height:1;background:linear-gradient(135deg,#5de0e6,#004aad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 0 12px rgba(93,224,230,0.4))}
+.cp-gauge-sub{font-size:11px;color:var(--faint);text-align:center}
 
 /* ── MILESTONE TIMELINE ── */
 /* ── MILESTONES (vertical list) ── */
@@ -574,13 +577,14 @@ input:focus,textarea:focus,select:focus{border-color:var(--cyan);background:var(
 .mm-el-node.prio-high{border-left-color:var(--red)}
 .mm-el-node.prio-mid{border-left-color:var(--gold)}
 .mm-el-node.prio-low{border-left-color:rgba(93,224,230,0.35)}
-.mm-el-node.focused{box-shadow:0 0 0 2px rgba(93,224,230,0.4),0 0 16px rgba(93,224,230,0.1);border-color:rgba(93,224,230,0.4)}
+.mm-el-node.focused{border-color:rgba(93,224,230,0.6);background:rgba(93,224,230,0.05);animation:mm-halo 3s ease-in-out infinite}
+@keyframes mm-halo{0%,100%{box-shadow:0 0 0 2px rgba(93,224,230,0.4),0 0 20px rgba(93,224,230,0.15)}50%{box-shadow:0 0 0 2px rgba(93,224,230,0.7),0 0 40px rgba(93,224,230,0.28)}}
 .mm-el-pct{font-family:var(--font-h);font-weight:900;font-size:13px;color:var(--cyan)}
 .mm-focus-btn{font-size:9px;padding:2px 8px;border:1px solid var(--border);border-radius:5px;color:var(--muted);cursor:pointer;background:transparent;transition:all .12s;margin-left:2px;flex-shrink:0}
 .mm-focus-btn:hover{border-color:var(--cyan);color:var(--cyan)}
 .mm-focus-btn.on{border-color:rgba(93,224,230,0.4);color:var(--cyan);background:rgba(93,224,230,0.08)}
-.mm-pbar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;width:80px;flex-shrink:0}
-.mm-pfill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--cyan),var(--cobalt))}
+.mm-pbar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;flex:1;min-width:60px;max-width:120px}
+.mm-pfill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--cyan),var(--cobalt));box-shadow:0 0 6px rgba(93,224,230,0.4);transition:width .6s ease}
 .mm-commit-list{margin-left:24px;position:relative;margin-top:6px}
 .mm-commit-list::before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:1px;background:rgba(93,224,230,0.2)}
 .mm-commit-item{position:relative;padding-left:20px;margin-bottom:12px}
@@ -675,7 +679,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--cyan);background:var(
 [data-theme="light"] .il-add-commit-btn{border-color:var(--cobalt);color:var(--cobalt);background:rgba(0,74,173,0.06)}
 [data-theme="light"] .il-add-commit-btn:hover{background:rgba(0,74,173,0.14)}
 /* ── DASHBOARD SECTION HEADERS ── */
-.dash-sec-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.dash-sec-hd{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:2px 0 2px 16px;border-left:3px solid var(--cyan);border-bottom:none}
 .dash-sec-num{font-family:var(--font-h);font-weight:900;font-size:12px;color:#fff;background:var(--gradient);width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;box-shadow:0 2px 8px rgba(93,224,230,0.25)}
 .dash-sec-title{font-family:var(--font-h);font-weight:800;font-size:14px;color:var(--text);flex-shrink:0}
 .dash-sec-sub{font-size:11px;color:var(--faint);flex:1}
@@ -906,11 +910,8 @@ input:focus,textarea:focus,select:focus{border-color:var(--cyan);background:var(
   .cp-alerts-row{grid-template-columns:1fr}
   .design-layout{grid-template-columns:1fr}
   .kpt-grid{grid-template-columns:1fr}
-  .cp-gauge-num{font-size:34px}
-  .cp-gauge-bar{width:120px}
   .cp-hero-inner{flex-direction:column}
-  .cp-hero-right{text-align:left;min-width:unset}
-  .cp-gauge-bar{margin-left:0}
+  .cp-hero-right{align-items:flex-start;min-width:unset}
 }
 @media(max-width:1060px){
   .design-layout{grid-template-columns:1fr}
@@ -1222,9 +1223,22 @@ table.kpi .col-actions{width:40px}
             <button class="cp-edit-btn" onclick="switchTab('design')">✏ ゴールを編集</button>
           </div>
           <div class="cp-hero-right">
-            <div class="cp-gauge-label">達成率</div>
-            <div class="cp-gauge-num" id="hero-pct">—</div>
-            <div class="cp-gauge-bar"><div class="cp-gauge-fill" id="hero-pct-fill" style="width:0%"></div></div>
+            <div class="cp-ring-wrap">
+              <svg class="cp-ring" viewBox="0 0 140 140" width="140" height="140">
+                <defs>
+                  <linearGradient id="ring-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#5de0e6"/>
+                    <stop offset="100%" stop-color="#004aad"/>
+                  </linearGradient>
+                </defs>
+                <circle class="cp-ring-bg" cx="70" cy="70" r="54"/>
+                <circle class="cp-ring-fill" id="hero-ring" cx="70" cy="70" r="54"/>
+              </svg>
+              <div class="cp-ring-inner">
+                <div class="cp-gauge-num" id="hero-pct">—</div>
+                <div class="cp-gauge-label">達成率</div>
+              </div>
+            </div>
             <div class="cp-gauge-sub" id="hero-pct-sub"></div>
             <div class="cp-days-big" id="hero-days"></div>
           </div>
@@ -1786,8 +1800,9 @@ function renderDash() {
   }
   const pct = goalPct();
   q('#hero-pct').textContent = els.length ? pct+'%' : '—';
-  q('#hero-pct-fill').style.width = pct+'%';
-  q('#hero-pct-sub').textContent = els.length ? `${els.filter(e=>elPct(e)>0).length} / ${els.length} 要素` : '';
+  const ring = q('#hero-ring');
+  if (ring) ring.style.strokeDashoffset = (339.3*(1-(els.length?pct:0)/100)).toFixed(1);
+  q('#hero-pct-sub').textContent = els.length ? `${els.filter(e=>elPct(e)>0).length} / ${els.length} 要素進行中` : '';
 
   // ── Milestones (timeline bar + hero inline) ──
   const msRow = q('#ms-row'); msRow.innerHTML = '';
