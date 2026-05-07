@@ -184,6 +184,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--cyan);background:var(
 .rp-add-btn{width:100%;padding:10px;background:none;border:1.5px dashed rgba(93,224,230,0.3);border-radius:10px;font:inherit;font-size:13px;font-weight:700;color:var(--cyan);cursor:pointer;transition:all .15s;margin-bottom:10px;flex-shrink:0}
 .rp-add-btn:hover{background:rgba(93,224,230,0.06);border-color:rgba(93,224,230,0.6)}
 .rp-compose{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;flex-shrink:0}
+.rp-compose-quote{font-size:11px;color:var(--muted);border-left:3px solid var(--cyan);padding:4px 8px;margin-bottom:8px;font-style:italic;line-height:1.5;max-height:48px;overflow:hidden;white-space:pre-wrap;word-break:break-all}
 .rp-compose-ta{width:100%;background:var(--paper);border:1px solid var(--border);border-radius:8px;color:var(--text);font:inherit;font-size:13px;padding:8px 10px;resize:none;line-height:1.6;transition:border-color .15s}
 .rp-compose-ta:focus{outline:none;border-color:rgba(93,224,230,0.4)}
 .rp-compose-ta::placeholder{color:var(--faint)}
@@ -202,6 +203,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--cyan);background:var(
 .rp-del{background:none;border:none;cursor:pointer;color:var(--faint);font-size:13px;padding:2px 5px;opacity:.4;transition:opacity .15s;flex-shrink:0}
 .rp-del:hover{opacity:1;color:var(--red)}
 .rp-card-body{font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap}
+.rp-card-quote{font-size:11px;color:var(--muted);border-left:3px solid var(--cyan);padding:3px 7px;margin-bottom:7px;font-style:italic;line-height:1.5;max-height:40px;overflow:hidden}
 @media(max-width:1100px){.right-panel{display:none}}
 .tab-panel{display:none;flex:1;overflow-y:auto;padding:28px 32px 48px}
 .tab-panel.active{display:block}
@@ -1252,6 +1254,7 @@ table.kpi .col-actions{width:40px}
     <div class="rp-body" id="rp-body-comment" style="display:none;flex-direction:column">
       <button class="rp-add-btn" id="rp-add-btn" onclick="rpOpenCompose()">＋ コメントを追加</button>
       <div class="rp-compose" id="rp-compose" style="display:none">
+        <div class="rp-compose-quote" id="rp-compose-quote" style="display:none"></div>
         <textarea class="rp-compose-ta" id="rp-compose-ta" placeholder="コメントを入力…" rows="4"></textarea>
         <div class="rp-compose-actions">
           <button class="rp-cancel" onclick="rpCloseCompose()">キャンセル</button>
@@ -2516,8 +2519,9 @@ document.addEventListener('mouseup', e => {
   if(!sel||sel.isCollapsed)return;
   const text=sel.toString().trim(); if(text.length<3)return;
   if(q('#work-modal').classList.contains('open'))return;
-  if(q('#comment-popover').classList.contains('open'))return;
-  openCommentPopover(text, currentTab==='tracking'?'tracking':'dashboard', e.clientX+12, e.clientY+8);
+  sel.removeAllRanges();
+  rpSwitch('comment');
+  rpOpenCompose(text);
 });
 
 /* ═══ NAV / THEME / UTILS ═══ */
@@ -2532,6 +2536,7 @@ function switchTab(tab) {
 
 /* ── Right Panel ── */
 let rpMemoTimer = null;
+let rpPendingQuote = null;
 
 function rpInit() {
   const ta = q('#rp-memo-ta');
@@ -2555,13 +2560,21 @@ function rpSwitch(tab) {
   });
 }
 
-function rpOpenCompose() {
+function rpOpenCompose(quote) {
+  rpPendingQuote = quote || null;
+  const qDiv = q('#rp-compose-quote');
+  if (qDiv) {
+    if (rpPendingQuote) { qDiv.textContent = '"' + rpPendingQuote.slice(0,120) + (rpPendingQuote.length>120?'…':'"'); qDiv.style.display='block'; }
+    else qDiv.style.display='none';
+  }
   const c = q('#rp-compose'); if(c) c.style.display='block';
   q('#rp-compose-ta')?.focus();
 }
 function rpCloseCompose() {
+  rpPendingQuote = null;
   const c = q('#rp-compose'); if(c) c.style.display='none';
   const ta = q('#rp-compose-ta'); if(ta) ta.value='';
+  const qDiv = q('#rp-compose-quote'); if(qDiv) qDiv.style.display='none';
 }
 
 function rpSend() {
@@ -2569,7 +2582,9 @@ function rpSend() {
   const body = ta.value.trim(); if(!body) return;
   const name = (currentUser?.email||'').split('@')[0]||'ユーザー';
   if(!S.sideComments) S.sideComments=[];
-  S.sideComments.unshift({ id:uid(), author:name, ts:new Date().toISOString(), body });
+  const entry = { id:uid(), author:name, ts:new Date().toISOString(), body };
+  if (rpPendingQuote) entry.quote = rpPendingQuote;
+  S.sideComments.unshift(entry);
   rpCloseCompose();
   rpRenderComments();
   save();
@@ -2593,6 +2608,7 @@ function rpRenderComments() {
         <div class="rp-time">${rpRelTime(c.ts)}</div>
         <button class="rp-del" onclick="rpDeleteComment('${c.id}')">×</button>
       </div>
+      ${c.quote?`<div class="rp-card-quote">"${esc(c.quote.slice(0,100))}${c.quote.length>100?'…':'"'}</div>`:''}
       <div class="rp-card-body">${esc(c.body)}</div>
     </div>`).join('');
 }
