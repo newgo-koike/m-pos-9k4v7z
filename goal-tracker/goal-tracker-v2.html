@@ -562,6 +562,43 @@ input:focus,textarea:focus,select:focus{border-color:var(--cyan);background:var(
 .cv-a-badge.future{background:var(--cobalt-s);color:var(--cyan)}
 .cv-legend{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0}
 .cv-legend-item{display:flex;align-items:center;gap:3px;font-size:10px;color:var(--faint)}
+/* ── Mindmap Tree ── */
+.mm-wrap{padding:4px 0 8px}
+.mm-goal-node{display:inline-flex;align-items:center;gap:10px;background:var(--gradient);color:#fff;border-radius:12px;padding:12px 20px;font-weight:800;font-size:16px;font-family:var(--font-h);margin-bottom:0;box-shadow:0 4px 16px rgba(93,224,230,0.2)}
+.mm-goal-dl{font-size:11px;font-weight:500;opacity:.75;margin-left:4px}
+.mm-el-list{margin-left:20px;position:relative;margin-top:0}
+.mm-el-list::before{content:'';position:absolute;left:0;top:12px;bottom:16px;width:2px;background:var(--border);border-radius:1px}
+.mm-el-item{position:relative;padding-left:24px;margin-top:10px}
+.mm-el-item::before{content:'';position:absolute;left:0;top:18px;width:22px;height:2px;background:var(--border)}
+.mm-el-node{display:inline-flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:8px;padding:8px 14px;font-weight:700;font-size:14px;margin-bottom:4px;cursor:default}
+.mm-el-node.prio-high{border-left-color:var(--red)}
+.mm-el-node.prio-mid{border-left-color:var(--gold)}
+.mm-el-node.prio-low{border-left-color:rgba(93,224,230,0.35)}
+.mm-el-node.focused{box-shadow:0 0 0 2px rgba(93,224,230,0.4),0 0 16px rgba(93,224,230,0.1);border-color:rgba(93,224,230,0.4)}
+.mm-el-pct{font-family:var(--font-h);font-weight:900;font-size:13px;color:var(--cyan)}
+.mm-focus-btn{font-size:9px;padding:2px 8px;border:1px solid var(--border);border-radius:5px;color:var(--muted);cursor:pointer;background:transparent;transition:all .12s;margin-left:2px;flex-shrink:0}
+.mm-focus-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.mm-focus-btn.on{border-color:rgba(93,224,230,0.4);color:var(--cyan);background:rgba(93,224,230,0.08)}
+.mm-pbar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;width:80px;flex-shrink:0}
+.mm-pfill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--cyan),var(--cobalt))}
+.mm-commit-list{margin-left:20px;position:relative;margin-top:4px}
+.mm-commit-list::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:1px;background:rgba(93,224,230,0.18)}
+.mm-commit-item{position:relative;padding-left:18px;margin-bottom:8px}
+.mm-commit-item::before{content:'';position:absolute;left:0;top:13px;width:16px;height:1px;background:rgba(93,224,230,0.18)}
+.mm-commit-node{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:12px;color:var(--text);padding:4px 10px;background:var(--card);border-radius:6px;margin-bottom:4px}
+.mm-commit-icon{font-size:9px;color:var(--cyan);flex-shrink:0}
+.mm-commit-dl{font-size:10px;color:var(--faint);margin-left:4px}
+.mm-action-list{display:flex;flex-wrap:wrap;gap:4px;padding-left:4px}
+.mm-chip{font-size:10px;padding:3px 10px;border-radius:10px;font-weight:600;font-family:var(--font-h);cursor:pointer;transition:opacity .12s;border:1px solid transparent}
+.mm-chip:hover{opacity:.75}
+.mm-chip.done{background:var(--green-s);color:var(--green);text-decoration:line-through;opacity:.55}
+.mm-chip.overdue{background:var(--red-s);color:var(--red)}
+.mm-chip.week{background:rgba(16,185,129,.12);color:var(--green)}
+.mm-chip.future{background:var(--cobalt-s);color:var(--cyan)}
+.mm-chip.none{background:var(--card);color:var(--muted);border-color:var(--border)}
+[data-theme="light"] .mm-el-node{background:#fff}
+[data-theme="light"] .mm-commit-node{background:#f8fbff}
+[data-theme="light"] .mm-chip.none{background:#f0f4fa}
 
 .cv-add-ghost{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--faint);padding:4px 8px;border-radius:5px;border:1px dashed var(--border);cursor:pointer;transition:all .12s;background:transparent;margin-top:4px}
 .cv-add-ghost:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-s)}
@@ -1167,9 +1204,8 @@ table.kpi .col-actions{width:40px}
     <!-- DASHBOARD -->
     <div class="tab-panel active" id="tab-dashboard">
 
-      <!-- ① 今年のゴール -->
+      <!-- 目標 -->
       <div class="dash-sec-hd">
-        <span class="dash-sec-num">①</span>
         <span class="dash-sec-title">目標</span>
         <span class="dash-sec-sub">最終的に何を達成したいか</span>
       </div>
@@ -1200,27 +1236,25 @@ table.kpi .col-actions{width:40px}
       <!-- flow sep -->
       <div class="dash-flow-sep"><div class="dash-flow-sep-line"></div><div class="dash-flow-sep-arrow">▼</div></div>
 
-      <!-- ② フォーカス中の要素 -->
+      <!-- フォーカス中の要素 -->
       <div class="dash-sec-hd">
-        <span class="dash-sec-num">②</span>
         <span class="dash-sec-title" style="color:var(--cyan)">フォーカス中の要素</span>
         <span class="dash-sec-sub">今最も注力すべき要素とそのアクション計画</span>
+        <div class="cv-legend">
+          <span class="cv-legend-item"><span class="cv-a-badge week">今週</span></span>
+          <span class="cv-legend-item"><span class="cv-a-badge future">未来</span></span>
+          <span class="cv-legend-item"><span class="cv-a-badge overdue">超過</span></span>
+        </div>
       </div>
       <div id="cv-crit-factor"></div>
 
       <!-- flow sep -->
       <div class="dash-flow-sep"><div class="dash-flow-sep-line"></div><div class="dash-flow-sep-arrow">▼</div></div>
 
-      <!-- ③ 今週のアクション -->
+      <!-- 今週のアクション -->
       <div class="dash-sec-hd">
-        <span class="dash-sec-num">③</span>
         <span class="dash-sec-title">今週のアクション</span>
         <span class="dash-sec-sub">今週やること・完了したこと</span>
-        <div class="cv-legend">
-          <span class="cv-legend-item"><span class="cv-a-badge week">今週</span></span>
-          <span class="cv-legend-item"><span class="cv-a-badge future">未来</span></span>
-          <span class="cv-legend-item"><span class="cv-a-badge overdue">超過</span></span>
-        </div>
       </div>
       <div class="cv-stats-row">
         <div class="cv-stats-left" id="cv-stats-left">
@@ -1235,9 +1269,8 @@ table.kpi .col-actions{width:40px}
       <!-- flow sep -->
       <div class="dash-flow-sep"><div class="dash-flow-sep-line"></div><div class="dash-flow-sep-arrow">▼</div></div>
 
-      <!-- ④ ゴール全体図 -->
+      <!-- ゴール全体図 -->
       <div class="dash-sec-hd">
-        <span class="dash-sec-num">④</span>
         <span class="dash-sec-title">ゴール全体図</span>
         <span class="dash-sec-sub">要素・コミット・アクションの全体像</span>
         <button class="cp-add-btn" style="margin-left:auto" onclick="addElement()">＋ 要素追加</button>
@@ -1841,46 +1874,58 @@ function renderDash() {
       </div>`).join('');
   }
 
-  // ── Goal Cascade (all elements; focused element highlighted first) ──
-  const cascade = q('#cv-cascade'); cascade.innerHTML='';
-  const otherEls = fe ? els.filter((_,i)=>i!==feIdx) : els;
-  if(!otherEls.length && !fe){
-    cascade.innerHTML='<div class="cv-empty">要素がありません。「＋ 要素追加」から始めましょう。</div>';
+  // ── Goal Mindmap ──
+  renderMindmap(els);
+}
+
+function renderMindmap(els) {
+  const today = new Date().toISOString().slice(0,10);
+  const cascade = q('#cv-cascade'); if(!cascade) return;
+  const g = S.goal;
+  if (!g.title && !els.length) {
+    cascade.innerHTML = '<div class="cv-empty">要素がありません。「＋ 要素追加」から始めましょう。</div>';
     return;
   }
-  otherEls.forEach((el)=>{
-    const ei=els.indexOf(el), p=elPct(el);
-    const prioKey=el.priority||'mid';
-    let gapHtml='';
-    if(el.target){const cur=el.current||0,tgt=el.target,pf=Math.min(100,Math.round(cur/tgt*100));
-      gapHtml=`<div class="cv-gap-row"><span class="cv-gap-cur">${cur}</span><span class="cv-gap-arrow">→</span><span class="cv-gap-tgt">${tgt}</span><span class="cv-gap-unit">${esc(el.unit||'')}</span><div class="cv-gap-bar"><div class="cv-gap-fill" style="width:${pf}%"></div></div></div>`;
+  let html = `<div class="mm-wrap">`;
+  html += `<div class="mm-goal-node">🎯 ${esc(g.title||'ゴール未設定')}${g.deadline?`<span class="mm-goal-dl">${g.deadline} まで</span>`:''}</div>`;
+  if (!els.length) { html += '</div>'; cascade.innerHTML = html; return; }
+  html += `<div class="mm-el-list">`;
+  els.forEach((el, ei) => {
+    const p = elPct(el);
+    const prioKey = el.priority||'mid';
+    const pf = el.target ? Math.min(100,Math.round((el.current||0)/Number(el.target)*100)) : 0;
+    html += `<div class="mm-el-item">`;
+    html += `<div class="mm-el-node prio-${prioKey}${el.isFocused?' focused':''}">`;
+    if (el.isFocused) html += `<span style="font-size:9px;color:var(--cyan);font-weight:800">◉</span>`;
+    html += `<span>${esc(el.title||`要素${ei+1}`)}</span>`;
+    if (el.target) html += `<span class="mm-el-pct">${p}%</span><div class="mm-pbar"><div class="mm-pfill" style="width:${pf}%"></div></div>`;
+    html += `<button class="mm-focus-btn${el.isFocused?' on':''}" onclick="toggleFocus(${ei})">${el.isFocused?'解除':'フォーカス'}</button>`;
+    html += `</div>`;
+    const commits = el.commitments||[];
+    if (commits.length) {
+      html += `<div class="mm-commit-list">`;
+      commits.forEach((c, ci) => {
+        html += `<div class="mm-commit-item">`;
+        html += `<div class="mm-commit-node"><span class="mm-commit-icon">◆</span>${esc(c.title||'無題コミット')}${c.deadline?`<span class="mm-commit-dl">${c.deadline}</span>`:''}</div>`;
+        const actions = c.actions||[];
+        if (actions.length) {
+          html += `<div class="mm-action-list">`;
+          actions.forEach((a, ai) => {
+            const ov = a.week&&a.week<today&&a.status!=='done';
+            const wk = isThisWeek(a.week)&&a.status!=='done';
+            const cls = a.status==='done'?'done':ov?'overdue':wk?'week':a.week?'future':'none';
+            html += `<span class="mm-chip ${cls}" onclick="toggleAction(${ei},${ci},${ai})">${a.status==='done'?'✓ ':''}${esc(a.title)}</span>`;
+          });
+          html += `</div>`;
+        }
+        html += `</div>`;
+      });
+      html += `</div>`;
     }
-    const commitsHtml=(el.commitments||[]).map((c,ci)=>{
-      const actHtml=(c.actions||[]).map((a,ai)=>{
-        const ov=a.week&&isDatePast(a.week)&&a.status!=='done',wk=isThisWeek(a.week);
-        return `<div class="cv-action${a.status==='done'?' done':''}">
-          <div class="cv-a-check" onclick="toggleAction(${ei},${ci},${ai})">${a.status==='done'?'✓':''}</div>
-          <div class="cv-a-title">${esc(a.title)}</div>
-          ${a.week?`<div class="cv-a-badge ${ov?'overdue':wk?'week':'future'}">${esc(a.week)}</div>`:''}
-        </div>`;}).join('');
-      return `<div class="cv-commit">
-        <div class="cv-commit-hd"><span class="cv-commit-icon">◆</span><span class="cv-commit-title">${esc(c.title||'無題コミット')}</span>${c.deadline?`<span class="cv-commit-dl">${c.deadline}</span>`:''}</div>
-        ${actHtml?`<div class="cv-actions-label">アクション</div><div class="cv-actions">${actHtml}</div>`:'<div style="font-size:12px;color:var(--faint);padding:2px 0 4px 8px">アクションなし</div>'}
-      </div>`;
-    }).join('');
-    const div=document.createElement('div');
-    div.className=`cv-element prio-${prioKey}`;
-    div.innerHTML=`
-      <div class="cv-el-head">
-        <span class="cv-el-title">${esc(el.title||`要素${ei+1}`)}</span>
-        <span class="cv-el-pct">${el.target?p+'%':'—'}</span>
-        <button onclick="toggleFocus(${ei})" style="font-size:10px;padding:3px 8px;border:1px solid var(--border-h);border-radius:6px;color:var(--muted);cursor:pointer;flex-shrink:0;background:transparent">◎ フォーカス</button>
-      </div>
-      ${gapHtml}
-      ${commitsHtml?`<div class="cv-commits"><div class="cv-commits-label">コミットメント</div>${commitsHtml}</div>`:''}
-    `;
-    cascade.appendChild(div);
+    html += `</div>`;
   });
+  html += `</div></div>`;
+  cascade.innerHTML = html;
 }
 
 /* Design */
