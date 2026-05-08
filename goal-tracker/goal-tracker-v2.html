@@ -2021,7 +2021,7 @@ function renderDesign() {
   if (gdi && document.activeElement!==gdi) gdi.value = g.deadline||'';
   if (gti && !gti._bound) { gti._bound=true;
     gti.onblur = ()=>{ S.goal.title=gti.value.trim(); save(); renderDash(); };
-    gti.onkeydown = e=>{ if(e.key==='Enter') gti.blur(); };
+    gti.onkeydown = e=>{ if(e.isComposing||e.keyCode===229)return; if(e.key==='Enter') gti.blur(); };
   }
   if (gdi && !gdi._bound) { gdi._bound=true;
     gdi.onchange = ()=>{ S.goal.deadline=gdi.value; save(); renderDash(); };
@@ -2036,7 +2036,7 @@ function renderDesign() {
         <span style="font-size:10px;color:var(--cyan);flex-shrink:0">◆</span>
         <input class="il-input il-title" value="${esc(m.title||'')}" placeholder="マイルストーン名"
           onblur="ilSaveMs(${mi},'title',this.value)"
-          onkeydown="if(event.key==='Enter')this.blur()">
+          onkeydown="if(event.isComposing||event.keyCode===229)return;if(event.key==='Enter')this.blur()">
         <input class="il-input il-date" type="date" value="${m.deadline||''}"
           onchange="ilSaveMs(${mi},'deadline',this.value)">
         <div class="il-del" onclick="delMilestone(${mi})" title="削除">×</div>
@@ -2074,7 +2074,7 @@ function renderDesign() {
           <div class="il-check${a.status==='done'?' done':''}" onclick="toggleAction(${ei},${ci},${ai})">${a.status==='done'?'✓':''}</div>
           <input class="il-input il-title" style="font-size:13px;font-weight:400" value="${esc(a.title||'')}" placeholder="アクションを入力..."
             onblur="ilSaveAction(${ei},${ci},${ai},'title',this.value)"
-            onkeydown="if(event.key==='Enter')this.blur()">
+            onkeydown="if(event.isComposing||event.keyCode===229)return;if(event.key==='Enter')this.blur()">
           <input class="il-input il-date" type="date" value="${a.week||''}"
             onchange="ilSaveAction(${ei},${ci},${ai},'week',this.value)">
           <div class="il-del" onclick="delAction(${ei},${ci},${ai})" title="削除">×</div>
@@ -2087,7 +2087,7 @@ function renderDesign() {
           <span class="lv-tag lv-commit" style="font-size:9px;flex-shrink:0">COMMIT</span>
           <input class="il-input il-title" style="font-size:13px" value="${esc(c.title||'')}" placeholder="コミット名（例：週3回 SNS投稿する）"
             onblur="ilSaveCommit(${ei},${ci},'title',this.value)"
-            onkeydown="if(event.key==='Enter')this.blur()">
+            onkeydown="if(event.isComposing||event.keyCode===229)return;if(event.key==='Enter')this.blur()">
           <input class="il-input il-date" type="date" value="${c.deadline||''}"
             onchange="ilSaveCommit(${ei},${ci},'deadline',this.value)">
           <div class="il-del" onclick="delCommit(${ei},${ci})" title="削除">×</div>
@@ -2115,7 +2115,7 @@ function renderDesign() {
         <span class="dt-el-toggle" onclick="dtToggleEl(${ei})">›</span>
         <input class="il-input il-title" value="${esc(el.title||'')}" placeholder="要素名（例：新規顧客獲得）"
           onblur="ilSaveEl(${ei},'title',this.value)"
-          onkeydown="if(event.key==='Enter')this.blur()">
+          onkeydown="if(event.isComposing||event.keyCode===229)return;if(event.key==='Enter')this.blur()">
         <div class="il-del" onclick="delElement(${ei})" title="削除">×</div>
       </div>
       <div class="il-nums-section">
