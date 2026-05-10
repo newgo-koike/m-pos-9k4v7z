@@ -2120,11 +2120,11 @@ function renderDesign() {
       </div>
       <div class="il-nums-section">
         <span class="il-num-label">現状</span>
-        <input class="il-input il-num" type="number" value="${el.current||''}" placeholder="0"
-          onchange="ilSaveEl(${ei},'current',Number(this.value)||0)">
+        <input class="il-input il-num" type="number" value="${el.current??''}" placeholder="0"
+          onchange="ilSaveEl(${ei},'current',this.value===''?'':Number(this.value))">
         <span class="il-arrow">→ 目標</span>
-        <input class="il-input il-num" type="number" value="${el.target||''}" placeholder="0"
-          onchange="ilSaveEl(${ei},'target',Number(this.value)||0)">
+        <input class="il-input il-num" type="number" value="${el.target??''}" placeholder="0"
+          onchange="ilSaveEl(${ei},'target',this.value===''?'':Number(this.value))">
         <input class="il-input il-unit" value="${esc(el.unit||'')}" placeholder="単位（例：件）"
           onblur="ilSaveEl(${ei},'unit',this.value)">
         ${el.target?`<span class="il-pct-badge">${p2}%</span>`:''}
@@ -2255,6 +2255,18 @@ function renderKpi() {
   });
   ['main','breakdown','activity'].forEach(section=>renderKpiSection(section,data[section]));
 }
+function kpiUpdateRowTotals(tr,row){
+  const target=Number(row.target)||0;
+  const sumC=row.weeks.reduce((a,w)=>a+(Number(w.c)||0),0);
+  const sumE=row.weeks.reduce((a,w)=>a+(Number(w.e)||0),0);
+  const landingPct=target>0?Math.round((sumC+sumE)/target*100):0;
+  const cls=target===0?'':(landingPct>=90?'pct-good':landingPct>=60?'pct-mid':'pct-bad');
+  const tots=tr.querySelectorAll('.total');
+  if(tots[0])tots[0].textContent=sumC.toLocaleString();
+  if(tots[1])tots[1].textContent=sumE.toLocaleString();
+  const pctCell=tr.querySelector('.pct');
+  if(pctCell){pctCell.textContent=target>0?landingPct+'%':'—';pctCell.className='pct '+cls;}
+}
 function renderKpiSection(section,rows) {
   const tbody=document.querySelector('#kpi-'+section+' tbody');
   if(!tbody)return;
@@ -2274,8 +2286,8 @@ function renderKpiSection(section,rows) {
       <td><input type="text" data-f="unit" value="${esc(r.unit||'')}" placeholder="単位" style="width:50px"></td>
       <td><input type="number" data-f="target" value="${r.target??''}" placeholder="0"></td>
       ${[0,1,2,3,4].map(i=>`<td class="cell-dual">
-        <input type="number" class="confirmed" data-f="c${i}" value="${r.weeks[i].c||''}" placeholder="決" title="決定（確定済）">
-        <input type="number" class="expected"  data-f="e${i}" value="${r.weeks[i].e||''}" placeholder="見" title="見込（パイプライン・予定）">
+        <input type="number" class="confirmed" data-f="c${i}" value="${r.weeks[i].c??''}" placeholder="決" title="決定（確定済）">
+        <input type="number" class="expected"  data-f="e${i}" value="${r.weeks[i].e??''}" placeholder="見" title="見込（パイプライン・予定）">
       </td>`).join('')}
       <td class="total">${sumC.toLocaleString()}</td>
       <td class="total expected">${sumE.toLocaleString()}</td>
@@ -2294,7 +2306,7 @@ function renderKpiSection(section,rows) {
         if(f.startsWith('c'))row.weeks[+f.slice(1)].c=Number(val);
         else if(f.startsWith('e'))row.weeks[+f.slice(1)].e=Number(val);
         else row[f]=val;
-        save(); renderKpiSection(sec,S.kpi[kpiMonth][sec]);
+        save(); kpiUpdateRowTotals(tr,row);
       });
     });
   });
@@ -2450,7 +2462,11 @@ const WORK_URLS = { w20:'w20-biz-flow.html', w21:'w21-3focus.html', w22:'w22-act
 const WORK_TITLES = { w20:'W20 目標設定', w21:'W21 ビジネスフロー設計', w22:'W22 アクション設計' };
 function openWork(k) {
   q('#work-modal-title').textContent = WORK_TITLES[k]||k;
-  q('#work-iframe').src = WORK_URLS[k]||'about:blank';
+  const iframe = q('#work-iframe');
+  iframe.src = WORK_URLS[k]||'about:blank';
+  iframe.onload = function() {
+    try { iframe.contentDocument.documentElement.setAttribute('data-theme', S.theme||'dark'); } catch(e) {}
+  };
   q('#work-modal').classList.add('open');
 }
 function closeWork() { q('#work-modal').classList.remove('open'); q('#work-iframe').src='about:blank'; }
@@ -2672,7 +2688,14 @@ function renderDesignView() {
   wrap.innerHTML = html;
 }
 
-function setTheme(t) { S.theme=t; applyTheme(t); save(); }
+function setTheme(t) {
+  S.theme=t; applyTheme(t); save();
+  const iframe=q('#work-iframe');
+  if(iframe&&iframe.src&&iframe.src!=='about:blank'){
+    try{iframe.contentDocument.documentElement.setAttribute('data-theme',t);}catch(e){}
+    try{iframe.contentWindow.postMessage({type:'THEME',value:t},'*');}catch(e){}
+  }
+}
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme',t);
   q('#btn-dark').classList.toggle('active',t==='dark');
